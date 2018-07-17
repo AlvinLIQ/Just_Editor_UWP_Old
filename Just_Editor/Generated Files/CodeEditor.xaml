@@ -1,0 +1,33 @@
+﻿<Page
+    x:Class="Just_Editor.CodeEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Just_Editor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Background="WhiteSmoke" Orientation="Horizontal">
+            <Button x:ConnectionId='2' Name="Undo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold"                          >
+                &lt;
+            </Button>
+            <Button x:ConnectionId='3' Name="Redo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold"                          >
+                &gt;
+            </Button>
+            <Button Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0">
+                <Image Source="Assets/New_Icon.png"  Width="18"/>
+            </Button>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollMode="Enabled" Grid.Row="1" Padding="0,0,20,0">
+            <RichEditBox x:ConnectionId='1' Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle"                                           
+                                                         ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            </RichEditBox>
+        </ScrollViewer>
+    </Grid>
+</Page>
+

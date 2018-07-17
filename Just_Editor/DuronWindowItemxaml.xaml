@@ -1,0 +1,17 @@
+﻿<UserControl
+    x:Class="Just_Editor.DuronWindowItemxaml"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Just_Editor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="100"
+    d:DesignWidth="400">
+
+    <Grid x:Name="MainGrid" Background="{x:Bind Background, Mode=OneWay}" PointerEntered="MainGrid_PointerEntered" PointerCaptureLost="MainGrid_PointerCaptureLost"
+          PointerExited="MainGrid_PointerCaptureLost" Padding="10,0,-0.5,0">
+        <TextBlock TextTrimming="WordEllipsis" FontWeight="Bold" Margin="0,0,31,0" Foreground="DarkSlateGray" VerticalAlignment="Center" Text="{x:Bind FileName, Mode=OneWay}"/>
+        <Button x:Name="CloseWindow_Button" Background="#0000" Foreground="DarkSlateGray" Content="x" HorizontalAlignment="Right" Padding="5,5,5,7"  VerticalAlignment="Stretch" Tapped="CloseWindow_Button_Tapped"/>
+    </Grid>
+</UserControl>

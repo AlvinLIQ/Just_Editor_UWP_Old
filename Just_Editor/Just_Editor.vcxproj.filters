@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>17bfb4f4-7b04-4b31-a809-31faa0f78adc</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>3a6f003f-7424-45da-a271-ed3b1fea61c6</UniqueIdentifier>
+      <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App.xaml.cpp" />
+    <ClCompile Include="MainPage.xaml.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Editor_Tools.cpp" />
+    <ClCompile Include="StartPage.xaml.cpp" />
+    <ClCompile Include="CodeEditor.xaml.cpp" />
+    <ClCompile Include="NewFileDialog.xaml.cpp" />
+    <ClCompile Include="DuronWindowItemxaml.xaml.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="App.xaml.h" />
+    <ClInclude Include="MainPage.xaml.h" />
+    <ClInclude Include="Editor_Tools.h" />
+    <ClInclude Include="StartPage.xaml.h" />
+    <ClInclude Include="CodeEditor.xaml.h" />
+    <ClInclude Include="NewFileDialog.xaml.h" />
+    <ClInclude Include="DuronWindowItemxaml.xaml.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\LockScreenLogo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square150x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Wide310x150Logo.scale-200.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Back_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Delete_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\New_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Saved_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Script_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Search_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Setting_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Share_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Hamburger_Menu_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Home_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Just_Editor_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MainPage.xaml" />
+    <Page Include="StartPage.xaml" />
+    <Page Include="CodeEditor.xaml" />
+    <Page Include="NewFileDialog.xaml" />
+    <Page Include="DuronWindowItemxaml.xaml" />
+  </ItemGroup>
+</Project>
