@@ -28,6 +28,7 @@ Just_Editor::RenameDialog::RenameDialog()
 
 void Just_Editor::RenameDialog::ContentDialog_PrimaryButtonClick(Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogButtonClickEventArgs^ args)
 {
+	this->FileName = FileName_Box->Text;
 }
 
 void Just_Editor::RenameDialog::ContentDialog_SecondaryButtonClick(Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogButtonClickEventArgs^ args)

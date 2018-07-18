@@ -32,6 +32,7 @@ namespace Just_Editor
 			Background = ref new Windows::UI::Xaml::Media::SolidColorBrush(Windows::UI::Colors::WhiteSmoke);
 			isSelected = true;
 		}
+		void SetFileName(Platform::String^ newFileName);
 	private:
 		void MainGrid_PointerEntered(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
 		void MainGrid_PointerCaptureLost(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);

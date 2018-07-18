@@ -13,6 +13,7 @@ namespace Windows {
         namespace Xaml {
             namespace Controls {
                 ref class Grid;
+                ref class TextBlock;
                 ref class Button;
             }
         }
@@ -38,6 +39,7 @@ namespace Just_Editor
     
         ::XamlBindingInfo::XamlBindings^ Bindings;
         private: ::Windows::UI::Xaml::Controls::Grid^ MainGrid;
+        private: ::Windows::UI::Xaml::Controls::TextBlock^ FileName_Block;
         private: ::Windows::UI::Xaml::Controls::Button^ CloseWindow_Button;
     };
 }

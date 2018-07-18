@@ -11,7 +11,7 @@
 
     <Grid x:Name="MainGrid" Background="{x:Bind Background, Mode=OneWay}" PointerEntered="MainGrid_PointerEntered" PointerCaptureLost="MainGrid_PointerCaptureLost"
           PointerExited="MainGrid_PointerCaptureLost" Padding="10,0,-0.5,0">
-        <TextBlock TextTrimming="WordEllipsis" FontWeight="Bold" Margin="0,0,31,0" Foreground="DarkSlateGray" VerticalAlignment="Center" Text="{x:Bind FileName, Mode=OneWay}"/>
+        <TextBlock x:Name="FileName_Block" TextTrimming="WordEllipsis" FontWeight="Bold" Margin="0,0,31,0" Foreground="DarkSlateGray" VerticalAlignment="Center" Text="{x:Bind FileName, Mode=OneWay}"/>
         <Button x:Name="CloseWindow_Button" Background="#0000" Foreground="DarkSlateGray" Content="x" HorizontalAlignment="Right" Padding="5,5,5,7"  VerticalAlignment="Stretch" Tapped="CloseWindow_Button_Tapped"/>
     </Grid>
 </UserControl>

@@ -127,7 +127,6 @@ void MainPage::WindowSelectAt(int Item_Index)
 	//((DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index))->Background = ref new Windows::UI::Xaml::Media::SolidColorBrush(Windows::UI::Colors::White);
 	((DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index))->Select();
 
-
 	auto thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index);
 
 	if (thisItem->FrameContent != nullptr)
@@ -236,8 +235,15 @@ void MainPage::WindowItem_Tapped(Platform::Object^ sender, Windows::UI::Xaml::In
 
 void MainPage::WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xaml::Input::RightTappedRoutedEventArgs^ e)
 {
+	auto thisItem = (DuronWindowItemxaml^)sender;
+
 	auto renameDialog = ref new RenameDialog;
-	renameDialog->FileName = ((DuronWindowItemxaml^)sender)->FileName;
+	renameDialog->FileName = thisItem->FileName;
+	renameDialog->Closed += ref new Windows::Foundation::TypedEventHandler<Windows::UI::Xaml::Controls::ContentDialog^, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^>([thisItem, renameDialog]
+	(ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^ args)
+	{
+		thisItem->SetFileName(renameDialog->FileName);
+	});
 	renameDialog->ShowAsync();
 
 }

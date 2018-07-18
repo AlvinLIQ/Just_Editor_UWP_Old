@@ -254,7 +254,7 @@
                                     </Rectangle>
                                 </ControlTemplate>
                                 <ControlTemplate x:Key="HorizontalThumbTemplate" TargetType="Thumb">
-                                    <Rectangle x:Name="ThumbVisual" Fill="{TemplateBinding Background}" RadiusX="6" RadiusY="6" Width="10">
+                                    <Rectangle x:Name="ThumbVisual" Fill="{TemplateBinding Background}" RadiusX="6" RadiusY="6" Height="10">
                                         <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroup x:Name="CommonStates">
                                                 <VisualState x:Name="Normal"/>

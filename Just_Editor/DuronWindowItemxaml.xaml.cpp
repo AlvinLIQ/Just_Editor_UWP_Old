@@ -45,3 +45,8 @@ void Just_Editor::DuronWindowItemxaml::CloseWindow_Button_Tapped(Platform::Objec
 	e->Handled = true;
 }
 
+void Just_Editor::DuronWindowItemxaml::SetFileName(Platform::String^ newFileName)
+{
+	this->FileName = newFileName;
+	this->FileName_Block->Text = newFileName;
+}

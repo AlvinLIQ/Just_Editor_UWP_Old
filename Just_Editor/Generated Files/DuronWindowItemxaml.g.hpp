@@ -168,6 +168,11 @@ void ::Just_Editor::DuronWindowItemxaml::Connect(int __connectionId, ::Platform:
                 (::Platform::Object^, ::Windows::UI::Xaml::Input::PointerRoutedEventArgs^))&DuronWindowItemxaml::MainGrid_PointerCaptureLost);
         }
         break;
+    case 3:
+        {
+            this->FileName_Block = safe_cast<::Windows::UI::Xaml::Controls::TextBlock^>(__target);
+        }
+        break;
     case 4:
         {
             this->CloseWindow_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
