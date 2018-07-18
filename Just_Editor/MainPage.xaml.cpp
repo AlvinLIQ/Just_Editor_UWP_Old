@@ -8,6 +8,7 @@
 #include "StartPage.xaml.h"
 #include "CodeEditor.xaml.h"
 #include "Editor_Tools.h"
+#include "RenameDialog.xaml.h"
 #include "DuronWindowItemxaml.xaml.h"
 
 using namespace Just_Editor;
@@ -69,6 +70,12 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 		ref new Windows::UI::Xaml::Input::TappedEventHandler(this,
 		&MainPage::WindowItem_Tapped);
 
+	if (File_Name != "?S")
+	{
+		thisItem->RightTapped +=
+			ref new Windows::UI::Xaml::Input::RightTappedEventHandler(this,
+				&MainPage::WindowItem_RightTapped);
+	}
 
 	((Button^)((Grid^)thisItem->Content)->Children->GetAt(1))->Click += 
 		ref new Windows::UI::Xaml::RoutedEventHandler(this,
@@ -227,6 +234,14 @@ void MainPage::WindowItem_Tapped(Platform::Object^ sender, Windows::UI::Xaml::In
 	WindowSelectAt(GetWindowItemIndex((DuronWindowItemxaml^)sender, WindowPanel));
 }
 
+void MainPage::WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xaml::Input::RightTappedRoutedEventArgs^ e)
+{
+	auto renameDialog = ref new RenameDialog;
+	renameDialog->FileName = ((DuronWindowItemxaml^)sender)->FileName;
+	renameDialog->ShowAsync();
+
+}
+
 void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
 	if (e->Parameter != nullptr)
@@ -249,11 +264,12 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 		{
 			try
 			{
-				((RichEditBox^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Document->Selection->Text += thisTask.get();
+				((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Document->Selection->Text += thisTask.get();
 			}
-			catch (Exception^)
+			catch (Exception^ WTF)
 			{
 				//Read Fail
+				Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
 			}
 		}, task_continuation_context::use_current());
 	}

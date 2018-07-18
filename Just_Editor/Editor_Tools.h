@@ -103,5 +103,18 @@ public:
 		return Concurrency::create_task(Windows::Storage::FileIO::ReadTextAsync(thisFile));
 	}
 
+	static void ShowMessageBox(Platform::String^ theTitle, Platform::String^ theMessage)
+	{
+		auto MsgDialog = ref new Windows::UI::Xaml::Controls::ContentDialog;
+		MsgDialog->Title = theTitle;
+		MsgDialog->Content = theMessage;
+		MsgDialog->PrimaryButtonText = L"OK";
+
+		MsgDialog->ShowAsync();
+
+		delete MsgDialog;
+		MsgDialog = nullptr;
+	}
+
 };
 

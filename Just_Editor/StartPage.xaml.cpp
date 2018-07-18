@@ -7,20 +7,13 @@
 #include "StartPage.xaml.h"
 #include "CodeEditor.xaml.h"
 #include "NewFileDialog.xaml.h"
+#include "Editor_Tools.h"
 
 using namespace Just_Editor;
 
 using namespace Platform;
-using namespace Windows::Foundation;
-using namespace Windows::Foundation::Collections;
 using namespace Windows::UI::Xaml;
-using namespace Windows::UI::Xaml::Controls;
-using namespace Windows::UI::Xaml::Controls::Primitives;
-using namespace Windows::UI::Xaml::Data;
-using namespace Windows::UI::Xaml::Input;
-using namespace Windows::UI::Xaml::Media;
-using namespace Windows::UI::Xaml::Navigation;
-using namespace Concurrency;
+using namespace concurrency;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -79,7 +72,7 @@ void Just_Editor::StartPage::OpenOptionView_SelectionChanged(Platform::Object^ s
 	case 0:
 		auto filePicker = ref new Windows::Storage::Pickers::FileOpenPicker;
 		filePicker->ViewMode = Windows::Storage::Pickers::PickerViewMode::Thumbnail;
-		filePicker->SuggestedStartLocation = Windows::Storage::Pickers::PickerLocationId::PicturesLibrary;
+		filePicker->SuggestedStartLocation = Windows::Storage::Pickers::PickerLocationId::DocumentsLibrary;
 
 		filePicker->FileTypeFilter->Append(".txt");
 		filePicker->FileTypeFilter->Append(".h");
@@ -94,9 +87,10 @@ void Just_Editor::StartPage::OpenOptionView_SelectionChanged(Platform::Object^ s
 				if(thisFile != nullptr)
 					this->Frame->Navigate(CodeEditor::typeid, thisFile);
 			}
-			catch (Exception^)
+			catch (Exception^ WTF)
 			{
 				//Opps!
+				Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
 			}
 		}, task_continuation_context::use_current());
 

@@ -166,6 +166,9 @@
     <ClInclude Include="MainPage.xaml.h">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="RenameDialog.xaml.h">
+      <DependentUpon>RenameDialog.xaml</DependentUpon>
+    </ClInclude>
     <ClInclude Include="StartPage.xaml.h">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </ClInclude>
@@ -184,6 +187,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="NewFileDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RenameDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="StartPage.xaml">
@@ -239,6 +245,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="RenameDialog.xaml.cpp">
+      <DependentUpon>RenameDialog.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="StartPage.xaml.cpp">
       <DependentUpon>StartPage.xaml</DependentUpon>

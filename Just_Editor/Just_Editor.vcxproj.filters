@@ -97,5 +97,6 @@
     <Page Include="CodeEditor.xaml" />
     <Page Include="NewFileDialog.xaml" />
     <Page Include="DuronWindowItemxaml.xaml" />
+    <Page Include="RenameDialog.xaml" />
   </ItemGroup>
 </Project>
