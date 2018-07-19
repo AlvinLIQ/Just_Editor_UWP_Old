@@ -13,6 +13,7 @@ namespace Windows {
         namespace Xaml {
             namespace Controls {
                 ref class TextBox;
+                ref class TextBlock;
             }
         }
     }
@@ -37,6 +38,7 @@ namespace Just_Editor
     
         ::XamlBindingInfo::XamlBindings^ Bindings;
         private: ::Windows::UI::Xaml::Controls::TextBox^ FileName_Box;
+        private: ::Windows::UI::Xaml::Controls::TextBlock^ ErrorMsg_Block;
     };
 }
 

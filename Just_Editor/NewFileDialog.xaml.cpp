@@ -5,8 +5,7 @@
 
 #include "pch.h"
 #include "NewFileDialog.xaml.h"
-
-const wchar_t UnabledWords[] = L"\\/:*?<>|";
+#include "Editor_Tools.h"
 
 using namespace Just_Editor;
 
@@ -54,19 +53,5 @@ void Just_Editor::NewFileDialog::FileTypeList_SelectionChanged(Platform::Object^
 
 void Just_Editor::NewFileDialog::FileName_TextBox_TextChanging(Windows::UI::Xaml::Controls::TextBox^ sender, Windows::UI::Xaml::Controls::TextBoxTextChangingEventArgs^ args)
 {
-	wchar_t * FileNameText = (wchar_t*)sender->Text->Data();
-	int j;
-	size_t slen = wcslen(FileNameText);
-
-	for (size_t i = 0; i < slen; i++)
-	{
-		j = 8;
-		while(--j >= 0)
-			if (FileNameText[i] == UnabledWords[j])
-			{
-				ErrorMsg_Block->Text = "A file name can't \ncontain \\/:*?<>|";
-				return;
-			}
-	}
-	ErrorMsg_Block->Text = slen ? "" : "A file name can't\nbe empty";
+	ErrorMsg_Block->Text = Editor_Tools::GetFileNameErrorMsg(sender->Text);
 }

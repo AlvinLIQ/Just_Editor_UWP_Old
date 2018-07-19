@@ -1,4 +1,6 @@
 #pragma once
+const wchar_t UnabledWords[] = L"\\/:*?<>|";
+
 class Editor_Tools
 {
 public:
@@ -48,12 +50,13 @@ public:
 
 		return WindowItemGrid;
 	}
-	
+
 	static bool WindowItem_IsSelectAt(Platform::Object^ sender)
 	{
 		return ((Windows::UI::Xaml::Controls::Panel^)sender)->Background != nullptr && ((Windows::UI::Xaml::Media::SolidColorBrush^)((Windows::UI::Xaml::Controls::Panel^)sender)->Background)->Color.B == Windows::UI::Colors::White.B;
 	}
 	*/
+
 
 	static Concurrency::task<Platform::String^> ReadFileInFolderAsync(Platform::String^ FolderName, Platform::String^ FileName)
 	{
@@ -114,6 +117,24 @@ public:
 
 		delete MsgDialog;
 		MsgDialog = nullptr;
+	}
+
+	static Platform::String^ GetFileNameErrorMsg(Platform::String^ FileName)
+	{
+		wchar_t * FileNameText = (wchar_t*)FileName->Data();
+		int j;
+		size_t slen = wcslen(FileNameText);
+
+		for (size_t i = 0; i < slen; i++)
+		{
+			j = 8;
+			while (--j >= 0)
+				if (FileNameText[i] == UnabledWords[j])
+				{
+					return "A file name can't \ncontain \\/:*?<>|";
+				}
+		}
+		return slen ? "" : "A file name can't\nbe empty";
 	}
 
 };

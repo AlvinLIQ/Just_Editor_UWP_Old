@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "RenameDialog.xaml.h"
+#include "Editor_Tools.h"
 
 using namespace Just_Editor;
 
@@ -28,9 +29,16 @@ Just_Editor::RenameDialog::RenameDialog()
 
 void Just_Editor::RenameDialog::ContentDialog_PrimaryButtonClick(Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogButtonClickEventArgs^ args)
 {
-	this->FileName = FileName_Box->Text;
+	if (ErrorMsg_Block->Text == "")
+		this->FileName = FileName_Box->Text;
 }
 
 void Just_Editor::RenameDialog::ContentDialog_SecondaryButtonClick(Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogButtonClickEventArgs^ args)
 {
+}
+
+
+void Just_Editor::RenameDialog::FileName_Box_TextChanging(Windows::UI::Xaml::Controls::TextBox^ sender, Windows::UI::Xaml::Controls::TextBoxTextChangingEventArgs^ args)
+{
+	ErrorMsg_Block->Text = Editor_Tools::GetFileNameErrorMsg(sender->Text);
 }

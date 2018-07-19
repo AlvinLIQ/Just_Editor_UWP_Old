@@ -42,7 +42,7 @@ public:
     {
         switch(__connectionId)
         {
-            case 2: // RenameDialog.xaml line 17
+            case 2: // RenameDialog.xaml line 80
                 this->obj2 = safe_cast<::Windows::UI::Xaml::Controls::TextBox^>(__target);
                 break;
         }
@@ -67,7 +67,7 @@ private:
     {
         if((phase & ((1 << 0) | NOT_PHASED )) != 0)
         {
-            // RenameDialog.xaml line 17
+            // RenameDialog.xaml line 80
             Set_Windows_UI_Xaml_Controls_TextBox_Text(this->obj2, obj, nullptr);
         }
     }
@@ -97,6 +97,13 @@ void ::Just_Editor::RenameDialog::Connect(int __connectionId, ::Platform::Object
     case 2:
         {
             this->FileName_Box = safe_cast<::Windows::UI::Xaml::Controls::TextBox^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::TextBox^>(this->FileName_Box))->TextChanging += ref new ::Windows::Foundation::TypedEventHandler<::Windows::UI::Xaml::Controls::TextBox^, ::Windows::UI::Xaml::Controls::TextBoxTextChangingEventArgs^>(this, (void (::Just_Editor::RenameDialog::*)
+                (::Windows::UI::Xaml::Controls::TextBox^, ::Windows::UI::Xaml::Controls::TextBoxTextChangingEventArgs^))&RenameDialog::FileName_Box_TextChanging);
+        }
+        break;
+    case 3:
+        {
+            this->ErrorMsg_Block = safe_cast<::Windows::UI::Xaml::Controls::TextBlock^>(__target);
         }
         break;
     }
