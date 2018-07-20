@@ -55,6 +55,12 @@
                     <TextBlock FontWeight="Bold" FontSize="20" Padding="10,10,0,0" Foreground="#5D5B5B">
                         Settings
                     </TextBlock>
+                    <StackPanel Padding="20,10,0,0">
+                        <ComboBox Header="Save files before exit">
+                            <ComboBoxItem Content="Ask me every time"/>
+                            <ComboBoxItem Content="Auto save"/>
+                        </ComboBox>
+                    </StackPanel>
                 </StackPanel>
             </SplitView.Pane>
         </SplitView>
