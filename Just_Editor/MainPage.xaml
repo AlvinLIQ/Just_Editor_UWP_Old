@@ -56,7 +56,7 @@
                         Settings
                     </TextBlock>
                     <StackPanel Padding="20,10,0,0">
-                        <ComboBox Header="Save files before exit">
+                        <ComboBox Header="Save files before exit" SelectedIndex="1">
                             <ComboBoxItem Content="Ask me every time"/>
                             <ComboBoxItem Content="Auto save"/>
                         </ComboBox>

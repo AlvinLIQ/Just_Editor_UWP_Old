@@ -6,6 +6,7 @@
 #pragma once
 
 #include "CodeEditor.g.h"
+#include "DuronWindowItemxaml.xaml.h"
 
 namespace Just_Editor
 {
@@ -17,6 +18,9 @@ namespace Just_Editor
 	{
 	public:
 		CodeEditor();
+
+		property DuronWindowItemxaml^ thisWindowItem;
+
 		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
 	private:
 		void CodeEditorBox_TextChanging(Windows::UI::Xaml::Controls::RichEditBox^ sender, Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^ args);

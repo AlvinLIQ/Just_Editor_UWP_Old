@@ -50,9 +50,21 @@ template<typename T>
 }
 
 template<typename TDeclaringType, typename TValue>
+::Platform::Object^ GetValueTypeMember_isChanged(::Platform::Object^ instance)
+{
+    return ref new ::Platform::Box<TValue>(safe_cast<TDeclaringType^>(instance)->isChanged);
+}
+
+template<typename TDeclaringType, typename TValue>
 ::Platform::Object^ GetValueTypeMember_isSelected(::Platform::Object^ instance)
 {
     return ref new ::Platform::Box<TValue>(safe_cast<TDeclaringType^>(instance)->isSelected);
+}
+
+template<typename TDeclaringType>
+::Platform::Object^ GetReferenceTypeMember_thisWindowItem(::Platform::Object^ instance)
+{
+    return safe_cast<TDeclaringType^>(instance)->thisWindowItem;
 }
 
 template<typename TDeclaringType>
@@ -68,6 +80,12 @@ template<typename TDeclaringType>
 }
 
 template<typename TDeclaringType>
+::Platform::Object^ GetReferenceTypeMember_OriginalText(::Platform::Object^ instance)
+{
+    return safe_cast<TDeclaringType^>(instance)->OriginalText;
+}
+
+template<typename TDeclaringType>
 ::Platform::Object^ GetReferenceTypeMember_FileName(::Platform::Object^ instance)
 {
     return safe_cast<TDeclaringType^>(instance)->FileName;
@@ -80,9 +98,21 @@ template<typename TDeclaringType>
 }
 
 template<typename TDeclaringType, typename TValue>
+void SetValueTypeMember_isChanged(::Platform::Object^ instance, ::Platform::Object^ value)
+{
+    safe_cast<TDeclaringType^>(instance)->isChanged = safe_cast<::Platform::IBox<TValue>^>(value)->Value;
+}
+
+template<typename TDeclaringType, typename TValue>
 void SetValueTypeMember_isSelected(::Platform::Object^ instance, ::Platform::Object^ value)
 {
     safe_cast<TDeclaringType^>(instance)->isSelected = safe_cast<::Platform::IBox<TValue>^>(value)->Value;
+}
+
+template<typename TDeclaringType, typename TValue>
+void SetReferenceTypeMember_thisWindowItem(::Platform::Object^ instance, ::Platform::Object^ value)
+{
+    safe_cast<TDeclaringType^>(instance)->thisWindowItem = safe_cast<TValue^>(value);
 }
 
 template<typename TDeclaringType, typename TValue>
@@ -95,6 +125,12 @@ template<typename TDeclaringType, typename TValue>
 void SetReferenceTypeMember_ItemFile(::Platform::Object^ instance, ::Platform::Object^ value)
 {
     safe_cast<TDeclaringType^>(instance)->ItemFile = safe_cast<TValue^>(value);
+}
+
+template<typename TDeclaringType, typename TValue>
+void SetReferenceTypeMember_OriginalText(::Platform::Object^ instance, ::Platform::Object^ value)
+{
+    safe_cast<TDeclaringType^>(instance)->OriginalText = safe_cast<TValue^>(value);
 }
 
 template<typename TDeclaringType, typename TValue>
@@ -177,55 +213,55 @@ const TypeInfo TypeInfos[] =
     L"Just_Editor.RenameDialog", L"",
     &ActivateType<::Just_Editor::RenameDialog>, nullptr, nullptr, nullptr,
     12, // Windows.UI.Xaml.Controls.ContentDialog
-    0, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    1, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   7
     L"Just_Editor.NewFileDialog", L"",
     &ActivateType<::Just_Editor::NewFileDialog>, nullptr, nullptr, nullptr,
     12, // Windows.UI.Xaml.Controls.ContentDialog
-    1, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    2, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   8
     L"Windows.Storage.StorageFile", L"",
     nullptr, nullptr, nullptr, nullptr,
     0, // Object
-    2, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    3, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsReturnTypeStub | TypeInfo_Flags_None,
     //   9
     L"Windows.UI.Xaml.Controls.Page", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    2, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    3, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
     //  10
     L"Just_Editor.DuronWindowItemxaml", L"",
     &ActivateType<::Just_Editor::DuronWindowItemxaml>, nullptr, nullptr, nullptr,
     11, // Windows.UI.Xaml.Controls.UserControl
-    2, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    3, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //  11
     L"Windows.UI.Xaml.Controls.UserControl", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    7, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    10, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
     //  12
     L"Windows.UI.Xaml.Controls.ContentDialog", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    7, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    10, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
     //  13
     L"Windows.UI.Xaml.Controls.ContentControl", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    7, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    10, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
     //  Last type here is for padding
     L"", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1, 
-    7, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    10, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_None,
 };
 
@@ -287,49 +323,70 @@ struct MemberInfo
 
 const MemberInfo MemberInfos[] = 
 {
-    //   0 - Just_Editor.RenameDialog.FileName
+    //   0 - Just_Editor.CodeEditor.thisWindowItem
+    L"thisWindowItem",
+    &GetReferenceTypeMember_thisWindowItem<::Just_Editor::CodeEditor>,
+    &SetReferenceTypeMember_thisWindowItem<::Just_Editor::CodeEditor, ::Just_Editor::DuronWindowItemxaml>,
+    10, // Just_Editor.DuronWindowItemxaml
+    -1,
+    false, false, false,
+    //   1 - Just_Editor.RenameDialog.FileName
     L"FileName",
     &GetReferenceTypeMember_FileName<::Just_Editor::RenameDialog>,
     &SetReferenceTypeMember_FileName<::Just_Editor::RenameDialog, ::Platform::String>,
     1, // String
     -1,
     false, false, false,
-    //   1 - Just_Editor.NewFileDialog.FileName
+    //   2 - Just_Editor.NewFileDialog.FileName
     L"FileName",
     &GetReferenceTypeMember_FileName<::Just_Editor::NewFileDialog>,
     &SetReferenceTypeMember_FileName<::Just_Editor::NewFileDialog, ::Platform::String>,
     1, // String
     -1,
     false, false, false,
-    //   2 - Just_Editor.DuronWindowItemxaml.isSelected
+    //   3 - Just_Editor.DuronWindowItemxaml.isChanged
+    L"isChanged",
+    &GetValueTypeMember_isChanged<::Just_Editor::DuronWindowItemxaml, ::Platform::Boolean>,
+    &SetValueTypeMember_isChanged<::Just_Editor::DuronWindowItemxaml, ::Platform::Boolean>,
+    2, // Boolean
+    -1,
+    false, false, false,
+    //   4 - Just_Editor.DuronWindowItemxaml.isSelected
     L"isSelected",
     &GetValueTypeMember_isSelected<::Just_Editor::DuronWindowItemxaml, ::Platform::Boolean>,
     &SetValueTypeMember_isSelected<::Just_Editor::DuronWindowItemxaml, ::Platform::Boolean>,
     2, // Boolean
     -1,
     false, false, false,
-    //   3 - Just_Editor.DuronWindowItemxaml.FrameContent
+    //   5 - Just_Editor.DuronWindowItemxaml.FrameContent
     L"FrameContent",
     &GetReferenceTypeMember_FrameContent<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_FrameContent<::Just_Editor::DuronWindowItemxaml, ::Platform::Object>,
     0, // Object
     -1,
     false, false, false,
-    //   4 - Just_Editor.DuronWindowItemxaml.ItemFile
+    //   6 - Just_Editor.DuronWindowItemxaml.ItemFile
     L"ItemFile",
     &GetReferenceTypeMember_ItemFile<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_ItemFile<::Just_Editor::DuronWindowItemxaml, ::Windows::Storage::StorageFile>,
     8, // Windows.Storage.StorageFile
     -1,
     false, false, false,
-    //   5 - Just_Editor.DuronWindowItemxaml.FileName
+    //   7 - Just_Editor.DuronWindowItemxaml.OriginalText
+    L"OriginalText",
+    &GetReferenceTypeMember_OriginalText<::Just_Editor::DuronWindowItemxaml>,
+    &SetReferenceTypeMember_OriginalText<::Just_Editor::DuronWindowItemxaml, ::Platform::String>,
+    1, // String
+    -1,
+    false, false, false,
+    //   8 - Just_Editor.DuronWindowItemxaml.FileName
     L"FileName",
     &GetReferenceTypeMember_FileName<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_FileName<::Just_Editor::DuronWindowItemxaml, ::Platform::String>,
     1, // String
     -1,
     false, false, false,
-    //   6 - Just_Editor.DuronWindowItemxaml.FilePath
+    //   9 - Just_Editor.DuronWindowItemxaml.FilePath
     L"FilePath",
     &GetReferenceTypeMember_FilePath<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_FilePath<::Just_Editor::DuronWindowItemxaml, ::Platform::String>,

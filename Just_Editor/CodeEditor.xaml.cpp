@@ -56,6 +56,12 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 			sl = searchRange->FindText(ChangeColorText, Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
 		}
 	}
+	
+	if (thisWindowItem == nullptr)
+		return;
+
+	
+	thisWindowItem->SetChanged(true);
 }
 
 
@@ -85,3 +91,19 @@ void Just_Editor::CodeEditor::Redo_Button_Click(Platform::Object^ sender, Window
 		CodeEditorBox->Document->Redo();
 	}
 }
+
+/*
+void Just_Editor::CodeEditor::CodeEditorBox_TextChanged(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	if (thisWindowItem == nullptr)
+		return;
+
+	String^ thisText = "";
+	CodeEditorBox->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
+	if (thisWindowItem->OriginalText == nullptr)
+	{
+		thisWindowItem->OriginalText = thisText;
+	}
+	thisWindowItem->SetChanged(thisText != thisWindowItem->OriginalText);
+}
+*/

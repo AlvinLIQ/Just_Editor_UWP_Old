@@ -141,7 +141,7 @@ void MainPage::WindowSelectAt(int Item_Index)
 	{
 		MainFrame->Navigate(StartPage::typeid);
 	}
-
+	//thisItem->SetChanged(false);
 }
 
 
@@ -225,7 +225,18 @@ void MainPage::CheckWindowItem()
 
 void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	RemoveWindowItem((DuronWindowItemxaml^)((Grid^)((Button^)sender)->Parent)->Parent);
+	auto thisItem = (DuronWindowItemxaml^)((Grid^)((Button^)sender)->Parent)->Parent;
+	if (thisItem->ItemFile != nullptr && thisItem->isChanged)
+	{
+		String^ thisText = "";
+
+		((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
+
+		Editor_Tools::WriteFile(thisItem->ItemFile, thisText);
+
+	}
+
+	RemoveWindowItem(thisItem);
 }
 
 void MainPage::WindowItem_Tapped(Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)
@@ -266,11 +277,17 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 	auto thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(GetSelectedItemIndex());
 	if (thisItem->ItemFile != nullptr && thisItem->FrameContent == nullptr)
 	{
-		create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this](task<String^> thisTask)
+		create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this, thisItem](task<String^> thisTask)
 		{
 			try
 			{
-				((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Document->Selection->Text += thisTask.get();
+				String^ thisText = thisTask.get();
+				thisItem->OriginalText = thisText;
+
+				((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Document->Selection->Text += thisText;
+
+				((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
+
 			}
 			catch (Exception^ WTF)
 			{
@@ -278,6 +295,20 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 				Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
 			}
 		}, task_continuation_context::use_current());
+	}
+	else if (thisItem->FilePath != "?S" && ((CodeEditor^)MainFrame->Content)->thisWindowItem == nullptr)
+	{
+		((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
+		/*		((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->TextChanged +=
+			ref new Windows::UI::Xaml::RoutedEventHandler([thisItem](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args)
+		{
+			String^ thisText = "";
+			((RichEditBox^)sender)->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
+			if(thisText != thisItem->OriginalText)
+				thisItem->SetChanged(true);
+			else
+				thisItem->SetChanged(false);
+		});*/
 	}
 	thisItem->FrameContent = MainFrame->Content;
 }
