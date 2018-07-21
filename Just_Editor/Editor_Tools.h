@@ -113,12 +113,25 @@ namespace Just_Editor
 			return Concurrency::create_task(Windows::Storage::FileIO::ReadTextAsync(thisFile));
 		}
 
-		static void ShowMessageBox(Platform::String^ theTitle, Platform::String^ theMessage)
+		static Windows::UI::Xaml::Controls::ContentDialog^ GetContentDialog(Platform::String^ theTitle, Platform::String^ theMessage, bool needSecondaryButton = false, bool needCloseButton = false)
 		{
 			auto MsgDialog = ref new Windows::UI::Xaml::Controls::ContentDialog;
 			MsgDialog->Title = theTitle;
 			MsgDialog->Content = theMessage;
-			MsgDialog->PrimaryButtonText = L"OK";
+			MsgDialog->PrimaryButtonText = L"Yes";
+
+			if(needSecondaryButton)
+				MsgDialog->SecondaryButtonText = L"No";
+
+			if (needCloseButton)
+				MsgDialog->CloseButtonText = L"Cancel";
+
+			return MsgDialog;
+		}
+
+		static void ShowMessageBox(Platform::String^ theTitle, Platform::String^ theMessage)
+		{
+			auto MsgDialog = GetContentDialog(theTitle, theMessage);
 
 			MsgDialog->ShowAsync();
 

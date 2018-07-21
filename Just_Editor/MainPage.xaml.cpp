@@ -226,17 +226,33 @@ void MainPage::CheckWindowItem()
 void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	auto thisItem = (DuronWindowItemxaml^)((Grid^)((Button^)sender)->Parent)->Parent;
-	if (thisItem->ItemFile != nullptr && thisItem->isChanged)
+	if (thisItem->isChanged)
 	{
 		String^ thisText = "";
 
 		((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
+		auto theDialog = Editor_Tools::GetContentDialog("Tips", "Do you want to save it?", true, true);
+		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, thisText, this] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		{
+			if (thisItem->ItemFile != nullptr)
+				Editor_Tools::WriteFile(thisItem->ItemFile, thisText);
 
-		Editor_Tools::WriteFile(thisItem->ItemFile, thisText);
+			RemoveWindowItem(thisItem);
 
+		});
+		theDialog->SecondaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this](ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		{
+			RemoveWindowItem(thisItem);
+		});
+		theDialog->ShowAsync();
+
+		delete theDialog;
+	}
+	else
+	{
+		RemoveWindowItem(thisItem);
 	}
 
-	RemoveWindowItem(thisItem);
 }
 
 void MainPage::WindowItem_Tapped(Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)
