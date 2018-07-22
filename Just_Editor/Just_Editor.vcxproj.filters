@@ -21,6 +21,7 @@
     <ClCompile Include="CodeEditor.xaml.cpp" />
     <ClCompile Include="NewFileDialog.xaml.cpp" />
     <ClCompile Include="DuronWindowItemxaml.xaml.cpp" />
+    <ClCompile Include="RenameDialog.xaml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -31,6 +32,7 @@
     <ClInclude Include="CodeEditor.xaml.h" />
     <ClInclude Include="NewFileDialog.xaml.h" />
     <ClInclude Include="DuronWindowItemxaml.xaml.h" />
+    <ClInclude Include="RenameDialog.xaml.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -82,6 +84,9 @@
       <Filter>Assets</Filter>
     </Image>
     <Image Include="Assets\Home_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Save_Icon.png">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>

@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "CodeEditor.xaml.h"
+#include "Editor_Tools.h"
 
 const wchar_t* MyIDentifier[] = { L"[code]", L"[/code]" ,L"[image]",L"[/image]",L"int",L"char",L"if",L"for",L"while",
 L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
@@ -107,3 +108,12 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanged(Platform::Object^ sender
 	thisWindowItem->SetChanged(thisText != thisWindowItem->OriginalText);
 }
 */
+
+void Just_Editor::CodeEditor::Save_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	if (this->thisWindowItem->ItemFile != nullptr)
+	{
+		Editor_Tools::WriteFile(this->thisWindowItem->ItemFile, GetEditBoxText());
+		this->thisWindowItem->SetChanged(false);
+	}
+}

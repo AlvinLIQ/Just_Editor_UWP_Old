@@ -228,14 +228,11 @@ void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI
 	auto thisItem = (DuronWindowItemxaml^)((Grid^)((Button^)sender)->Parent)->Parent;
 	if (thisItem->isChanged)
 	{
-		String^ thisText = "";
-
-		((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
 		auto theDialog = Editor_Tools::GetContentDialog("Tips", "Do you want to save it?", true, true);
-		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, thisText, this] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
 		{
 			if (thisItem->ItemFile != nullptr)
-				Editor_Tools::WriteFile(thisItem->ItemFile, thisText);
+				Editor_Tools::WriteFile(thisItem->ItemFile, ((CodeEditor^)MainFrame->Content)->GetEditBoxText());
 
 			RemoveWindowItem(thisItem);
 

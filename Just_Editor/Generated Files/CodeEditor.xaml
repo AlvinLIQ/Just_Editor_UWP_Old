@@ -19,8 +19,9 @@
             <Button x:ConnectionId='3' Name="Redo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold"                          >
                 &gt;
             </Button>
-            <Button Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0">
-                <Image Source="Assets/New_Icon.png"  Width="18"/>
+
+            <Button x:ConnectionId='4' Name="Save_Button" Width="30" Height="30" Padding="0,4.5,0,0" Background="#0000" BorderThickness="0"                          >
+                <Image Source="Assets/Save_Icon.png"  Width="18"/>
             </Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollMode="Enabled" Grid.Row="1" Padding="0,0,20,0">

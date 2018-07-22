@@ -42,19 +42,17 @@ namespace Just_Editor
 		{
 			if (Parameter == isChanged) return;
 
-			wchar_t* tempName = (wchar_t*)FileName->Data();
+			wchar_t* tempName = (wchar_t*)FileName_Block->Text->Data();
 			size_t lengthOfName = wcslen(tempName) - 1;
 			if (tempName[lengthOfName] != '*' && Parameter)
 			{
-				FileName += L"*";
+				FileName_Block->Text += L"*";
 			}
 			else
 			{
-				tempName[lengthOfName] = tempName[lengthOfName] == '*' ? '\0' : tempName[lengthOfName];
-				FileName = ref new Platform::String(tempName);
+				FileName_Block->Text = FileName;
 				//delete[] tempName;
 			}
-			FileName_Block->Text = FileName;
 
 			isChanged = Parameter;
 		}

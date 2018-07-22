@@ -53,6 +53,13 @@ void ::Just_Editor::CodeEditor::Connect(int __connectionId, ::Platform::Object^ 
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Redo_Button_Click);
         }
         break;
+    case 4:
+        {
+            this->Save_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Save_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Save_Button_Click);
+        }
+        break;
     }
     _contentLoaded = true;
 }

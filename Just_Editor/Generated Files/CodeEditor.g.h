@@ -37,6 +37,7 @@ namespace Just_Editor
         private: ::Windows::UI::Xaml::Controls::RichEditBox^ CodeEditorBox;
         private: ::Windows::UI::Xaml::Controls::Button^ Undo_Button;
         private: ::Windows::UI::Xaml::Controls::Button^ Redo_Button;
+        private: ::Windows::UI::Xaml::Controls::Button^ Save_Button;
     };
 }
 

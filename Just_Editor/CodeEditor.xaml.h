@@ -22,10 +22,18 @@ namespace Just_Editor
 		property DuronWindowItemxaml^ thisWindowItem;
 
 		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
+
+		Platform::String^ GetEditBoxText()
+		{
+			Platform::String^ thisText = "";
+			CodeEditorBox->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
+			return thisText;
+		}
 	private:
 		void CodeEditorBox_TextChanging(Windows::UI::Xaml::Controls::RichEditBox^ sender, Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^ args);
 		void CodeEditorBox_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 		void Undo_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void Redo_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void Save_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }
