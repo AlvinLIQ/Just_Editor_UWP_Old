@@ -72,13 +72,13 @@ namespace Just_Editor
 			});
 		}
 
-		static void DeleteFloderInFolderAsync(Platform::String^ FolderName)
+		static void DeleteFloderInAppAsync(Platform::String^ FolderName)
 		{
 			Windows::Storage::StorageFolder^ storageFolder = Windows::Storage::ApplicationData::Current->LocalFolder;
 			concurrency::create_task(storageFolder->CreateFolderAsync(FolderName, Windows::Storage::CreationCollisionOption::ReplaceExisting));
 		}
 
-		static void DeleteFileInFolderAsync(Platform::String^ FolderName, Platform::String^ FileName)
+		static void DeleteFileInAppAsync(Platform::String^ FolderName, Platform::String^ FileName)
 		{
 			Windows::Storage::StorageFolder^ storageFolder = Windows::Storage::ApplicationData::Current->LocalFolder;
 			concurrency::create_task(storageFolder->GetFolderAsync(FolderName)).then([File_Name = FileName](Windows::Storage::StorageFolder^ thistask)
@@ -91,7 +91,7 @@ namespace Just_Editor
 
 		}
 
-		static void WriteInFolderFile(Platform::String^ FolderName, Platform::String^ FileName, Platform::String^ WriteString)
+		static void WriteInAppFile(Platform::String^ FolderName, Platform::String^ FileName, Platform::String^ WriteString)
 		{
 			Windows::Storage::StorageFolder^ storageFolder = Windows::Storage::ApplicationData::Current->LocalFolder;
 			concurrency::create_task(storageFolder->CreateFolderAsync(FolderName, Windows::Storage::CreationCollisionOption::OpenIfExists)).then([File_Name = FileName](Windows::Storage::StorageFolder^ thistask)
@@ -107,6 +107,8 @@ namespace Just_Editor
 		{
 			concurrency::create_task(Windows::Storage::FileIO::WriteTextAsync(this_File, Write_Str));
 		}
+
+
 
 		static Concurrency::task<Platform::String^> ReadFileAsync(Windows::Storage::StorageFile^ thisFile)
 		{

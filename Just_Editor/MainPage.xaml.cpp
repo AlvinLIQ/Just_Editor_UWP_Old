@@ -150,6 +150,8 @@ void MainPage::RemoveWindowItem(DuronWindowItemxaml^ sender)
 	auto thisPanel = (Panel^)sender->Parent;
 	int Item_Index = GetWindowItemIndex(sender, thisPanel);
 
+	delete sender->ItemFile;
+
 	thisPanel->Children->RemoveAt(Item_Index);
 	if (((DuronWindowItemxaml^)sender)->isSelected)
 	{
@@ -229,21 +231,24 @@ void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI
 	if (thisItem->isChanged)
 	{
 		auto theDialog = Editor_Tools::GetContentDialog("Tips", "Do you want to save it?", true, true);
-		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
 		{
-			if (thisItem->ItemFile != nullptr)
-				Editor_Tools::WriteFile(thisItem->ItemFile, ((CodeEditor^)MainFrame->Content)->GetEditBoxText());
-
-			RemoveWindowItem(thisItem);
-
+			((CodeEditor^)thisItem->FrameContent)->SaveFile();
 		});
-		theDialog->SecondaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this](ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		theDialog->CloseButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([](ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
 		{
-			RemoveWindowItem(thisItem);
+			sender->CloseButtonText = "";
+		});
+		theDialog->Closed += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogClosedEventArgs^>([thisItem, this](ContentDialog^ sender, ContentDialogClosedEventArgs^ args)
+		{
+			if (sender->CloseButtonText != "")
+			{
+				RemoveWindowItem(thisItem);
+			}
+			delete sender;
 		});
 		theDialog->ShowAsync();
 
-		delete theDialog;
 	}
 	else
 	{

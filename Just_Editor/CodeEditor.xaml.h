@@ -7,6 +7,7 @@
 
 #include "CodeEditor.g.h"
 #include "DuronWindowItemxaml.xaml.h"
+#include "Editor_Tools.h"
 
 namespace Just_Editor
 {
@@ -28,6 +29,47 @@ namespace Just_Editor
 			Platform::String^ thisText = "";
 			CodeEditorBox->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
 			return thisText;
+		}
+
+		void SaveFile()
+		{
+			if (thisWindowItem->ItemFile != nullptr)
+			{
+				Editor_Tools::WriteFile(thisWindowItem->ItemFile, GetEditBoxText());
+				thisWindowItem->SetChanged(false);
+			}
+			else
+			{
+				auto theFolderPicker = ref new Windows::Storage::Pickers::FolderPicker;
+				theFolderPicker->ViewMode = Windows::Storage::Pickers::PickerViewMode::Thumbnail;
+				theFolderPicker->CommitButtonText = "Save";
+				theFolderPicker->FileTypeFilter->Append("*");
+				theFolderPicker->SuggestedStartLocation = Windows::Storage::Pickers::PickerLocationId::DocumentsLibrary;
+				concurrency::create_task(theFolderPicker->PickSingleFolderAsync()).then([this](concurrency::task<Windows::Storage::StorageFolder^> thisTask)
+				{
+					try
+					{
+						Windows::Storage::StorageFolder^ thisFolder = thisTask.get();
+						concurrency::create_task(thisFolder->CreateFileAsync(thisWindowItem->FileName, Windows::Storage::CreationCollisionOption::ReplaceExisting)).then([this](concurrency::task<Windows::Storage::StorageFile^> thisTask)
+						{
+							try
+							{
+								Editor_Tools::WriteFile(thisTask.get(), GetEditBoxText());
+								thisWindowItem->SetChanged(false);
+							}
+							catch (Platform::Exception^)
+							{
+								//Create File Error
+							}
+						});
+					}
+					catch (Platform::Exception^)
+					{
+						//Open File Error
+					}
+				}, concurrency::task_continuation_context::use_current());
+
+			}
 		}
 	private:
 		void CodeEditorBox_TextChanging(Windows::UI::Xaml::Controls::RichEditBox^ sender, Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^ args);

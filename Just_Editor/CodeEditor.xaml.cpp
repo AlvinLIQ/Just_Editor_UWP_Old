@@ -111,9 +111,5 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanged(Platform::Object^ sender
 
 void Just_Editor::CodeEditor::Save_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	if (this->thisWindowItem->ItemFile != nullptr)
-	{
-		Editor_Tools::WriteFile(this->thisWindowItem->ItemFile, GetEditBoxText());
-		this->thisWindowItem->SetChanged(false);
-	}
+	SaveFile();
 }
