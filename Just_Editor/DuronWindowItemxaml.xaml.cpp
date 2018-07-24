@@ -48,6 +48,12 @@ void Just_Editor::DuronWindowItemxaml::CloseWindow_Button_Tapped(Platform::Objec
 void Just_Editor::DuronWindowItemxaml::SetFileName(Platform::String^ newFileName)
 {
 	this->FileName = newFileName;
+
+	if (this->ItemFile != nullptr)
+	{
+		concurrency::create_task(ItemFile->RenameAsync(newFileName));
+	}
+
 	FileName_Block->Text = newFileName;
 	if (this->isChanged) FileName_Block->Text += L"*";
 }

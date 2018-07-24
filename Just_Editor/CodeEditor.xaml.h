@@ -22,7 +22,7 @@ namespace Just_Editor
 
 		property DuronWindowItemxaml^ thisWindowItem;
 
-		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
+//		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
 
 		Platform::String^ GetEditBoxText()
 		{
