@@ -60,7 +60,7 @@ namespace Just_Editor
 		*/
 
 
-		static concurrency::task<Platform::String^> ReadFileInFolderAsync(Platform::String^ FolderName, Platform::String^ FileName)
+		static concurrency::task<Platform::String^> ReadFileInAppFolderAsync(Platform::String^ FolderName, Platform::String^ FileName)
 		{
 			Windows::Storage::StorageFolder^ storageFolder = Windows::Storage::ApplicationData::Current->LocalFolder;
 			return concurrency::create_task(storageFolder->CreateFolderAsync(FolderName, Windows::Storage::CreationCollisionOption::OpenIfExists)).then([File_Name = FileName](Windows::Storage::StorageFolder^ thistask)
@@ -158,5 +158,47 @@ namespace Just_Editor
 			return slen ? "" : "A file name can't\nbe empty";
 		}
 
+		static wchar_t* SubStr(const wchar_t* WCString, size_t start, size_t end = -1)
+		{
+			size_t length = wcslen(WCString);
+
+
+			if (end == -1)
+				end = length - start;
+
+			wchar_t* newString = new wchar_t[end];
+
+			for (size_t i = 0; i < end; i++)
+			{
+				newString[i] = WCString[i + start];
+			}
+			newString[end] = '\0';
+
+			return newString;
+		}
+
+		static Platform::String^ SubPStr(Platform::String^ thisStr, size_t start, size_t end = -1)
+		{
+			auto wStr = SubStr(thisStr->Data(), start, end);
+			auto resultStr = ref new Platform::String(wStr);
+			delete[] wStr;
+
+			return resultStr;
+		}
+
+		static size_t FindStr(const wchar_t* sourceStr, const wchar_t* targetStr, size_t Slength = -1, size_t Tlength = -1)
+		{
+			if (Slength == -1)
+				Slength = wcslen(sourceStr);
+
+			if (Tlength == -1)
+				Tlength = wcslen(targetStr);
+
+			size_t findIndex = 0, i;
+
+			for (i = 0; i + Tlength - findIndex < Slength && findIndex < Tlength; i++, findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0);
+			
+			return findIndex == Tlength ? i - Tlength + 1 : -1;
+		}
 	};
 }

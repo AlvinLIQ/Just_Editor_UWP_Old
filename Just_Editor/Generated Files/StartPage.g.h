@@ -13,6 +13,7 @@ namespace Windows {
             namespace Controls {
                 ref class ColumnDefinition;
                 ref class GridView;
+                ref class StackPanel;
             }
         }
     }
@@ -38,6 +39,7 @@ namespace Just_Editor
         private: ::Windows::UI::Xaml::Controls::ColumnDefinition^ MainColumn2;
         private: ::Windows::UI::Xaml::Controls::GridView^ NewOptionView;
         private: ::Windows::UI::Xaml::Controls::GridView^ OpenOptionView;
+        private: ::Windows::UI::Xaml::Controls::StackPanel^ RecentListPanel;
     };
 }
 

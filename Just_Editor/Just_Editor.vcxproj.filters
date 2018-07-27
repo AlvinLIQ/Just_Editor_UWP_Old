@@ -103,5 +103,6 @@
     <Page Include="NewFileDialog.xaml" />
     <Page Include="DuronWindowItemxaml.xaml" />
     <Page Include="RenameDialog.xaml" />
+    <Page Include="RecentListItem.xaml" />
   </ItemGroup>
 </Project>

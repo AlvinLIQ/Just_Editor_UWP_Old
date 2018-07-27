@@ -50,6 +50,9 @@ namespace Just_Editor
 					try
 					{
 						Windows::Storage::StorageFolder^ thisFolder = thisTask.get();
+						if (thisFolder == nullptr)
+							return;
+
 						concurrency::create_task(thisFolder->CreateFileAsync(thisWindowItem->FileName, Windows::Storage::CreationCollisionOption::ReplaceExisting)).then([this](concurrency::task<Windows::Storage::StorageFile^> thisTask)
 						{
 							try

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "StartPage.g.h"
+#include "RecentListItem.xaml.h"
 
 namespace Just_Editor
 {
@@ -18,6 +19,7 @@ namespace Just_Editor
 	public:
 		StartPage();
 	private:
+		void LoadRecentList();
 		void Page_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);
 		void NewOptionView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
 		void OpenOptionView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);

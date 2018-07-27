@@ -61,6 +61,11 @@ void ::Just_Editor::StartPage::Connect(int __connectionId, ::Platform::Object^ _
                 (::Platform::Object^, ::Windows::UI::Xaml::Controls::SelectionChangedEventArgs^))&StartPage::OpenOptionView_SelectionChanged);
         }
         break;
+    case 6:
+        {
+            this->RecentListPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
+        }
+        break;
     }
     _contentLoaded = true;
 }

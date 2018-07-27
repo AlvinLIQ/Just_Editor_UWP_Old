@@ -20,8 +20,32 @@ using namespace concurrency;
 StartPage::StartPage()
 {
 	InitializeComponent();
+	LoadRecentList();
 }
 
+void StartPage::LoadRecentList()
+{
+	/*
+	create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([](task<String^> thisTask) 
+	{
+		String^ thisString;
+		try
+		{
+			thisString = thisTask.get();
+			if (thisString == nullptr)
+				return;
+		}
+		catch (Exception^ WTF)
+		{
+			//WTF->Message;
+		}
+		while (thisString != L"")
+		{
+			thisString = 
+		}
+	}, task_continuation_context::use_current());
+	*/
+}
 
 void Just_Editor::StartPage::Page_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
 {
