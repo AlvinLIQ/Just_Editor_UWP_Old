@@ -57,7 +57,9 @@ namespace Just_Editor
 						{
 							try
 							{
-								Editor_Tools::WriteFile(thisTask.get(), GetEditBoxText());
+								auto thisFile = thisTask.get();
+								this->thisWindowItem->ItemFile = thisFile;
+								Editor_Tools::WriteFile(thisFile, GetEditBoxText());
 								thisWindowItem->SetChanged(false);
 							}
 							catch (Platform::Exception^)
