@@ -99,6 +99,12 @@ template<typename TDeclaringType>
     return safe_cast<TDeclaringType^>(instance)->FilePath;
 }
 
+template<typename TDeclaringType>
+::Platform::Object^ GetReferenceTypeMember_Token(::Platform::Object^ instance)
+{
+    return safe_cast<TDeclaringType^>(instance)->Token;
+}
+
 template<typename TDeclaringType, typename TValue>
 void SetValueTypeMember_isChanged(::Platform::Object^ instance, ::Platform::Object^ value)
 {
@@ -145,6 +151,12 @@ template<typename TDeclaringType, typename TValue>
 void SetReferenceTypeMember_FilePath(::Platform::Object^ instance, ::Platform::Object^ value)
 {
     safe_cast<TDeclaringType^>(instance)->FilePath = safe_cast<TValue^>(value);
+}
+
+template<typename TDeclaringType, typename TValue>
+void SetReferenceTypeMember_Token(::Platform::Object^ instance, ::Platform::Object^ value)
+{
+    safe_cast<TDeclaringType^>(instance)->Token = safe_cast<TValue^>(value);
 }
 
 enum TypeInfo_Flags
@@ -352,11 +364,11 @@ const MemberInfo MemberInfos[] =
     1, // String
     -1,
     false, false, false,
-    //   3 - Just_Editor.RecentListItem.ItemFile
-    L"ItemFile",
-    &GetReferenceTypeMember_ItemFile<::Just_Editor::RecentListItem>,
-    &SetReferenceTypeMember_ItemFile<::Just_Editor::RecentListItem, ::Windows::Storage::StorageFile>,
-    9, // Windows.Storage.StorageFile
+    //   3 - Just_Editor.RecentListItem.Token
+    L"Token",
+    &GetReferenceTypeMember_Token<::Just_Editor::RecentListItem>,
+    &SetReferenceTypeMember_Token<::Just_Editor::RecentListItem, ::Platform::String>,
+    1, // String
     -1,
     false, false, false,
     //   4 - Just_Editor.RecentListItem.FilePath

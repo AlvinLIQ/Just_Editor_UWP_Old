@@ -53,11 +53,7 @@ namespace Just_Editor
 				Editor_Tools::WriteSetting("Recent", "FileList", (Platform::Object^)recentFileList);
 				*/
 
-				concurrency::create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([this](Platform::String^ thisString)
-				{
-					if(Editor_Tools::FindStr(thisString->Data(), thisWindowItem->ItemFile->Path->Data()) == -1)
-						Editor_Tools::WriteInAppFile("User_Files", "RecentList", thisString + thisWindowItem->ItemFile->Path + L"?");
-				}, concurrency::task_continuation_context::use_current());
+				
 			}
 			else
 			{

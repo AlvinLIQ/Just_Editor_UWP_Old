@@ -30,6 +30,7 @@ MainPage::MainPage()
 
 void MainPage::InitializePage()
 {
+	//Editor_Tools::DeleteFileInAppAsync("User_Files", "RecentList");
 	auto titleBar = Windows::UI::ViewManagement::ApplicationView::GetForCurrentView()->TitleBar;
 	titleBar->ForegroundColor = Windows::UI::Colors::WhiteSmoke;
 	titleBar->ButtonForegroundColor = titleBar->ForegroundColor;

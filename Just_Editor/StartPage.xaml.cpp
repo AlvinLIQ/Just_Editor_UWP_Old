@@ -25,27 +25,7 @@ StartPage::StartPage()
 
 void StartPage::LoadRecentList()
 {
-	/*
-	Platform::Object^ SItem = Editor_Tools::ReadSetting("Recent", "FileList");
-	if (SItem != nullptr)
-	{
-		String^ recentFileList = (String^)SItem;
-		//thisItem->FileName = recentFileList->Name;
-		auto thisPath = (wchar_t*)recentFileList->Data();
-		int QMIndex = QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
-		while(QMIndex != -1)
-		{
-			auto thisItem = ref new RecentListItem;
-			thisItem->FilePath = ref new Platform::String(Editor_Tools::SubStr(thisPath, 0, QMIndex));
-			thisItem->FileName = Editor_Tools::GetFileNameFromPath(thisItem->FilePath);
-			RecentListPanel->Children->Append(thisItem);
-
-			thisPath = Editor_Tools::SubStr(thisPath, QMIndex + 1);
-
-			QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
-		}
-	}*/
-
+	//Get Recent File List
 	create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([this](task<String^> thisTask) 
 	{
 		String^ thisString;
@@ -65,21 +45,48 @@ void StartPage::LoadRecentList()
 		while (QMIndex != -1)
 		{
 			auto thisItem = ref new RecentListItem;
-			thisItem->FilePath = ref new Platform::String(Editor_Tools::SubStr(thisPath, 0, QMIndex));
-			thisItem->FileName = Editor_Tools::GetFileNameFromPath(thisItem->FilePath);
 
-			((Windows::UI::Xaml::Controls::Button^)((Windows::UI::Xaml::Controls::Grid^)thisItem->Content)->Children->GetAt(1))->Click += ref new Windows::UI::Xaml::RoutedEventHandler(
-				[thisItem, thisString, this](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args) 
+			String^ thisToken = ref new Platform::String(Editor_Tools::SubStr(thisPath, 0, QMIndex));
+
+			thisItem->Token = thisToken;
+
+			create_task(Windows::Storage::AccessCache::StorageApplicationPermissions::FutureAccessList->GetFileAsync(thisToken)).then(
+				[thisItem, thisString, this]
+			(task<Windows::Storage::StorageFile^>thisTask)
 			{
-				//Editor_Tools::WriteInAppFile("User_Files", "RecentList", Editor_Tools::ReplacePStr(thisString->Data(), (thisItem->FilePath + L"?")->Data(), L""));
-				
-				int ItemIndex = GetRecentItemIndex(thisItem, RecentListPanel);
-				RecentListPanel->Children->RemoveAt(ItemIndex);
-				//Editor_Tools::FindAllStr(thisString->Data(), L"?")->GetAt(ItemIndex);
-			}
-			);
+				Windows::Storage::StorageFile^ thisFile = thisTask.get();
+				thisItem->FilePath = thisFile->Path;
+				thisItem->FileName = thisFile->Name;
 
-			RecentListPanel->Children->Append(thisItem);
+				((Windows::UI::Xaml::Controls::Button^)((Windows::UI::Xaml::Controls::Grid^)thisItem->Content)->Children->GetAt(1))->Click += ref new Windows::UI::Xaml::RoutedEventHandler(
+					[thisItem, thisString, this](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args)
+				{
+					Editor_Tools::WriteInAppFile("User_Files", "RecentList", Editor_Tools::ReplacePStr(thisString, thisItem->Token + "?", ""));
+
+					int ItemIndex = GetRecentItemIndex(thisItem, RecentListPanel);
+					RecentListPanel->Children->RemoveAt(ItemIndex);
+					//Editor_Tools::FindAllStr(thisString->Data(), L"?")->GetAt(ItemIndex);
+				}
+				);
+
+				((Windows::UI::Xaml::Controls::Grid^)thisItem->Content)->Tapped += ref new Windows::UI::Xaml::Input::TappedEventHandler([this, thisItem](Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ args)
+				{
+					concurrency::create_task(Windows::Storage::StorageFile::GetFileFromPathAsync(thisItem->FilePath)).then([this](task<Windows::Storage::StorageFile^> thisTask)
+					{
+						try
+						{
+							Windows::Storage::StorageFile^ thisFile = thisTask.get();
+							this->Frame->Navigate(CodeEditor::typeid, thisFile);
+						}
+						catch (Exception^ WTF)
+						{
+							//Load From Path Error
+						}
+					});
+				});
+
+				RecentListPanel->Children->Append(thisItem);
+			}, task_continuation_context::use_current());
 
 			thisPath = Editor_Tools::SubStr(thisPath, QMIndex + 1);
 
@@ -165,8 +172,11 @@ void Just_Editor::StartPage::OpenOptionView_SelectionChanged(Platform::Object^ s
 			try
 			{
 				Windows::Storage::StorageFile^ thisFile = thisTask.get();
-				if(thisFile != nullptr)
+				if (thisFile != nullptr)
+				{
+					Editor_Tools::AddToRecentFile(thisFile);
 					this->Frame->Navigate(CodeEditor::typeid, thisFile);
+				}
 			}
 			catch (Exception^ WTF)
 			{

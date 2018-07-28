@@ -108,7 +108,15 @@ namespace Just_Editor
 			concurrency::create_task(Windows::Storage::FileIO::WriteTextAsync(this_File, Write_Str));
 		}
 
-
+		static void AddToRecentFile(Windows::Storage::StorageFile^ thisFile)
+		{
+			concurrency::create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([thisFile](Platform::String^ thisString)
+			{
+				auto Token = Windows::Storage::AccessCache::StorageApplicationPermissions::FutureAccessList->Add(thisFile);
+				if (Editor_Tools::FindStr(thisString->Data(), Token->Data()) == -1)
+					Editor_Tools::WriteInAppFile("User_Files", "RecentList", thisString + Windows::Storage::AccessCache::StorageApplicationPermissions::FutureAccessList->Add(thisFile) + "?");
+			}, concurrency::task_continuation_context::use_current());
+		}
 
 		static Concurrency::task<Platform::String^> ReadFileAsync(Windows::Storage::StorageFile^ thisFile)
 		{
@@ -239,10 +247,12 @@ namespace Just_Editor
 			return ref new Platform::String(wcsPath);
 		}
 
-		static Platform::String^ ReplacePStr(const wchar_t* sourceStr, const wchar_t* targetStr, Platform::String^ replaceStr)
+		static Platform::String^ ReplacePStr(Platform::String^ sStr, Platform::String^ tStr, Platform::String^ replaceStr)
 		{
-			size_t sLen = wcslen(sourceStr), tIndex = FindStr(sourceStr, targetStr);
-			return ref new Platform::String(SubStr(sourceStr, 0, tIndex)) + replaceStr + ref new Platform::String(SubStr(sourceStr, tIndex + wcslen(targetStr)));
+			auto sourceStr = std::wstring(sStr->Data());
+			auto targetStr = std::wstring(tStr->Data());
+			size_t sLen = sourceStr.length(), tIndex = sourceStr.find(targetStr);
+			return ref new Platform::String(sourceStr.substr(0, tIndex).c_str()) + replaceStr + ref new Platform::String(sourceStr.substr(tIndex + targetStr.length()).c_str());
 		}
 
 		static void WriteSetting(Platform::String^ ContainerName, Platform::String^ SettingTypeName, Platform::Object^ SettingInfo)
