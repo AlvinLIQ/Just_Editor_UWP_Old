@@ -26,7 +26,27 @@ StartPage::StartPage()
 void StartPage::LoadRecentList()
 {
 	/*
-	create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([](task<String^> thisTask) 
+	Platform::Object^ SItem = Editor_Tools::ReadSetting("Recent", "FileList");
+	if (SItem != nullptr)
+	{
+		String^ recentFileList = (String^)SItem;
+		//thisItem->FileName = recentFileList->Name;
+		auto thisPath = (wchar_t*)recentFileList->Data();
+		int QMIndex = QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
+		while(QMIndex != -1)
+		{
+			auto thisItem = ref new RecentListItem;
+			thisItem->FilePath = ref new Platform::String(Editor_Tools::SubStr(thisPath, 0, QMIndex));
+			thisItem->FileName = Editor_Tools::GetFileNameFromPath(thisItem->FilePath);
+			RecentListPanel->Children->Append(thisItem);
+
+			thisPath = Editor_Tools::SubStr(thisPath, QMIndex + 1);
+
+			QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
+		}
+	}*/
+
+	create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([this](task<String^> thisTask) 
 	{
 		String^ thisString;
 		try
@@ -39,12 +59,49 @@ void StartPage::LoadRecentList()
 		{
 			//WTF->Message;
 		}
-		while (thisString != L"")
+		//thisItem->FileName = recentFileList->Name;
+		auto thisPath = (wchar_t*)thisString->Data();
+		int QMIndex = QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
+		while (QMIndex != -1)
 		{
-			thisString = 
+			auto thisItem = ref new RecentListItem;
+			thisItem->FilePath = ref new Platform::String(Editor_Tools::SubStr(thisPath, 0, QMIndex));
+			thisItem->FileName = Editor_Tools::GetFileNameFromPath(thisItem->FilePath);
+
+			((Windows::UI::Xaml::Controls::Button^)((Windows::UI::Xaml::Controls::Grid^)thisItem->Content)->Children->GetAt(1))->Click += ref new Windows::UI::Xaml::RoutedEventHandler(
+				[thisItem, thisString, this](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args) 
+			{
+				//Editor_Tools::WriteInAppFile("User_Files", "RecentList", Editor_Tools::ReplacePStr(thisString->Data(), (thisItem->FilePath + L"?")->Data(), L""));
+				
+				int ItemIndex = GetRecentItemIndex(thisItem, RecentListPanel);
+				RecentListPanel->Children->RemoveAt(ItemIndex);
+				//Editor_Tools::FindAllStr(thisString->Data(), L"?")->GetAt(ItemIndex);
+			}
+			);
+
+			RecentListPanel->Children->Append(thisItem);
+
+			thisPath = Editor_Tools::SubStr(thisPath, QMIndex + 1);
+
+			QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
 		}
 	}, task_continuation_context::use_current());
-	*/
+
+	//auto thisFile = ref new Windows::Storage::StorageFile;
+	//thisFile->GetFileFromPathAsync();
+}
+
+int StartPage::GetRecentItemIndex(RecentListItem^ sender, Windows::UI::Xaml::Controls::Panel^ thisWindowPanel)
+{
+	int  t = thisWindowPanel->Children->Size;
+	while (--t >= 0)
+	{
+		if (sender == (RecentListItem^)thisWindowPanel->Children->GetAt(t))
+		{
+			return t;
+		}
+	}
+	return -1;
 }
 
 void Just_Editor::StartPage::Page_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)

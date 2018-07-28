@@ -37,6 +37,27 @@ namespace Just_Editor
 			{
 				Editor_Tools::WriteFile(thisWindowItem->ItemFile, GetEditBoxText());
 				thisWindowItem->SetChanged(false);
+				
+				/*
+				Platform::Object^ thisItem = Editor_Tools::ReadSetting("Recent", "FileList");
+
+				Platform::String^ recentFileList = L"";
+
+				if (thisItem != nullptr)
+				{
+					recentFileList += thisItem->ToString();
+				}
+
+				recentFileList += thisWindowItem->ItemFile->Path + "?";
+
+				Editor_Tools::WriteSetting("Recent", "FileList", (Platform::Object^)recentFileList);
+				*/
+
+				concurrency::create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([this](Platform::String^ thisString)
+				{
+					if(Editor_Tools::FindStr(thisString->Data(), thisWindowItem->ItemFile->Path->Data()) == -1)
+						Editor_Tools::WriteInAppFile("User_Files", "RecentList", thisString + thisWindowItem->ItemFile->Path + L"?");
+				}, concurrency::task_continuation_context::use_current());
 			}
 			else
 			{

@@ -200,5 +200,114 @@ namespace Just_Editor
 			
 			return findIndex == Tlength ? i - Tlength + 1 : -1;
 		}
+
+		static Platform::Collections::Vector<size_t>^ FindAllStr(const wchar_t* sourceStr, const wchar_t* targetStr, size_t Slength = -1, size_t Tlength = -1)
+		{
+			auto IndexArray = ref new Platform::Collections::Vector<size_t>;
+
+			if (Slength == -1)
+				Slength = wcslen(sourceStr);
+
+			if (Tlength == -1)
+				Tlength = wcslen(targetStr);
+
+			size_t findIndex = 0, i;
+
+			for (i = 0; i + Tlength - findIndex < Slength; i++, findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0)
+			{
+				if (findIndex == Tlength)
+				{
+					findIndex = 0;
+
+					IndexArray->Append(i - Tlength + 1);
+				}
+			}
+			return IndexArray;
+		}
+
+		static Platform::String^ GetFileNameFromPath(Platform::String^ PSPath)
+		{
+			wchar_t* wcsPath = (wchar_t*)PSPath->Data();
+			for (size_t i = wcslen(wcsPath); i >= 0; --i)
+			{
+				if (wcsPath[i] == '\\')
+				{
+					wcsPath = SubStr(wcsPath, i + 1);
+					break;
+				}
+			}
+			return ref new Platform::String(wcsPath);
+		}
+
+		static Platform::String^ ReplacePStr(const wchar_t* sourceStr, const wchar_t* targetStr, Platform::String^ replaceStr)
+		{
+			size_t sLen = wcslen(sourceStr), tIndex = FindStr(sourceStr, targetStr);
+			return ref new Platform::String(SubStr(sourceStr, 0, tIndex)) + replaceStr + ref new Platform::String(SubStr(sourceStr, tIndex + wcslen(targetStr)));
+		}
+
+		static void WriteSetting(Platform::String^ ContainerName, Platform::String^ SettingTypeName, Platform::Object^ SettingInfo)
+		{
+			if (SettingTypeName == nullptr || SettingInfo == nullptr) return;
+			Windows::Storage::ApplicationDataContainer^ localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+			Windows::Storage::ApplicationDataContainer^ container =
+				Windows::Storage::ApplicationData::Current->LocalSettings->CreateContainer(ContainerName, Windows::Storage::ApplicationDataCreateDisposition::Always);
+			if (localSettings->Containers->HasKey(ContainerName))
+			{
+				auto values = localSettings->Containers->Lookup(ContainerName)->Values;
+				if (values->HasKey(SettingTypeName))
+					values->Clear();
+				
+				values->Insert(SettingTypeName, SettingInfo);
+			}
+		}
+
+		static Platform::Object^ ReadSetting(Platform::String^ ContainerName, Platform::String^ SettingTypeName)
+		{
+			Windows::Storage::ApplicationDataContainer^ localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+			Windows::Storage::ApplicationDataContainer^ container =
+				Windows::Storage::ApplicationData::Current->LocalSettings->CreateContainer(ContainerName, Windows::Storage::ApplicationDataCreateDisposition::Always);
+			bool hasContainer = localSettings->Containers->HasKey(ContainerName);
+			bool hasSetting = false;
+			if (hasContainer)
+			{
+				auto values = localSettings->Containers->Lookup(ContainerName)->Values;
+				hasSetting = values->HasKey(SettingTypeName);
+				return hasSetting ? values->Lookup(SettingTypeName) : nullptr;
+			}
+			return nullptr;
+		}
+
+		static int ReadSettingSize(Platform::String^ ContainerName)
+		{
+			Windows::Storage::ApplicationDataContainer^ localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+			Windows::Storage::ApplicationDataContainer^ container =
+				Windows::Storage::ApplicationData::Current->LocalSettings->CreateContainer(ContainerName, Windows::Storage::ApplicationDataCreateDisposition::Always);
+			bool hasContainer = localSettings->Containers->HasKey(ContainerName);
+			if (hasContainer)
+			{
+				auto values = localSettings->Containers->Lookup(ContainerName)->Values;
+				return values->Size;
+			}
+			return 0;
+		}
+
+		static void DeleteSettingItem(Platform::String^ CSDN_Data_Container, Platform::String^ Data_Item)
+		{
+			Windows::Storage::ApplicationDataContainer^ localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+			Windows::Storage::ApplicationDataContainer^ container =
+				Windows::Storage::ApplicationData::Current->LocalSettings->CreateContainer(CSDN_Data_Container, Windows::Storage::ApplicationDataCreateDisposition::Always);
+			bool hasContainer = localSettings->Containers->HasKey(CSDN_Data_Container);
+			if (hasContainer)
+			{
+				auto values = localSettings->Containers->Lookup(CSDN_Data_Container)->Values;
+				if (values->HasKey(Data_Item)) { values->Remove(Data_Item); }
+			}
+		}
+
+		static void DeleteSetting(Platform::String^ CSDN_Data_Container)
+		{
+			Windows::Storage::ApplicationDataContainer^ localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
+			localSettings->DeleteContainer(CSDN_Data_Container);
+		}
 	};
 }
