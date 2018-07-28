@@ -53,14 +53,20 @@ void MainPage::InitializePage()
 	}
 }
 
-void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File_Path = "" , bool AutoSelect, Platform::Object^ Frame_Content, Windows::Storage::StorageFile^ Item_File)
+void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File_Path = "" , bool AutoSelect, Platform::Object^ Frame_Content, Windows::Storage::StorageFile^ Item_File, bool isChanged)
 {
 	auto thisItem = ref new DuronWindowItemxaml;
 
 	thisItem->FileName = File_Name;
 	thisItem->FilePath = File_Path;
 	if (Frame_Content != nullptr)
+	{
 		thisItem->FrameContent = Frame_Content;
+		if (isChanged)
+		{
+			thisItem->SetChanged(true);
+		}
+	}
 	if (Item_File != nullptr)
 		thisItem->ItemFile = Item_File;
 
@@ -200,13 +206,16 @@ void MainPage::CheckWindowItem()
 		targetItem->FrameContent = thisItem->FrameContent;
 		targetItem->ItemFile = thisItem->ItemFile;
 
+		targetItem->isChanged = thisItem->isChanged;
+
 		targetItem->Tapped += ref new Windows::UI::Xaml::Input::TappedEventHandler([targetItem, this](Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ args) 
 		{
 
 			HiddenWindowPanel->Children->RemoveAt(GetWindowItemIndex(targetItem, HiddenWindowPanel));
 
-			NewWindowItem(targetItem->FileName, targetItem->FilePath, true, targetItem->FrameContent, targetItem->ItemFile);
+			NewWindowItem(targetItem->FileName, targetItem->FilePath, true, targetItem->FrameContent, targetItem->ItemFile, targetItem->isChanged);
 
+			delete[] sender;
 		});
 
 		((Button^)((Grid^)targetItem->Content)->Children->GetAt(1))->Click +=
@@ -214,14 +223,19 @@ void MainPage::CheckWindowItem()
 				&MainPage::WindowItemCloseButton_Click);
 
 		HiddenWindowPanel->Children->Append(targetItem);
+
+
+		Windows::UI::Xaml::UIElement^ removeItem = WindowPanel->Children->GetAt(0);
 		WindowPanel->Children->RemoveAt(0);
+
+		delete[] removeItem;
 	}
 
 	if (WidthForWindowPanel - WindowPanel->ActualWidth >= HiddenWindowPanel->ActualWidth && HiddenWindowPanel->Children->Size > 0)
 	{
 		thisItem = (DuronWindowItemxaml^)HiddenWindowPanel->Children->GetAt(HiddenWindowPanel->Children->Size - 1);
 		HiddenWindowPanel->Children->RemoveAtEnd();
-		NewWindowItem(thisItem->FileName, thisItem->FilePath, false, thisItem->FrameContent);
+		NewWindowItem(thisItem->FileName, thisItem->FilePath, false, thisItem->FrameContent, thisItem->ItemFile, thisItem->isChanged);
 		thisItem = nullptr;
 	}
 }
@@ -255,7 +269,8 @@ void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI
 	{
 		RemoveWindowItem(thisItem);
 	}
-
+	delete[] sender;
+	thisItem = nullptr;
 }
 
 void MainPage::WindowItem_Tapped(Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)

@@ -20,7 +20,7 @@ namespace Just_Editor
 	private:
 		void InitializePage();
 		void CheckWindowItem();
-		void NewWindowItem(Platform::String^ File_Name, Platform::String^ File_Path, bool AutoSelect = true, Platform::Object^ Frame_Content = nullptr, Windows::Storage::StorageFile^ Item_File = nullptr);
+		void NewWindowItem(Platform::String^ File_Name, Platform::String^ File_Path, bool AutoSelect = true, Platform::Object^ Frame_Content = nullptr, Windows::Storage::StorageFile^ Item_File = nullptr, bool isChanged = false);
 		void WindowSelectAt(int Item_Index);
 		void WindowUnSelectAt(int Item_Index);
 		void WindowUnSelectAll();
