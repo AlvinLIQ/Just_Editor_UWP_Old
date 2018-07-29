@@ -12,8 +12,8 @@ namespace Windows {
         namespace Xaml {
             namespace Controls {
                 ref class ColumnDefinition;
-                ref class GridView;
                 ref class StackPanel;
+                ref class GridView;
             }
         }
     }
@@ -37,9 +37,9 @@ namespace Just_Editor
     
         private: ::Windows::UI::Xaml::Controls::ColumnDefinition^ MainColumn1;
         private: ::Windows::UI::Xaml::Controls::ColumnDefinition^ MainColumn2;
+        private: ::Windows::UI::Xaml::Controls::StackPanel^ RecentListPanel;
         private: ::Windows::UI::Xaml::Controls::GridView^ NewOptionView;
         private: ::Windows::UI::Xaml::Controls::GridView^ OpenOptionView;
-        private: ::Windows::UI::Xaml::Controls::StackPanel^ RecentListPanel;
     };
 }
 

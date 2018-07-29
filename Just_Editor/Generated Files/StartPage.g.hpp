@@ -49,21 +49,21 @@ void ::Just_Editor::StartPage::Connect(int __connectionId, ::Platform::Object^ _
         break;
     case 4:
         {
+            this->RecentListPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
+        }
+        break;
+    case 5:
+        {
             this->NewOptionView = safe_cast<::Windows::UI::Xaml::Controls::GridView^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::GridView^>(this->NewOptionView))->SelectionChanged += ref new ::Windows::UI::Xaml::Controls::SelectionChangedEventHandler(this, (void (::Just_Editor::StartPage::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::Controls::SelectionChangedEventArgs^))&StartPage::NewOptionView_SelectionChanged);
         }
         break;
-    case 5:
+    case 6:
         {
             this->OpenOptionView = safe_cast<::Windows::UI::Xaml::Controls::GridView^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::GridView^>(this->OpenOptionView))->SelectionChanged += ref new ::Windows::UI::Xaml::Controls::SelectionChangedEventHandler(this, (void (::Just_Editor::StartPage::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::Controls::SelectionChangedEventArgs^))&StartPage::OpenOptionView_SelectionChanged);
-        }
-        break;
-    case 6:
-        {
-            this->RecentListPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
         }
         break;
     }

@@ -10,7 +10,7 @@
 const wchar_t* MyIDentifier[] = { L"[code]", L"[/code]" ,L"[image]",L"[/image]",L"int",L"char",L"if",L"for",L"while",
 L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
 L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
-L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object" };//Size 39
+L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead" };//Size 41
 
 bool isCtrlHeld = false;
 
@@ -40,7 +40,7 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 	Redo_Button->IsEnabled = sender->Document->CanRedo();
 
 	//Seeach IDentifier && Highlight
-	int c = 39, sl;
+	int c = 41, sl;
 	Windows::UI::Text::ITextRange^ searchRange = sender->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 	searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
 	Windows::UI::Text::ITextCharacterFormat^ charFormatting = searchRange->CharacterFormat;

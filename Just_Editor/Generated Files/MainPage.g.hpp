@@ -42,14 +42,14 @@ void ::Just_Editor::MainPage::Connect(int __connectionId, ::Platform::Object^ __
         break;
     case 3:
         {
-            this->MainFrame = safe_cast<::Windows::UI::Xaml::Controls::Frame^>(__target);
-            (safe_cast<::Windows::UI::Xaml::Controls::Frame^>(this->MainFrame))->Navigated += ref new ::Windows::UI::Xaml::Navigation::NavigatedEventHandler(this, (void (::Just_Editor::MainPage::*)
-                (::Platform::Object^, ::Windows::UI::Xaml::Navigation::NavigationEventArgs^))&MainPage::MainFrame_Navigated);
+            this->HiddenWindowPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
         }
         break;
     case 4:
         {
-            this->HiddenWindowPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
+            this->MainFrame = safe_cast<::Windows::UI::Xaml::Controls::Frame^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::Frame^>(this->MainFrame))->Navigated += ref new ::Windows::UI::Xaml::Navigation::NavigatedEventHandler(this, (void (::Just_Editor::MainPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::Navigation::NavigationEventArgs^))&MainPage::MainFrame_Navigated);
         }
         break;
     case 5:

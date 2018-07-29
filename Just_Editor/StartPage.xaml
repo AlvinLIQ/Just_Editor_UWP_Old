@@ -16,40 +16,46 @@
             <ColumnDefinition x:Name="MainColumn1" Width="250"/>
             <ColumnDefinition x:Name="MainColumn2"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Background="#EFEFEF" Padding="10">
-            <TextBlock FontSize="28" Foreground="{StaticResource DefaultFontColor}" FontWeight="Bold">
+        <Grid Background="#EFEFEF">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Padding="10">
+                <TextBlock FontSize="28" Foreground="{StaticResource DefaultFontColor}" FontWeight="Bold">
                Start
-            </TextBlock>
-            <TextBlock Padding="20,0,0,0" FontSize="20" Foreground="{StaticResource DefaultFontColor}" FontWeight="Bold" Text="New"/>
-            <GridView Name="NewOptionView" Padding="20,5,0,0" SelectionMode="Single" SelectionChanged="NewOptionView_SelectionChanged">
-                <GridViewItem>
-                    <StackPanel>
-                        <Image Source="Assets/New_Icon.png" Width="50"/>
-                        <TextBlock Text="Text" TextAlignment="Center" Foreground="{StaticResource DefaultFontColor}"/>
-                    </StackPanel>
-                </GridViewItem>
-                <GridViewItem>
-                    <StackPanel>
-                        <Image Source="Assets/Script_Icon.png" Width="50"/>
-                        <TextBlock Text="Code" TextAlignment="Center" Foreground="{StaticResource DefaultFontColor}"/>
-                    </StackPanel>
-                </GridViewItem>
-            </GridView>
-            <TextBlock Padding="20,0,0,0" FontWeight="Bold" FontSize="20" Foreground="{StaticResource DefaultFontColor}" Text="Open"/>
-            <GridView Name="OpenOptionView" Padding="20,5,0,0" SelectionMode="Single" SelectionChanged="OpenOptionView_SelectionChanged">
-                <GridViewItem>
-                    <StackPanel>
-                        <Image Source="Assets/Saved_Icon.png" Width="50"/>
-                        <TextBlock Text="Open File" Foreground="{StaticResource DefaultFontColor}"/>
-                    </StackPanel>
-                </GridViewItem>
-            </GridView>
-            <TextBlock Padding="20,0,0,0" FontWeight="Bold" FontSize="20" Foreground="{StaticResource DefaultFontColor}" Text="Recent"/>
-            <ScrollViewer Padding="20,0,20,0" Margin="0,5,0,0" Height="200">
+                </TextBlock>
+                <TextBlock Padding="20,0,0,0" FontSize="20" Foreground="{StaticResource DefaultFontColor}" FontWeight="Bold" Text="New"/>
+                <GridView Name="NewOptionView" Padding="20,5,0,0" SelectionMode="Single" SelectionChanged="NewOptionView_SelectionChanged">
+                    <GridViewItem>
+                        <StackPanel>
+                            <Image Source="Assets/New_Icon.png" Width="50"/>
+                            <TextBlock Text="Text" TextAlignment="Center" Foreground="{StaticResource DefaultFontColor}"/>
+                        </StackPanel>
+                    </GridViewItem>
+                    <GridViewItem>
+                        <StackPanel>
+                            <Image Source="Assets/Script_Icon.png" Width="50"/>
+                            <TextBlock Text="Code" TextAlignment="Center" Foreground="{StaticResource DefaultFontColor}"/>
+                        </StackPanel>
+                    </GridViewItem>
+                </GridView>
+                <TextBlock Padding="20,0,0,0" FontWeight="Bold" FontSize="20" Foreground="{StaticResource DefaultFontColor}" Text="Open"/>
+                <GridView Name="OpenOptionView" Padding="20,5,0,0" SelectionMode="Single" SelectionChanged="OpenOptionView_SelectionChanged">
+                    <GridViewItem>
+                        <StackPanel>
+                            <Image Source="Assets/Saved_Icon.png" Width="50"/>
+                            <TextBlock Text="Open File" Foreground="{StaticResource DefaultFontColor}"/>
+                        </StackPanel>
+                    </GridViewItem>
+                </GridView>
+                <TextBlock Padding="20,0,0,0" FontWeight="Bold" FontSize="20" Foreground="{StaticResource DefaultFontColor}" Text="Recent"/>
+            </StackPanel>
+            <ScrollViewer Padding="20,0,20,20" Margin="0,5,0,0" Grid.Row="1">
                 <StackPanel Name="RecentListPanel">
                 </StackPanel>
             </ScrollViewer>
-        </StackPanel>
+        </Grid>
         <Grid Background="#FEFEFE" Grid.Column="1" Padding="0,10,10,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

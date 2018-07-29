@@ -81,6 +81,7 @@ void StartPage::LoadRecentList()
 						catch (Exception^ WTF)
 						{
 							//Load From Path Error
+							Editor_Tools::ShowMessageBox("Oops", "Couldn't open this file!");
 						}
 					});
 				});

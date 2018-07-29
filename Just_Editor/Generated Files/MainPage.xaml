@@ -34,12 +34,8 @@
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="1">
-                <Frame x:ConnectionId='3' Name="MainFrame"                                 Margin="0,0,0,30"/>
+                <Frame x:ConnectionId='4' Name="MainFrame"                                 Margin="0,0,0,30"/>
 
-                <StackPanel x:ConnectionId='4' Name="HiddenWindowPanel" HorizontalAlignment="Right" Background="#CCC" Height="0" VerticalAlignment="Top" Margin="0,0,10,0">
-                    
-                </StackPanel>
-                
                 <Grid Background="WhiteSmoke" VerticalAlignment="Bottom" Height="30" Padding="10,0,10,0">
                     <TextBlock Text="Just_Editor Ver.Test" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
                     <Button x:ConnectionId='5' Name="SettingsButton" HorizontalAlignment="Right" Padding="0" Background="#0000" BorderThickness="0" Height="20"
@@ -48,6 +44,9 @@
                     </Button>
                 </Grid>
             </Grid>
+            <StackPanel x:ConnectionId='3' Name="HiddenWindowPanel" Grid.Row="1" HorizontalAlignment="Right" Background="#CCC" Height="0" VerticalAlignment="Top" Margin="0,0,10,0">
+
+            </StackPanel>
         </Grid>
         <SplitView x:ConnectionId='1' Name="SettingsSplit" DisplayMode="Overlay" PanePlacement="Right" HorizontalAlignment="Right" OpenPaneLength="300">
             <SplitView.Pane>
