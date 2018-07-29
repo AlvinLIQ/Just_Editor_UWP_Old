@@ -7,25 +7,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:ConnectionId='1' Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"                           >
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel Background="WhiteSmoke" Orientation="Horizontal">
-            <Button x:ConnectionId='2' Name="Undo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold"                          >
+            <Button x:ConnectionId='3' Name="Undo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold"                          >
                 &lt;
             </Button>
-            <Button x:ConnectionId='3' Name="Redo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold"                          >
+            <Button x:ConnectionId='4' Name="Redo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold"                          >
                 &gt;
             </Button>
 
-            <Button x:ConnectionId='4' Name="Save_Button" Width="30" Height="30" Padding="0,4.5,0,0" Background="#0000" BorderThickness="0"                          >
+            <Button x:ConnectionId='5' Name="Save_Button" Width="30" Height="30" Padding="0,4.5,0,0" Background="#0000" BorderThickness="0"                          >
                 <Image Source="Assets/Save_Icon.png"  Width="18"/>
             </Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollMode="Enabled" Grid.Row="1" Padding="0,0,20,0">
-            <RichEditBox x:ConnectionId='1' Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle"                                           
+            <RichEditBox x:ConnectionId='2' Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle"                                           
                                                          ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden">
             </RichEditBox>
         </ScrollViewer>

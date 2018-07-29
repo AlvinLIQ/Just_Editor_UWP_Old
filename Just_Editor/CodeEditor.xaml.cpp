@@ -12,6 +12,8 @@ L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",
 L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object" };//Size 39
 
+bool isCtrlHeld = false;
+
 using namespace Just_Editor;
 
 using namespace Platform;
@@ -112,4 +114,14 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanged(Platform::Object^ sender
 void Just_Editor::CodeEditor::Save_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	SaveFile();
+}
+
+
+void Just_Editor::CodeEditor::MainGrid_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
+{
+	if (isCtrlHeld && e->Key == Windows::System::VirtualKey::S)
+	{
+		SaveFile();
+	}
+	isCtrlHeld = (e->Key == Windows::System::VirtualKey::Control);
 }

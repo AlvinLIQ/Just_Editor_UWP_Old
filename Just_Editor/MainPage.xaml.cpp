@@ -300,7 +300,7 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 		if (e->Parameter->ToString() == L"Windows.Storage.StorageFile")
 		{
 			Windows::Storage::StorageFile^ ItemFile = (Windows::Storage::StorageFile^)e->Parameter;
-			NewWindowItem(ItemFile->Name, ItemFile->Path, true, nullptr, ItemFile);
+			NewWindowItem(ItemFile->Name, ItemFile->Path, true, nullptr, ItemFile, false);
 		}
 		else
 		{

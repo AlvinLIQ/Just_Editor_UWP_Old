@@ -11,6 +11,7 @@ namespace Windows {
     namespace UI {
         namespace Xaml {
             namespace Controls {
+                ref class Grid;
                 ref class RichEditBox;
                 ref class Button;
             }
@@ -34,6 +35,7 @@ namespace Just_Editor
         bool _contentLoaded;
     
     
+        private: ::Windows::UI::Xaml::Controls::Grid^ MainGrid;
         private: ::Windows::UI::Xaml::Controls::RichEditBox^ CodeEditorBox;
         private: ::Windows::UI::Xaml::Controls::Button^ Undo_Button;
         private: ::Windows::UI::Xaml::Controls::Button^ Redo_Button;
