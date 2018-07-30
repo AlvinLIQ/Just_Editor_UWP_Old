@@ -75,7 +75,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 		ref new Windows::UI::Xaml::Input::TappedEventHandler(this,
 		&MainPage::WindowItem_Tapped);
 
-	if (File_Name != "?S")
+	if (File_Path != "?S")
 	{
 		thisItem->RightTapped +=
 			ref new Windows::UI::Xaml::Input::RightTappedEventHandler(this,
