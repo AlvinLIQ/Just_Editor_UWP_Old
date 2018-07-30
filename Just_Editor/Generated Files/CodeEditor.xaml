@@ -12,6 +12,9 @@
             <RowDefinition Height="30"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <StackPanel Background="WhiteSmoke" Orientation="Horizontal">
             <Button x:ConnectionId='3' Name="Undo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold"                          >
                 &lt;

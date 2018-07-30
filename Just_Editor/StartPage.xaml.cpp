@@ -61,7 +61,7 @@ void StartPage::LoadRecentList()
 				((Windows::UI::Xaml::Controls::Button^)((Windows::UI::Xaml::Controls::Grid^)thisItem->Content)->Children->GetAt(1))->Click += ref new Windows::UI::Xaml::RoutedEventHandler(
 					[thisItem, thisString, this](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args)
 				{
-					Editor_Tools::WriteInAppFile("User_Files", "RecentList", Editor_Tools::ReplacePStr(thisString, thisItem->Token + "?", ""));
+					Editor_Tools::WriteInAppFile("User_Files", "RecentList", Editor_Tools::ReplacePStr(thisString, thisItem->Token + L"?", L""));
 
 					int ItemIndex = GetRecentItemIndex(thisItem, RecentListPanel);
 					RecentListPanel->Children->RemoveAt(ItemIndex);
@@ -167,6 +167,14 @@ void Just_Editor::StartPage::OpenOptionView_SelectionChanged(Platform::Object^ s
 		filePicker->FileTypeFilter->Append(".h");
 		filePicker->FileTypeFilter->Append(".c");
 		filePicker->FileTypeFilter->Append(".cpp");
+		filePicker->FileTypeFilter->Append(".cs");
+		filePicker->FileTypeFilter->Append(".js");
+		filePicker->FileTypeFilter->Append(".php");
+		filePicker->FileTypeFilter->Append(".css");
+		filePicker->FileTypeFilter->Append(".html");
+		filePicker->FileTypeFilter->Append(".xml");
+		filePicker->FileTypeFilter->Append(".xaml");
+		filePicker->FileTypeFilter->Append(".sln");
 
 		create_task(filePicker->PickSingleFileAsync()).then([this] (task<Windows::Storage::StorageFile^> thisTask)
 		{

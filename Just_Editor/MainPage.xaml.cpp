@@ -63,9 +63,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 	{
 		thisItem->FrameContent = Frame_Content;
 		if (isChanged)
-		{
 			thisItem->SetChanged(true);
-		}
 	}
 	if (Item_File != nullptr)
 		thisItem->ItemFile = Item_File;
@@ -300,7 +298,7 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 		if (e->Parameter->ToString() == L"Windows.Storage.StorageFile")
 		{
 			Windows::Storage::StorageFile^ ItemFile = (Windows::Storage::StorageFile^)e->Parameter;
-			NewWindowItem(ItemFile->Name, ItemFile->Path, true, nullptr, ItemFile, false);
+			NewWindowItem(ItemFile->Name, ItemFile->Path, true, nullptr, ItemFile);
 		}
 		else
 		{
@@ -320,7 +318,6 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 
 				((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Document->Selection->Text += thisText;
 
-				((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
 
 			}
 			catch (Exception^ WTF)
@@ -328,21 +325,13 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 				//Read Fail
 				Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
 			}
+
+			((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
 		}, task_continuation_context::use_current());
 	}
 	else if (thisItem->FilePath != "?S" && ((CodeEditor^)MainFrame->Content)->thisWindowItem == nullptr)
 	{
 		((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
-		/*		((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->TextChanged +=
-			ref new Windows::UI::Xaml::RoutedEventHandler([thisItem](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args)
-		{
-			String^ thisText = "";
-			((RichEditBox^)sender)->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
-			if(thisText != thisItem->OriginalText)
-				thisItem->SetChanged(true);
-			else
-				thisItem->SetChanged(false);
-		});*/
 	}
 	thisItem->FrameContent = MainFrame->Content;
 }

@@ -37,23 +37,6 @@ namespace Just_Editor
 			{
 				Editor_Tools::WriteFile(thisWindowItem->ItemFile, GetEditBoxText());
 				thisWindowItem->SetChanged(false);
-				
-				/*
-				Platform::Object^ thisItem = Editor_Tools::ReadSetting("Recent", "FileList");
-
-				Platform::String^ recentFileList = L"";
-
-				if (thisItem != nullptr)
-				{
-					recentFileList += thisItem->ToString();
-				}
-
-				recentFileList += thisWindowItem->ItemFile->Path + "?";
-
-				Editor_Tools::WriteSetting("Recent", "FileList", (Platform::Object^)recentFileList);
-				*/
-
-				
 			}
 			else
 			{
