@@ -45,12 +45,15 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 	searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
 	Windows::UI::Text::ITextCharacterFormat^ charFormatting = searchRange->CharacterFormat;
 	charFormatting->ForegroundColor = Windows::UI::Colors::Gray;
+
+
 	while (--c >= 0)
 	{
 		auto ChangeColorText = ref new Platform::String(MyIDentifier[c]);
 		//int len = (int)((RichEditBox^)sender)->PlaceholderText->Length();
 		searchRange = ((RichEditBox^)sender)->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 		searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
+		
 		sl = searchRange->FindText(ChangeColorText, Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
 		while (sl)
 		{
@@ -67,6 +70,16 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 	thisWindowItem->SetChanged(true);
 }
 
+void Just_Editor::CodeEditor::ChangeTextColor(Platform::String^ thisIDentifier, Windows::UI::Text::ITextRange^ searchRange, Windows::UI::Color foreColor, Windows::UI::Color backColor)
+{
+	int sl = searchRange->FindText(thisIDentifier, Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
+	while (sl)
+	{
+		searchRange->CharacterFormat->BackgroundColor = backColor;
+		searchRange->CharacterFormat->ForegroundColor = foreColor;
+		sl = searchRange->FindText(thisIDentifier, Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
+	}
+}
 
 void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
 {
