@@ -9,6 +9,7 @@
 #include "pch.h"
 #include "XamlTypeInfo.g.h"
 
+#include "CaesarPanel.xaml.h"
 #include "CodeEditor.xaml.h"
 #include "DuronWindowItemxaml.xaml.h"
 #include "NewFileDialog.xaml.h"
@@ -18,6 +19,7 @@
 #include "RenameDialog.xaml.h"
 #include "StartPage.xaml.h"
 #include "XamlBindingInfo.g.hpp"
+#include "CaesarPanel.g.hpp"
 #include "CodeEditor.g.hpp"
 #include "DuronWindowItemxaml.g.hpp"
 #include "NewFileDialog.g.hpp"
@@ -208,70 +210,76 @@ const TypeInfo TypeInfos[] =
     //   3
     L"Just_Editor.MainPage", L"",
     &ActivateType<::Just_Editor::MainPage>, nullptr, nullptr, nullptr,
-    10, // Windows.UI.Xaml.Controls.Page
+    11, // Windows.UI.Xaml.Controls.Page
     0, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   4
     L"Just_Editor.StartPage", L"",
     &ActivateType<::Just_Editor::StartPage>, nullptr, nullptr, nullptr,
-    10, // Windows.UI.Xaml.Controls.Page
+    11, // Windows.UI.Xaml.Controls.Page
     0, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   5
     L"Just_Editor.CodeEditor", L"",
     &ActivateType<::Just_Editor::CodeEditor>, nullptr, nullptr, nullptr,
-    10, // Windows.UI.Xaml.Controls.Page
+    11, // Windows.UI.Xaml.Controls.Page
     0, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   6
-    L"Just_Editor.RenameDialog", L"",
-    &ActivateType<::Just_Editor::RenameDialog>, nullptr, nullptr, nullptr,
-    13, // Windows.UI.Xaml.Controls.ContentDialog
+    L"Just_Editor.CaesarPanel", L"",
+    &ActivateType<::Just_Editor::CaesarPanel>, nullptr, nullptr, nullptr,
+    13, // Windows.UI.Xaml.Controls.UserControl
     1, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   7
-    L"Just_Editor.NewFileDialog", L"",
-    &ActivateType<::Just_Editor::NewFileDialog>, nullptr, nullptr, nullptr,
-    13, // Windows.UI.Xaml.Controls.ContentDialog
-    2, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    L"Just_Editor.RenameDialog", L"",
+    &ActivateType<::Just_Editor::RenameDialog>, nullptr, nullptr, nullptr,
+    14, // Windows.UI.Xaml.Controls.ContentDialog
+    1, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   8
-    L"Just_Editor.RecentListItem", L"",
-    &ActivateType<::Just_Editor::RecentListItem>, nullptr, nullptr, nullptr,
-    12, // Windows.UI.Xaml.Controls.UserControl
-    3, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    L"Just_Editor.NewFileDialog", L"",
+    &ActivateType<::Just_Editor::NewFileDialog>, nullptr, nullptr, nullptr,
+    14, // Windows.UI.Xaml.Controls.ContentDialog
+    2, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   9
+    L"Just_Editor.RecentListItem", L"",
+    &ActivateType<::Just_Editor::RecentListItem>, nullptr, nullptr, nullptr,
+    13, // Windows.UI.Xaml.Controls.UserControl
+    3, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
+    //  10
     L"Windows.Storage.StorageFile", L"",
     nullptr, nullptr, nullptr, nullptr,
     0, // Object
     6, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsReturnTypeStub | TypeInfo_Flags_None,
-    //  10
+    //  11
     L"Windows.UI.Xaml.Controls.Page", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
     6, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
-    //  11
+    //  12
     L"Just_Editor.DuronWindowItemxaml", L"",
     &ActivateType<::Just_Editor::DuronWindowItemxaml>, nullptr, nullptr, nullptr,
-    12, // Windows.UI.Xaml.Controls.UserControl
+    13, // Windows.UI.Xaml.Controls.UserControl
     6, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
-    //  12
+    //  13
     L"Windows.UI.Xaml.Controls.UserControl", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
     13, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
-    //  13
+    //  14
     L"Windows.UI.Xaml.Controls.ContentDialog", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
     13, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
-    //  14
+    //  15
     L"Windows.UI.Xaml.Controls.ContentControl", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
@@ -310,23 +318,23 @@ const UINT TypeInfoLookup[] = {
       4,   //  21
       5,   //  22
       6,   //  23
-      6,   //  24
-      7,   //  25
-      8,   //  26
-      9,   //  27
-     10,   //  28
-     10,   //  29
-     11,   //  30
-     11,   //  31
-     12,   //  32
-     12,   //  33
-     12,   //  34
-     12,   //  35
-     12,   //  36
-     13,   //  37
-     13,   //  38
-     14,   //  39
-     15,   //  40
+      7,   //  24
+      8,   //  25
+      9,   //  26
+     10,   //  27
+     11,   //  28
+     11,   //  29
+     12,   //  30
+     12,   //  31
+     13,   //  32
+     13,   //  33
+     13,   //  34
+     13,   //  35
+     13,   //  36
+     14,   //  37
+     14,   //  38
+     15,   //  39
+     16,   //  40
 };
 
 struct MemberInfo 
@@ -347,7 +355,7 @@ const MemberInfo MemberInfos[] =
     L"thisWindowItem",
     &GetReferenceTypeMember_thisWindowItem<::Just_Editor::CodeEditor>,
     &SetReferenceTypeMember_thisWindowItem<::Just_Editor::CodeEditor, ::Just_Editor::DuronWindowItemxaml>,
-    11, // Just_Editor.DuronWindowItemxaml
+    12, // Just_Editor.DuronWindowItemxaml
     -1,
     false, false, false,
     //   1 - Just_Editor.RenameDialog.FileName
@@ -410,7 +418,7 @@ const MemberInfo MemberInfos[] =
     L"ItemFile",
     &GetReferenceTypeMember_ItemFile<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_ItemFile<::Just_Editor::DuronWindowItemxaml, ::Windows::Storage::StorageFile>,
-    9, // Windows.Storage.StorageFile
+    10, // Windows.Storage.StorageFile
     -1,
     false, false, false,
     //  10 - Just_Editor.DuronWindowItemxaml.OriginalText

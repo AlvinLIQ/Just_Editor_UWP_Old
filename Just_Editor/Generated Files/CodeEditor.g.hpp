@@ -35,9 +35,16 @@ void ::Just_Editor::CodeEditor::Connect(int __connectionId, ::Platform::Object^ 
             this->MainGrid = safe_cast<::Windows::UI::Xaml::Controls::Grid^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Grid^>(this->MainGrid))->KeyDown += ref new ::Windows::UI::Xaml::Input::KeyEventHandler(this, (void (::Just_Editor::CodeEditor::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::Input::KeyRoutedEventArgs^))&CodeEditor::MainGrid_KeyDown);
+            (safe_cast<::Windows::UI::Xaml::Controls::Grid^>(this->MainGrid))->SizeChanged += ref new ::Windows::UI::Xaml::SizeChangedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::SizeChangedEventArgs^))&CodeEditor::MainGrid_SizeChanged);
         }
         break;
     case 2:
+        {
+            this->ExtraColumn = safe_cast<::Windows::UI::Xaml::Controls::ColumnDefinition^>(__target);
+        }
+        break;
+    case 3:
         {
             this->CodeEditorBox = safe_cast<::Windows::UI::Xaml::Controls::RichEditBox^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::RichEditBox^>(this->CodeEditorBox))->TextChanging += ref new ::Windows::Foundation::TypedEventHandler<::Windows::UI::Xaml::Controls::RichEditBox^, ::Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^>(this, (void (::Just_Editor::CodeEditor::*)
@@ -46,25 +53,32 @@ void ::Just_Editor::CodeEditor::Connect(int __connectionId, ::Platform::Object^ 
                 (::Platform::Object^, ::Windows::UI::Xaml::Input::KeyRoutedEventArgs^))&CodeEditor::CodeEditorBox_KeyDown);
         }
         break;
-    case 3:
+    case 4:
         {
             this->Undo_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Undo_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Undo_Button_Click);
         }
         break;
-    case 4:
+    case 5:
         {
             this->Redo_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Redo_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Redo_Button_Click);
         }
         break;
-    case 5:
+    case 6:
         {
             this->Save_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Save_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Save_Button_Click);
+        }
+        break;
+    case 7:
+        {
+            this->Caesar_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Caesar_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Caesar_Button_Click);
         }
         break;
     }

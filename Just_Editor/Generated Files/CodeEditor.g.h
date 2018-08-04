@@ -12,6 +12,7 @@ namespace Windows {
         namespace Xaml {
             namespace Controls {
                 ref class Grid;
+                ref class ColumnDefinition;
                 ref class RichEditBox;
                 ref class Button;
             }
@@ -36,10 +37,12 @@ namespace Just_Editor
     
     
         private: ::Windows::UI::Xaml::Controls::Grid^ MainGrid;
+        private: ::Windows::UI::Xaml::Controls::ColumnDefinition^ ExtraColumn;
         private: ::Windows::UI::Xaml::Controls::RichEditBox^ CodeEditorBox;
         private: ::Windows::UI::Xaml::Controls::Button^ Undo_Button;
         private: ::Windows::UI::Xaml::Controls::Button^ Redo_Button;
         private: ::Windows::UI::Xaml::Controls::Button^ Save_Button;
+        private: ::Windows::UI::Xaml::Controls::Button^ Caesar_Button;
     };
 }
 

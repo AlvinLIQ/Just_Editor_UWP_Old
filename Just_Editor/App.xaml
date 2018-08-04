@@ -310,7 +310,9 @@
                                 </Grid.ColumnDefinitions>
                                 <RepeatButton x:Name="HorizontalSmallDecrease" AllowFocusOnInteraction="False" Grid.Column="0" Interval="50" IsTabStop="False" MinHeight="{ThemeResource ScrollBarSize}" Margin="0" Opacity="0" Template="{StaticResource HorizontalDecrementTemplate}" VerticalAlignment="Center" Width="{ThemeResource ScrollBarSize}"/>
                                 <RepeatButton x:Name="HorizontalLargeDecrease" AllowFocusOnInteraction="False" Grid.Column="1" HorizontalAlignment="Stretch" Interval="50" IsTabStop="False" Opacity="0" Template="{StaticResource RepeatButtonTemplate}" VerticalAlignment="Stretch" Width="0"/>
-                                <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Background="{ThemeResource ScrollBarPanningThumbBackground}" Grid.Column="2" Height="{ThemeResource ScrollBarSize}" MinWidth="{ThemeResource ScrollBarSize}" Opacity="0" RenderTransformOrigin="0.5,1" Template="{StaticResource HorizontalThumbTemplate}" VerticalAlignment="Bottom">
+                                <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Background="#BBBBBB" 
+                                       Grid.Column="2" Height="{ThemeResource ScrollBarSize}" MinWidth="{ThemeResource ScrollBarSize}" Opacity="1" RenderTransformOrigin="0.5,1" 
+                                       Template="{StaticResource HorizontalThumbTemplate}" VerticalAlignment="Bottom" Visibility="Collapsed">
                                     <Thumb.RenderTransform>
                                         <CompositeTransform x:Name="HorizontalThumbTransform" ScaleX="1.0" ScaleY="1.0" TranslateX="0" TranslateY="0"/>
                                     </Thumb.RenderTransform>

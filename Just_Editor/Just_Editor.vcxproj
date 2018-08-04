@@ -149,6 +149,9 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CaesarPanel.xaml.h">
+      <DependentUpon>CaesarPanel.xaml</DependentUpon>
+    </ClInclude>
     <ClInclude Include="CodeEditor.xaml.h">
       <DependentUpon>CodeEditor.xaml</DependentUpon>
     </ClInclude>
@@ -180,6 +183,9 @@
     <ApplicationDefinition Include="App.xaml">
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CaesarPanel.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CodeEditor.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -210,6 +216,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Back_Icon.png" />
+    <Image Include="Assets\Caesar_Icon.png" />
     <Image Include="Assets\Delete_Icon.png" />
     <Image Include="Assets\Hamburger_Menu_Icon.png" />
     <Image Include="Assets\Home_Icon.png" />
@@ -231,6 +238,9 @@
   <ItemGroup>
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="CaesarPanel.xaml.cpp">
+      <DependentUpon>CaesarPanel.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="CodeEditor.xaml.cpp">
       <DependentUpon>CodeEditor.xaml</DependentUpon>

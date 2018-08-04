@@ -16,7 +16,7 @@
             <ColumnDefinition x:Name="MainColumn1" Width="250"/>
             <ColumnDefinition x:Name="MainColumn2"/>
         </Grid.ColumnDefinitions>
-        <Grid Background="#EFEFEF">
+        <Grid Background="{StaticResource DefaultThemeColor}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>

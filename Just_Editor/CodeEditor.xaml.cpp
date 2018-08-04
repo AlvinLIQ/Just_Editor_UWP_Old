@@ -6,6 +6,7 @@
 #include "pch.h"
 #include "CodeEditor.xaml.h"
 #include "Editor_Tools.h"
+#include "CaesarPanel.xaml.h"
 
 const wchar_t* MyIDentifier[] = { L"[code]", L"[/code]" ,L"[image]",L"[/image]",L"int",L"char",L"if",L"for",L"while",
 L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
@@ -137,4 +138,35 @@ void Just_Editor::CodeEditor::MainGrid_KeyDown(Platform::Object^ sender, Windows
 		SaveFile();
 	}
 	isCtrlHeld = (e->Key == Windows::System::VirtualKey::Control);
+}
+
+
+void Just_Editor::CodeEditor::Caesar_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	if (MainGrid->Children->Size > 2)
+	{
+		ExtraColumn->Width = 0;
+		auto thisItem = MainGrid->Children->GetAt(3);
+		MainGrid->Children->RemoveAtEnd();
+		delete[] thisItem;
+	}
+	else
+	{
+		auto thisPanel = ref new CaesarPanel;
+		MainGrid->Children->Append(thisPanel);
+
+		MainGrid->SetColumn(thisPanel, 2);
+		MainGrid->SetRow(thisPanel, 1);
+		ExtraColumn->Width = MainGrid->ActualWidth > 600 ? MainGrid->ActualWidth / 2 : MainGrid->ActualWidth;
+
+	}
+}
+
+
+void Just_Editor::CodeEditor::MainGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
+{
+	if (ExtraColumn->Width.Value)
+	{
+		ExtraColumn->Width = e->NewSize.Width > 600 ? e->NewSize.Width / 2 : e->NewSize.Width;
+	}
 }
