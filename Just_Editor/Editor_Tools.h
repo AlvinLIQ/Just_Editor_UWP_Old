@@ -319,5 +319,20 @@ namespace Just_Editor
 			Windows::Storage::ApplicationDataContainer^ localSettings = Windows::Storage::ApplicationData::Current->LocalSettings;
 			localSettings->DeleteContainer(CSDN_Data_Container);
 		}
+
+		static int GetDecFromHexChar(wchar_t HexChar)
+		{
+			return (int)HexChar - ((int)HexChar >= 65 ? 55 : 48);
+		}
+
+		static Windows::UI::Color GetColorFromHexChar(wchar_t* colorHex)
+		{
+			Windows::UI::Color thisColor;
+			thisColor.A = 255;
+			thisColor.R = GetDecFromHexChar(colorHex[0]) * 16 + GetDecFromHexChar(colorHex[1]);
+			thisColor.G = GetDecFromHexChar(colorHex[2]) * 16 + GetDecFromHexChar(colorHex[3]);
+			thisColor.B = GetDecFromHexChar(colorHex[4]) * 16 + GetDecFromHexChar(colorHex[5]);
+			return thisColor;
+		}
 	};
 }

@@ -153,6 +153,8 @@ void Just_Editor::CodeEditor::Caesar_Button_Click(Platform::Object^ sender, Wind
 	else
 	{
 		auto thisPanel = ref new CaesarPanel;
+		thisPanel->SetPanelMode(0);//Caesar
+
 		MainGrid->Children->Append(thisPanel);
 
 		MainGrid->SetColumn(thisPanel, 2);
@@ -167,6 +169,6 @@ void Just_Editor::CodeEditor::MainGrid_SizeChanged(Platform::Object^ sender, Win
 {
 	if (ExtraColumn->Width.Value)
 	{
-		ExtraColumn->Width = e->NewSize.Width > 600 ? e->NewSize.Width / 2 : e->NewSize.Width;
+		ExtraColumn->Width = e->NewSize.Width > 600 ? e->NewSize.Width / 2 : MainGrid->ActualWidth;
 	}
 }

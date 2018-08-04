@@ -23,6 +23,7 @@
     <ClCompile Include="DuronWindowItemxaml.xaml.cpp" />
     <ClCompile Include="RenameDialog.xaml.cpp" />
     <ClCompile Include="RecentListItem.xaml.cpp" />
+    <ClCompile Include="CaesarPanel.xaml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="DuronWindowItemxaml.xaml.h" />
     <ClInclude Include="RenameDialog.xaml.h" />
     <ClInclude Include="RecentListItem.xaml.h" />
+    <ClInclude Include="CaesarPanel.xaml.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
