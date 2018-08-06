@@ -325,14 +325,49 @@ namespace Just_Editor
 			return (int)HexChar - ((int)HexChar >= 65 ? 55 : 48);
 		}
 
-		static Windows::UI::Color GetColorFromHexChar(wchar_t* colorHex)
+		static Windows::UI::Color GetColorFromHexChar(char* colorHex)
 		{
 			Windows::UI::Color thisColor;
 			thisColor.A = 255;
 			thisColor.R = GetDecFromHexChar(colorHex[0]) * 16 + GetDecFromHexChar(colorHex[1]);
 			thisColor.G = GetDecFromHexChar(colorHex[2]) * 16 + GetDecFromHexChar(colorHex[3]);
 			thisColor.B = GetDecFromHexChar(colorHex[4]) * 16 + GetDecFromHexChar(colorHex[5]);
+
 			return thisColor;
+		}
+
+		static Windows::UI::Xaml::Controls::TextBlock^ GetTextBlock(Platform::String^ text, int fontSize, Windows::UI::Xaml::Media::Brush^ foreground, Windows::UI::Text::FontWeight fontWeight)
+		{
+			auto thisItem = ref new Windows::UI::Xaml::Controls::TextBlock;
+			thisItem->Text = text;
+			thisItem->FontSize = fontSize;
+			thisItem->Foreground = foreground;
+			thisItem->FontWeight = fontWeight;
+			return thisItem;
+		}
+
+		static Windows::UI::Xaml::Controls::TextBox^ GetTextBox(Windows::UI::Xaml::Media::Brush^ foreground, bool acceptsReturn = true)
+		{
+			auto thisItem = ref new Windows::UI::Xaml::Controls::TextBox;
+			thisItem->Foreground = foreground;
+			thisItem->Background = ref new Windows::UI::Xaml::Media::SolidColorBrush;
+			thisItem->FontSize = 15;
+			thisItem->Margin = Windows::UI::Xaml::Thickness(0, 10, 0, 10);
+			thisItem->AcceptsReturn = acceptsReturn;
+
+			return thisItem;
+		}
+
+		static Windows::UI::Xaml::Controls::Button^ GetButton(Platform::Object^ content, int fontSize, Windows::UI::Xaml::Media::Brush^ background, Windows::UI::Xaml::Media::Brush^ foreground, Windows::UI::Text::FontWeight fontWeight)
+		{
+			auto thisItem = ref new Windows::UI::Xaml::Controls::Button;
+			thisItem->Background = background;
+			thisItem->Content = content;
+			thisItem->FontSize = fontSize;
+			thisItem->Foreground = foreground;
+			thisItem->FontWeight = fontWeight;
+			thisItem->Margin = Windows::UI::Xaml::Thickness(0, 10, 0, 10);
+			return thisItem;
 		}
 	};
 }
