@@ -354,6 +354,7 @@ namespace Just_Editor
 			thisItem->FontSize = 15;
 			thisItem->Margin = Windows::UI::Xaml::Thickness(0, 10, 0, 10);
 			thisItem->AcceptsReturn = acceptsReturn;
+			thisItem->IsSpellCheckEnabled = false;
 
 			return thisItem;
 		}
