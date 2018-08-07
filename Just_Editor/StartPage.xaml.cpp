@@ -38,10 +38,11 @@ void StartPage::LoadRecentList()
 		catch (Exception^ WTF)
 		{
 			//WTF->Message;
+			return;
 		}
 		//thisItem->FileName = recentFileList->Name;
 		auto thisPath = (wchar_t*)thisString->Data();
-		int QMIndex = QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
+		int QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
 		while (QMIndex != -1)
 		{
 			auto thisItem = ref new RecentListItem;

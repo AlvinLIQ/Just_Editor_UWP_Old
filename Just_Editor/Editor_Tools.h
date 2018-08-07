@@ -233,6 +233,27 @@ namespace Just_Editor
 			return IndexArray;
 		}
 
+		static size_t FindPStr(Platform::String^ sourceStr, Platform::String^ targetStr, size_t Slength = -1, size_t Tlength = -1)
+		{
+			if (Slength == -1)
+				Slength = sourceStr->Length();
+
+			if (Tlength == -1)
+				Tlength = targetStr->Length();
+
+			return FindStr(sourceStr->Data(), targetStr->Data(), Slength, Tlength);
+		}
+
+		static void StrCpy(wchar_t** source, wchar_t** target)
+		{
+			size_t tl = wcslen(*target), i;
+			for (i = 0; i < tl; i++)
+			{
+				*source[i] = *target[i];
+			}
+			*source[i] = '\0';
+		}
+
 		static Platform::String^ GetFileNameFromPath(Platform::String^ PSPath)
 		{
 			wchar_t* wcsPath = (wchar_t*)PSPath->Data();
@@ -370,5 +391,7 @@ namespace Just_Editor
 			thisItem->Margin = Windows::UI::Xaml::Thickness(0, 10, 0, 10);
 			return thisItem;
 		}
+
+
 	};
 }
