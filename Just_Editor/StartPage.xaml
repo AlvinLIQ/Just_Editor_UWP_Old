@@ -8,7 +8,6 @@
     mc:Ignorable="d" SizeChanged="Page_SizeChanged">
     <Page.Resources>
         <SolidColorBrush x:Key="DefaultFontColor" Color="#5D5B5B"/>
-        <SolidColorBrush x:Key="DefaultThemeColor" Color="#EFEFEF"/>
     </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -16,7 +15,7 @@
             <ColumnDefinition x:Name="MainColumn1" Width="250"/>
             <ColumnDefinition x:Name="MainColumn2"/>
         </Grid.ColumnDefinitions>
-        <Grid Background="{StaticResource DefaultThemeColor}">
+        <Grid Background="WhiteSmoke">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>

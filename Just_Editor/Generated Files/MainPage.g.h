@@ -12,6 +12,7 @@ namespace Windows {
         namespace Xaml {
             namespace Controls {
                 ref class SplitView;
+                ref class Border;
                 ref class Grid;
                 ref class StackPanel;
                 ref class Frame;
@@ -38,15 +39,16 @@ namespace Just_Editor
     
     
         private: ::Windows::UI::Xaml::Controls::SplitView^ SettingsSplit;
+        private: ::Windows::UI::Xaml::Controls::Border^ TitleBar_Block;
         private: ::Windows::UI::Xaml::Controls::Grid^ TopBar_Grid;
         private: ::Windows::UI::Xaml::Controls::StackPanel^ HiddenWindowPanel;
         private: ::Windows::UI::Xaml::Controls::Frame^ MainFrame;
         private: ::Windows::UI::Xaml::Controls::Button^ SettingsButton;
         private: ::Windows::UI::Xaml::Controls::StackPanel^ ToolBar1;
         private: ::Windows::UI::Xaml::Controls::StackPanel^ TopStackPanel;
-        private: ::Windows::UI::Xaml::Controls::Button^ GetHiddenWindow_Button;
         private: ::Windows::UI::Xaml::Controls::StackPanel^ WindowPanel;
         private: ::Windows::UI::Xaml::Controls::Button^ AddWindow_Button;
+        private: ::Windows::UI::Xaml::Controls::Button^ GetHiddenWindow_Button;
         private: ::Windows::UI::Xaml::Controls::Button^ HomeButton;
     };
 }

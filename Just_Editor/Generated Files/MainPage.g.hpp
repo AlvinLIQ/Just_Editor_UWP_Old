@@ -32,65 +32,77 @@ void ::Just_Editor::MainPage::Connect(int __connectionId, ::Platform::Object^ __
     {
     case 1:
         {
-            this->SettingsSplit = safe_cast<::Windows::UI::Xaml::Controls::SplitView^>(__target);
+            ::Windows::UI::Xaml::Controls::Page^ element1 = safe_cast<::Windows::UI::Xaml::Controls::Page^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::Page^>(element1))->SizeChanged += ref new ::Windows::UI::Xaml::SizeChangedEventHandler(this, (void (::Just_Editor::MainPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::SizeChangedEventArgs^))&MainPage::WindowPanel_SizeChanged);
         }
         break;
     case 2:
         {
-            this->TopBar_Grid = safe_cast<::Windows::UI::Xaml::Controls::Grid^>(__target);
+            this->SettingsSplit = safe_cast<::Windows::UI::Xaml::Controls::SplitView^>(__target);
         }
         break;
     case 3:
         {
-            this->HiddenWindowPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
+            this->TitleBar_Block = safe_cast<::Windows::UI::Xaml::Controls::Border^>(__target);
         }
         break;
     case 4:
+        {
+            this->TopBar_Grid = safe_cast<::Windows::UI::Xaml::Controls::Grid^>(__target);
+        }
+        break;
+    case 5:
+        {
+            this->HiddenWindowPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
+        }
+        break;
+    case 6:
         {
             this->MainFrame = safe_cast<::Windows::UI::Xaml::Controls::Frame^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Frame^>(this->MainFrame))->Navigated += ref new ::Windows::UI::Xaml::Navigation::NavigatedEventHandler(this, (void (::Just_Editor::MainPage::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::Navigation::NavigationEventArgs^))&MainPage::MainFrame_Navigated);
         }
         break;
-    case 5:
+    case 7:
         {
             this->SettingsButton = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->SettingsButton))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::MainPage::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::SettingsButton_Click);
         }
         break;
-    case 6:
+    case 8:
         {
             this->ToolBar1 = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
         }
         break;
-    case 7:
+    case 9:
         {
             this->TopStackPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
         }
         break;
-    case 8:
-        {
-            this->GetHiddenWindow_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
-            (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->GetHiddenWindow_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::MainPage::*)
-                (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::GetHiddenWindow_Button_Click);
-        }
-        break;
-    case 9:
+    case 10:
         {
             this->WindowPanel = safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::StackPanel^>(this->WindowPanel))->SizeChanged += ref new ::Windows::UI::Xaml::SizeChangedEventHandler(this, (void (::Just_Editor::MainPage::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::SizeChangedEventArgs^))&MainPage::WindowPanel_SizeChanged);
         }
         break;
-    case 10:
+    case 11:
         {
             this->AddWindow_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->AddWindow_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::MainPage::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::AddWindow_Button_Click);
         }
         break;
-    case 11:
+    case 12:
+        {
+            this->GetHiddenWindow_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->GetHiddenWindow_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::MainPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::GetHiddenWindow_Button_Click);
+        }
+        break;
+    case 13:
         {
             this->HomeButton = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->HomeButton))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::MainPage::*)

@@ -276,6 +276,25 @@ namespace Just_Editor
 			return ref new Platform::String(sourceStr.substr(0, tIndex).c_str()) + replaceStr + ref new Platform::String(sourceStr.substr(tIndex + targetStr.length()).c_str());
 		}
 
+		static Platform::String^ GetRegularUrl(Platform::String^ PUrl)
+		{
+			auto thisUrl = PUrl->Data();
+
+			if (Editor_Tools::FindStr(thisUrl, L"http") != 0 && !(thisUrl[4] == ':' || (thisUrl[4] == 's' && thisUrl[5] == ':')))
+			{
+				PUrl = "http://" + PUrl;
+			}
+			else if (thisUrl[6] != '/' || (thisUrl[7] != '/' && thisUrl[4] == 's') || (thisUrl[5] != '/' && thisUrl[3] == 'p'))
+			{
+				if (Editor_Tools::FindStr(thisUrl, L"/") <= 7)
+				{
+					PUrl = Editor_Tools::ReplacePStr(PUrl, "/", "");
+				}
+				PUrl = Editor_Tools::ReplacePStr(PUrl, ":", "://");
+			}
+			return PUrl;
+		}
+
 		static void WriteSetting(Platform::String^ ContainerName, Platform::String^ SettingTypeName, Platform::Object^ SettingInfo)
 		{
 			if (SettingTypeName == nullptr || SettingInfo == nullptr) return;

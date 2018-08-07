@@ -33,10 +33,20 @@ void MainPage::InitializePage()
 	//Editor_Tools::DeleteFileInAppAsync("User_Files", "RecentList");
 	auto titleBar = Windows::UI::ViewManagement::ApplicationView::GetForCurrentView()->TitleBar;
 	titleBar->ForegroundColor = Windows::UI::Colors::WhiteSmoke;
-	titleBar->ButtonForegroundColor = titleBar->ForegroundColor;
-	titleBar->ButtonHoverBackgroundColor = titleBar->ForegroundColor;
+	titleBar->ButtonForegroundColor = Windows::UI::Colors::LightGray;
+	titleBar->ButtonHoverBackgroundColor = Windows::UI::Colors::DarkSlateGray;
 	titleBar->BackgroundColor = Windows::UI::Colors::Gray;
-	titleBar->ButtonBackgroundColor = titleBar->BackgroundColor;
+	Windows::UI::Color TopButton_Color;
+	TopButton_Color.A = 0;
+	TopButton_Color.R = 0;
+	TopButton_Color.G = 0;
+	TopButton_Color.B = 0;
+	titleBar->ButtonBackgroundColor = TopButton_Color;
+	auto CoreTitleBar = Windows::ApplicationModel::Core::CoreApplication::GetCurrentView()->TitleBar;
+	CoreTitleBar->ExtendViewIntoTitleBar = true;
+	Windows::UI::Xaml::Window::Current->SetTitleBar(TitleBar_Block);
+
+
 	if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 	{
 		auto statusBar = Windows::UI::ViewManagement::StatusBar::GetForCurrentView();
@@ -50,6 +60,10 @@ void MainPage::InitializePage()
 		statusBar->BackgroundOpacity = 1;
 		statusBar->ForegroundColor = Windows::UI::Colors::LightGray;
 		statusBar->ShowAsync();
+	}
+	else
+	{
+		TopBar_Grid->Margin = Windows::UI::Xaml::Thickness(0, 0, 182, 0);
 	}
 }
 
@@ -193,10 +207,13 @@ int MainPage::GetWindowItemIndex(DuronWindowItemxaml^ sender, Windows::UI::Xaml:
 void MainPage::CheckWindowItem()
 {
 	DuronWindowItemxaml^ thisItem;
-	double WidthForWindowPanel = TopStackPanel->ActualWidth - GetHiddenWindow_Button->ActualWidth - AddWindow_Button->ActualWidth;
+	double WidthForWindowPanel = TopStackPanel->ActualWidth - GetHiddenWindow_Button->ActualWidth - AddWindow_Button->ActualWidth - (TopBar_Grid->Margin.Right/3);
 	if (WindowPanel->ActualWidth >= WidthForWindowPanel && WindowPanel->Children->Size > 1)
 	{
-		thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(0);
+		unsigned int itemIndex = 0;
+		thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(itemIndex);
+		if(thisItem->isSelected)
+			thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(++itemIndex);
 
 		auto targetItem = ref new DuronWindowItemxaml;
 		targetItem->FileName = thisItem->FileName;
@@ -223,8 +240,8 @@ void MainPage::CheckWindowItem()
 		HiddenWindowPanel->Children->Append(targetItem);
 
 
-		Windows::UI::Xaml::UIElement^ removeItem = WindowPanel->Children->GetAt(0);
-		WindowPanel->Children->RemoveAt(0);
+		Windows::UI::Xaml::UIElement^ removeItem = WindowPanel->Children->GetAt(itemIndex);
+		WindowPanel->Children->RemoveAt(itemIndex);
 
 		delete[] removeItem;
 	}
