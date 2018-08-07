@@ -55,7 +55,16 @@ void StartPage::LoadRecentList()
 				[thisItem, thisString, this]
 			(task<Windows::Storage::StorageFile^>thisTask)
 			{
-				Windows::Storage::StorageFile^ thisFile = thisTask.get();
+				Windows::Storage::StorageFile^ thisFile;
+				try
+				{
+					thisFile = thisTask.get();
+				}
+				catch (Exception^)
+				{
+					Editor_Tools::WriteInAppFile("User_Files", "RecentList", Editor_Tools::ReplacePStr(thisString, thisItem->Token + L"?", L""));
+					return;
+				}
 				thisItem->FilePath = thisFile->Path;
 				thisItem->FileName = thisFile->Name;
 

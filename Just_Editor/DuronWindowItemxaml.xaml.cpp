@@ -51,7 +51,10 @@ void Just_Editor::DuronWindowItemxaml::SetFileName(Platform::String^ newFileName
 
 	if (this->ItemFile != nullptr)
 	{
-		concurrency::create_task(ItemFile->RenameAsync(newFileName));
+		concurrency::create_task(ItemFile->RenameAsync(newFileName)).then([this]() 
+		{
+			Editor_Tools::AddToRecentFile(this->ItemFile);
+		});
 	}
 
 	FileName_Block->Text = newFileName;
