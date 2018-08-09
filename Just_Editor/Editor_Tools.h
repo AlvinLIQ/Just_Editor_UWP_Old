@@ -189,7 +189,7 @@ namespace Just_Editor
 		{
 			auto wStr = SubStr(thisStr->Data(), start, end);
 			auto resultStr = ref new Platform::String(wStr);
-			delete[] wStr;
+			//delete[] wStr;
 
 			return resultStr;
 		}
@@ -410,7 +410,5 @@ namespace Just_Editor
 			thisItem->Margin = Windows::UI::Xaml::Thickness(0, 10, 0, 10);
 			return thisItem;
 		}
-
-
 	};
 }

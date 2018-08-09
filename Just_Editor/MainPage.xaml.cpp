@@ -34,7 +34,7 @@ void MainPage::InitializePage()
 	auto titleBar = Windows::UI::ViewManagement::ApplicationView::GetForCurrentView()->TitleBar;
 	titleBar->ForegroundColor = Windows::UI::Colors::WhiteSmoke;
 	titleBar->ButtonForegroundColor = Windows::UI::Colors::LightGray;
-	titleBar->ButtonHoverBackgroundColor = Windows::UI::Colors::DarkSlateGray;
+	titleBar->ButtonHoverBackgroundColor = Windows::UI::Colors::DarkGray;
 	titleBar->BackgroundColor = Windows::UI::Colors::Gray;
 	Windows::UI::Color TopButton_Color;
 	TopButton_Color.A = 0;
@@ -131,13 +131,21 @@ void MainPage::WindowSelectAt(int Item_Index)
 {
 	if (Item_Index < 0)
 	{
-		if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+		if (HiddenWindowPanel->Children->Size)
 		{
-			App::Current->Exit();
+			CheckWindowItem();
+			return;
 		}
 		else
 		{
-			exit(Item_Index);
+			if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+			{
+				App::Current->Exit();
+			}
+			else
+			{
+				exit(Item_Index);
+			}
 		}
 	}
 
@@ -207,7 +215,7 @@ int MainPage::GetWindowItemIndex(DuronWindowItemxaml^ sender, Windows::UI::Xaml:
 void MainPage::CheckWindowItem()
 {
 	DuronWindowItemxaml^ thisItem;
-	double WidthForWindowPanel = TopStackPanel->ActualWidth - GetHiddenWindow_Button->ActualWidth - AddWindow_Button->ActualWidth - (TopBar_Grid->Margin.Right/3);
+	double WidthForWindowPanel = TopStackPanel->ActualWidth - GetHiddenWindow_Button->ActualWidth - AddWindow_Button->ActualWidth - (TopBar_Grid->Margin.Right / 3);
 	if (WindowPanel->ActualWidth >= WidthForWindowPanel && WindowPanel->Children->Size > 1)
 	{
 		unsigned int itemIndex = 0;
@@ -250,9 +258,10 @@ void MainPage::CheckWindowItem()
 	{
 		thisItem = (DuronWindowItemxaml^)HiddenWindowPanel->Children->GetAt(HiddenWindowPanel->Children->Size - 1);
 		HiddenWindowPanel->Children->RemoveAtEnd();
-		NewWindowItem(thisItem->FileName, thisItem->FilePath, false, thisItem->FrameContent, thisItem->ItemFile, thisItem->isChanged);
+		NewWindowItem(thisItem->FileName, thisItem->FilePath, !WindowPanel->Children->Size, thisItem->FrameContent, thisItem->ItemFile, thisItem->isChanged);
 		thisItem = nullptr;
 	}
+	HiddenWindowPanel->Margin = Windows::UI::Xaml::Thickness(WindowPanel->ActualWidth, 0, 0, 0);
 }
 
 void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
@@ -333,7 +342,7 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 				String^ thisText = thisTask.get();
 				thisItem->OriginalText = thisText;
 
-				((RichEditBox^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Document->Selection->Text += thisText;
+				((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
 
 
 			}

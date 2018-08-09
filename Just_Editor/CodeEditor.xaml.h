@@ -22,6 +22,8 @@ namespace Just_Editor
 
 		property DuronWindowItemxaml^ thisWindowItem;
 
+		property bool isSmartDetectEnabled;
+
 //		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
 
 		Platform::String^ GetEditBoxText()
@@ -29,6 +31,18 @@ namespace Just_Editor
 			Platform::String^ thisText = "";
 			CodeEditorBox->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
 			return thisText;
+		}
+
+		Platform::String^ GetWordFromSelection(int SelectionIndex)
+		{
+			std::wstring wholeWord = CodeEditorBox->Document->GetRange(0, SelectionIndex)->Text->Data(), thisWord = L"";
+			bool isReturned = false;
+
+			while (--SelectionIndex >= 0 && wholeWord[SelectionIndex] != L' ' && wholeWord[SelectionIndex] != L'\r')
+			{
+				thisWord = wholeWord[SelectionIndex] + thisWord;
+			}
+			return ref new Platform::String(thisWord.c_str());
 		}
 
 		void SaveFile()

@@ -48,7 +48,7 @@
                     </Button>
                 </Grid>
             </Grid>
-            <StackPanel Name="HiddenWindowPanel" Grid.Row="1" HorizontalAlignment="Right" Background="#CCC" Height="0" VerticalAlignment="Top" Margin="0,0,10,0">
+            <StackPanel Name="HiddenWindowPanel" Grid.Row="1" HorizontalAlignment="Left" Background="#CCC" Height="0" VerticalAlignment="Top" Margin="0,0,10,0">
 
             </StackPanel>
         </Grid>

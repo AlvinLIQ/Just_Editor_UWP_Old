@@ -155,8 +155,14 @@
     <ClInclude Include="CodeEditor.xaml.h">
       <DependentUpon>CodeEditor.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="DuronSmartDetect.xaml.h">
+      <DependentUpon>DuronSmartDetect.xaml</DependentUpon>
+    </ClInclude>
     <ClInclude Include="DuronWindowItemxaml.xaml.h">
       <DependentUpon>DuronWindowItemxaml.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="DuronWordItem.xaml.h">
+      <DependentUpon>DuronWordItem.xaml</DependentUpon>
     </ClInclude>
     <ClInclude Include="Editor_Tools.h" />
     <ClInclude Include="NewFileDialog.xaml.h">
@@ -189,7 +195,13 @@
     <Page Include="CodeEditor.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="DuronSmartDetect.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="DuronWindowItemxaml.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DuronWordItem.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MainPage.xaml">
@@ -245,8 +257,14 @@
     <ClCompile Include="CodeEditor.xaml.cpp">
       <DependentUpon>CodeEditor.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="DuronSmartDetect.xaml.cpp">
+      <DependentUpon>DuronSmartDetect.xaml</DependentUpon>
+    </ClCompile>
     <ClCompile Include="DuronWindowItemxaml.xaml.cpp">
       <DependentUpon>DuronWindowItemxaml.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="DuronWordItem.xaml.cpp">
+      <DependentUpon>DuronWordItem.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="Editor_Tools.cpp" />
     <ClCompile Include="MainPage.xaml.cpp">

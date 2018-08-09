@@ -5,27 +5,31 @@
 
 #include "pch.h"
 #include "CodeEditor.xaml.h"
-#include "Editor_Tools.h"
+#include "DuronSmartDetect.xaml.h"
 #include "CaesarPanel.xaml.h"
-
-const wchar_t* MyIDentifier[] = { L"[code]", L"[/code]" ,L"[image]",L"[/image]",L"int",L"char",L"if",L"for",L"while",
-L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
-L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
-L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead" };//Size 41
 
 bool isCtrlHeld = false;
 
 using namespace Just_Editor;
 
 using namespace Platform;
+
+using namespace Windows::Foundation;
+using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Media;
+
+const wchar_t* MyIdentifierArray[] = { L"[code]", L"[/code]" ,L"[image]",L"[/image]",L"int",L"char",L"if",L"for",L"while",
+L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
+L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
+L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead" };
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 CodeEditor::CodeEditor()
 {
 	InitializeComponent();
+	isSmartDetectEnabled = true;//Editor_Tools::ReadSetting("Editor_Settings", "isDetectEnabled") == "1";
 	//this->Frame->Navigated += ref new NavigatedEventHandler(this, &CodeEditor::ThisFrame_Navigated);
 }
 /*
@@ -50,7 +54,7 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 
 	while (--c >= 0)
 	{
-		auto ChangeColorText = ref new Platform::String(MyIDentifier[c]);
+		auto ChangeColorText = ref new Platform::String(MyIdentifierArray[c]);
 		//int len = (int)((RichEditBox^)sender)->PlaceholderText->Length();
 		searchRange = ((RichEditBox^)sender)->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 		searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
@@ -69,6 +73,20 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 
 	
 	thisWindowItem->SetChanged(true);
+	if (isSmartDetectEnabled)
+	{
+		SmartDetect->DetectWordFromStrArray((wchar_t*)GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition)->Data());
+		Point* thisPoint = new Point;
+
+		CodeEditorBox->Document->Selection->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Left, Windows::UI::Text::VerticalCharacterAlignment::Bottom,
+			Windows::UI::Text::PointOptions::Transform, thisPoint);
+		//auto thisTransform = ref new TranslateTransform;
+		
+		Pipe_Trans->X = thisPoint->X;
+		Pipe_Trans->Y = thisPoint->Y - 40;
+
+		delete[] thisPoint;
+	}
 }
 
 void Just_Editor::CodeEditor::ChangeTextColor(Platform::String^ thisIDentifier, Windows::UI::Text::ITextRange^ searchRange, Windows::UI::Color foreColor, Windows::UI::Color backColor)
@@ -87,6 +105,29 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 	if (e->Key == Windows::System::VirtualKey::Tab)
 	{
 		((RichEditBox^)sender)->Document->Selection->Text += "    ";
+		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
+	}
+
+	if (e->Key == Windows::System::VirtualKey::Escape && SmartDetect->Width)
+	{
+		SmartDetect->Width = 0;
+		SmartDetect->SelectedItem = nullptr;
+	}
+
+	if (e->Key == Windows::System::VirtualKey::Enter)
+	{
+		e->Handled = true;
+		if (SmartDetect->SelectedItem != nullptr)
+		{
+			CodeEditorBox->Document->Selection->Text += Editor_Tools::SubPStr(SmartDetect->SelectedItem->Identifier, SmartDetect->StartIndex);
+			SmartDetect->SelectedItem = nullptr;
+			SmartDetect->Width = 0;
+		}
+		else
+		{
+			CodeEditorBox->Document->Selection->Text += L"\r";
+		}
+
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 	}
 }
@@ -138,12 +179,18 @@ void Just_Editor::CodeEditor::MainGrid_KeyDown(Platform::Object^ sender, Windows
 		SaveFile();
 	}
 	isCtrlHeld = (e->Key == Windows::System::VirtualKey::Control);
+	if (e->Key == Windows::System::VirtualKey::Up && SmartDetect->SelectedItem != nullptr)
+		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex - 1);
+
+	if (e->Key == Windows::System::VirtualKey::Down && SmartDetect->SelectedItem != nullptr)
+		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex + 1);
+
 }
 
 
 void Just_Editor::CodeEditor::Caesar_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	if (MainGrid->Children->Size > 2)
+	if (MainGrid->Children->Size > 3)
 	{
 		ExtraColumn->Width = 0;
 		auto thisItem = MainGrid->Children->GetAt(3);

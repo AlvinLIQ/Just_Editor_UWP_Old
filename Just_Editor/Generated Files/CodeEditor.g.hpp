@@ -14,6 +14,7 @@ extern "C" __declspec(dllimport) int __stdcall IsDebuggerPresent();
 #endif
 
 #include "CodeEditor.xaml.h"
+#include "DuronSmartDetect.xaml.h"
 
 void ::Just_Editor::CodeEditor::InitializeComponent()
 {
@@ -55,26 +56,36 @@ void ::Just_Editor::CodeEditor::Connect(int __connectionId, ::Platform::Object^ 
         break;
     case 4:
         {
+            this->SmartDetect = safe_cast<::Just_Editor::DuronSmartDetect^>(__target);
+        }
+        break;
+    case 5:
+        {
+            this->Pipe_Trans = safe_cast<::Windows::UI::Xaml::Media::TranslateTransform^>(__target);
+        }
+        break;
+    case 6:
+        {
             this->Undo_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Undo_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Undo_Button_Click);
         }
         break;
-    case 5:
+    case 7:
         {
             this->Redo_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Redo_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Redo_Button_Click);
         }
         break;
-    case 6:
+    case 8:
         {
             this->Save_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Save_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)
                 (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&CodeEditor::Save_Button_Click);
         }
         break;
-    case 7:
+    case 9:
         {
             this->Caesar_Button = safe_cast<::Windows::UI::Xaml::Controls::Button^>(__target);
             (safe_cast<::Windows::UI::Xaml::Controls::Button^>(this->Caesar_Button))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::Just_Editor::CodeEditor::*)

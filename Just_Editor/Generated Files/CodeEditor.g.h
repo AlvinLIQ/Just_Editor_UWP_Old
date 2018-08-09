@@ -19,6 +19,18 @@ namespace Windows {
         }
     }
 }
+namespace Just_Editor {
+    ref class DuronSmartDetect;
+}
+namespace Windows {
+    namespace UI {
+        namespace Xaml {
+            namespace Media {
+                ref class TranslateTransform;
+            }
+        }
+    }
+}
 
 namespace Just_Editor
 {
@@ -39,6 +51,8 @@ namespace Just_Editor
         private: ::Windows::UI::Xaml::Controls::Grid^ MainGrid;
         private: ::Windows::UI::Xaml::Controls::ColumnDefinition^ ExtraColumn;
         private: ::Windows::UI::Xaml::Controls::RichEditBox^ CodeEditorBox;
+        private: ::Just_Editor::DuronSmartDetect^ SmartDetect;
+        private: ::Windows::UI::Xaml::Media::TranslateTransform^ Pipe_Trans;
         private: ::Windows::UI::Xaml::Controls::Button^ Undo_Button;
         private: ::Windows::UI::Xaml::Controls::Button^ Redo_Button;
         private: ::Windows::UI::Xaml::Controls::Button^ Save_Button;

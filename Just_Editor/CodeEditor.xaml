@@ -32,9 +32,18 @@
             </Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollMode="Enabled" Grid.Row="1" Padding="0,0,20,0">
-            <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" TextChanging="CodeEditorBox_TextChanging" 
-                         KeyDown="CodeEditorBox_KeyDown" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden">
-            </RichEditBox>
+            <Grid>
+                <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" TextChanging="CodeEditorBox_TextChanging"
+                         KeyDown="CodeEditorBox_KeyDown" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" AcceptsReturn="False">
+                </RichEditBox>
+                <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0" Grid.RowSpan="2">
+                    <local:DuronSmartDetect.RenderTransform>
+                        <TranslateTransform x:Name="Pipe_Trans">
+
+                        </TranslateTransform>
+                    </local:DuronSmartDetect.RenderTransform>
+                </local:DuronSmartDetect>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </Page>
