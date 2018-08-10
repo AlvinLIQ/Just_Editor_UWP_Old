@@ -33,17 +33,20 @@ namespace Just_Editor
 			return thisText;
 		}
 
-		Platform::String^ GetWordFromSelection(int SelectionIndex)
+		Windows::UI::Text::ITextRange^ GetWordFromSelection(int SelectionIndex)
 		{
-			std::wstring wholeWord = CodeEditorBox->Document->GetRange(0, SelectionIndex)->Text->Data(), thisWord = L"";
+			auto thisRange = CodeEditorBox->Document->GetRange(0, SelectionIndex);
+			auto wholeWord = thisRange->Text->Data();
 			bool isReturned = false;
 
-			while (--SelectionIndex >= 0 && wholeWord[SelectionIndex] != L' ' && wholeWord[SelectionIndex] != L'\r')
+			do
 			{
-				thisWord = wholeWord[SelectionIndex] + thisWord;
-			}
-			return ref new Platform::String(thisWord.c_str());
+				thisRange->StartPosition = SelectionIndex;
+			} while (--SelectionIndex >= 0 && wholeWord[SelectionIndex] != ' ' && wholeWord[SelectionIndex] != L'\r');
+			return thisRange;
 		}
+
+		void AutoDetect();
 
 		void SaveFile()
 		{

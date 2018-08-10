@@ -343,7 +343,7 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 				thisItem->OriginalText = thisText;
 
 				((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
-
+				((CodeEditor^)MainFrame->Content)->AutoDetect();
 
 			}
 			catch (Exception^ WTF)

@@ -8,6 +8,7 @@ namespace Just_Editor
 	public:
 		Editor_Tools();
 		~Editor_Tools();
+		
 		/*
 		Windows::UI::Xaml::Controls::Grid ^ WindowItemTemplate(Platform::String ^ title, Platform::String ^ path)
 		{
