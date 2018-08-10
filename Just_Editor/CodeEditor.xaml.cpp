@@ -56,7 +56,7 @@ void Just_Editor::CodeEditor::AutoDetect()
 		while (sl)
 		{
 			charFormatting = searchRange->CharacterFormat;
-			charFormatting->ForegroundColor = Windows::UI::Colors::MediumBlue : Windows::UI::Colors::Red;
+			charFormatting->ForegroundColor = Windows::UI::Colors::MediumBlue;
 			sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
 		}
 	}
