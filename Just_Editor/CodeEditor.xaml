@@ -33,7 +33,7 @@
         </StackPanel>
         <ScrollViewer HorizontalScrollMode="Enabled" Grid.Row="1" Padding="0,0,20,0">
             <Grid>
-                <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" TextChanging="CodeEditorBox_TextChanging"
+                <RichEditBox  Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" TextChanging="CodeEditorBox_TextChanging"
                          KeyDown="CodeEditorBox_KeyDown" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" AcceptsReturn="False">
                 </RichEditBox>
                 <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0" Grid.RowSpan="2">
@@ -43,6 +43,7 @@
                         </TranslateTransform>
                     </local:DuronSmartDetect.RenderTransform>
                 </local:DuronSmartDetect>
+                <Grid Name="LineNums"/>
             </Grid>
         </ScrollViewer>
     </Grid>

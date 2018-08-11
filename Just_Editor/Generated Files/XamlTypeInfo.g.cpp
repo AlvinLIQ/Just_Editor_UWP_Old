@@ -88,6 +88,12 @@ template<typename TDeclaringType, typename TValue>
 }
 
 template<typename TDeclaringType>
+::Platform::Object^ GetReferenceTypeMember_wordRange(::Platform::Object^ instance)
+{
+    return safe_cast<TDeclaringType^>(instance)->wordRange;
+}
+
+template<typename TDeclaringType>
 ::Platform::Object^ GetReferenceTypeMember_SelectedWord(::Platform::Object^ instance)
 {
     return safe_cast<TDeclaringType^>(instance)->SelectedWord;
@@ -181,6 +187,12 @@ template<typename TDeclaringType, typename TValue>
 void SetValueTypeMember_ItemIndex(::Platform::Object^ instance, ::Platform::Object^ value)
 {
     safe_cast<TDeclaringType^>(instance)->ItemIndex = safe_cast<::Platform::IBox<TValue>^>(value)->Value;
+}
+
+template<typename TDeclaringType, typename TValue>
+void SetReferenceTypeMember_wordRange(::Platform::Object^ instance, ::Platform::Object^ value)
+{
+    safe_cast<TDeclaringType^>(instance)->wordRange = safe_cast<TValue^>(value);
 }
 
 template<typename TDeclaringType, typename TValue>
@@ -310,104 +322,110 @@ const TypeInfo TypeInfos[] =
     //   5
     L"Just_Editor.MainPage", L"",
     &ActivateType<::Just_Editor::MainPage>, nullptr, nullptr, nullptr,
-    16, // Windows.UI.Xaml.Controls.Page
+    17, // Windows.UI.Xaml.Controls.Page
     0, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   6
     L"Just_Editor.StartPage", L"",
     &ActivateType<::Just_Editor::StartPage>, nullptr, nullptr, nullptr,
-    16, // Windows.UI.Xaml.Controls.Page
+    17, // Windows.UI.Xaml.Controls.Page
     0, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   7
     L"Just_Editor.CodeEditor", L"",
     &ActivateType<::Just_Editor::CodeEditor>, nullptr, nullptr, nullptr,
-    16, // Windows.UI.Xaml.Controls.Page
+    17, // Windows.UI.Xaml.Controls.Page
     0, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   8
     L"Just_Editor.CaesarPanel", L"",
     &ActivateType<::Just_Editor::CaesarPanel>, nullptr, nullptr, nullptr,
-    18, // Windows.UI.Xaml.Controls.UserControl
+    19, // Windows.UI.Xaml.Controls.UserControl
     2, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //   9
     L"Just_Editor.RenameDialog", L"",
     &ActivateType<::Just_Editor::RenameDialog>, nullptr, nullptr, nullptr,
-    19, // Windows.UI.Xaml.Controls.ContentDialog
+    20, // Windows.UI.Xaml.Controls.ContentDialog
     2, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //  10
     L"Just_Editor.DuronWordItem", L"",
     &ActivateType<::Just_Editor::DuronWordItem>, nullptr, nullptr, nullptr,
-    18, // Windows.UI.Xaml.Controls.UserControl
+    19, // Windows.UI.Xaml.Controls.UserControl
     3, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //  11
     L"Just_Editor.NewFileDialog", L"",
     &ActivateType<::Just_Editor::NewFileDialog>, nullptr, nullptr, nullptr,
-    19, // Windows.UI.Xaml.Controls.ContentDialog
+    20, // Windows.UI.Xaml.Controls.ContentDialog
     7, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
     //  12
+    L"Windows.UI.Text.ITextRange", L"",
+    nullptr, nullptr, nullptr, nullptr,
+    -1,
+    8, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    TypeInfo_Flags_IsReturnTypeStub | TypeInfo_Flags_None,
+    //  13
     L"Just_Editor.RecentListItem", L"",
     &ActivateType<::Just_Editor::RecentListItem>, nullptr, nullptr, nullptr,
-    18, // Windows.UI.Xaml.Controls.UserControl
+    19, // Windows.UI.Xaml.Controls.UserControl
     8, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
-    //  13
+    //  14
     L"Windows.Storage.StorageFile", L"",
     nullptr, nullptr, nullptr, nullptr,
     3, // Object
     11, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsReturnTypeStub | TypeInfo_Flags_None,
-    //  14
+    //  15
     L"Windows.UI.Xaml.Media.Brush", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
     11, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
-    //  15
+    //  16
     L"Just_Editor.DuronSmartDetect", L"",
     &ActivateType<::Just_Editor::DuronSmartDetect>, nullptr, nullptr, nullptr,
-    18, // Windows.UI.Xaml.Controls.UserControl
+    19, // Windows.UI.Xaml.Controls.UserControl
     11, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
-    //  16
+    //  17
     L"Windows.UI.Xaml.Controls.Page", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    14, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    15, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
-    //  17
+    //  18
     L"Just_Editor.DuronWindowItemxaml", L"",
     &ActivateType<::Just_Editor::DuronWindowItemxaml>, nullptr, nullptr, nullptr,
-    18, // Windows.UI.Xaml.Controls.UserControl
-    14, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    19, // Windows.UI.Xaml.Controls.UserControl
+    15, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_IsLocalType | TypeInfo_Flags_None,
-    //  18
+    //  19
     L"Windows.UI.Xaml.Controls.UserControl", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    21, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    22, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
-    //  19
+    //  20
     L"Windows.UI.Xaml.Controls.ContentDialog", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    21, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    22, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
-    //  20
+    //  21
     L"Windows.UI.Xaml.Controls.ContentControl", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1,
-    21, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
+    22, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Metadata,
     TypeInfo_Flags_IsSystemType | TypeInfo_Flags_None,
     //  Last type here is for padding
     L"", L"",
     nullptr, nullptr, nullptr, nullptr,
     -1, 
-    21, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
+    22, 0, -1, ::Windows::UI::Xaml::Interop::TypeKind::Custom,
     TypeInfo_Flags_None,
 };
 
@@ -439,20 +457,20 @@ const UINT TypeInfoLookup[] = {
       9,   //  24
      10,   //  25
      12,   //  26
-     13,   //  27
-     15,   //  28
-     16,   //  29
-     17,   //  30
-     17,   //  31
-     18,   //  32
-     18,   //  33
-     18,   //  34
-     18,   //  35
-     18,   //  36
-     19,   //  37
-     19,   //  38
-     20,   //  39
-     21,   //  40
+     14,   //  27
+     16,   //  28
+     17,   //  29
+     18,   //  30
+     18,   //  31
+     19,   //  32
+     19,   //  33
+     19,   //  34
+     19,   //  35
+     19,   //  36
+     20,   //  37
+     20,   //  38
+     21,   //  39
+     22,   //  40
 };
 
 struct MemberInfo 
@@ -480,7 +498,7 @@ const MemberInfo MemberInfos[] =
     L"thisWindowItem",
     &GetReferenceTypeMember_thisWindowItem<::Just_Editor::CodeEditor>,
     &SetReferenceTypeMember_thisWindowItem<::Just_Editor::CodeEditor, ::Just_Editor::DuronWindowItemxaml>,
-    17, // Just_Editor.DuronWindowItemxaml
+    18, // Just_Editor.DuronWindowItemxaml
     -1,
     false, false, false,
     //   2 - Just_Editor.RenameDialog.FileName
@@ -501,7 +519,7 @@ const MemberInfo MemberInfos[] =
     L"OverBrush",
     &GetReferenceTypeMember_OverBrush<::Just_Editor::DuronWordItem>,
     &SetReferenceTypeMember_OverBrush<::Just_Editor::DuronWordItem, ::Windows::UI::Xaml::Media::Brush>,
-    14, // Windows.UI.Xaml.Media.Brush
+    15, // Windows.UI.Xaml.Media.Brush
     -1,
     false, false, false,
     //   5 - Just_Editor.DuronWordItem.Identifier
@@ -546,70 +564,77 @@ const MemberInfo MemberInfos[] =
     2, // String
     -1,
     false, false, false,
-    //  11 - Just_Editor.DuronSmartDetect.StartIndex
+    //  11 - Just_Editor.DuronSmartDetect.wordRange
+    L"wordRange",
+    &GetReferenceTypeMember_wordRange<::Just_Editor::DuronSmartDetect>,
+    &SetReferenceTypeMember_wordRange<::Just_Editor::DuronSmartDetect, ::Windows::UI::Text::ITextRange>,
+    12, // Windows.UI.Text.ITextRange
+    -1,
+    false, false, false,
+    //  12 - Just_Editor.DuronSmartDetect.StartIndex
     L"StartIndex",
     &GetValueTypeMember_StartIndex<::Just_Editor::DuronSmartDetect, ::default::uint32>,
     &SetValueTypeMember_StartIndex<::Just_Editor::DuronSmartDetect, ::default::uint32>,
     1, // UInt32
     -1,
     false, false, false,
-    //  12 - Just_Editor.DuronSmartDetect.SelectedWord
+    //  13 - Just_Editor.DuronSmartDetect.SelectedWord
     L"SelectedWord",
     &GetReferenceTypeMember_SelectedWord<::Just_Editor::DuronSmartDetect>,
     &SetReferenceTypeMember_SelectedWord<::Just_Editor::DuronSmartDetect, ::Platform::String>,
     2, // String
     -1,
     false, false, false,
-    //  13 - Just_Editor.DuronSmartDetect.SelectedItem
+    //  14 - Just_Editor.DuronSmartDetect.SelectedItem
     L"SelectedItem",
     &GetReferenceTypeMember_SelectedItem<::Just_Editor::DuronSmartDetect>,
     &SetReferenceTypeMember_SelectedItem<::Just_Editor::DuronSmartDetect, ::Just_Editor::DuronWordItem>,
     10, // Just_Editor.DuronWordItem
     -1,
     false, false, false,
-    //  14 - Just_Editor.DuronWindowItemxaml.isChanged
+    //  15 - Just_Editor.DuronWindowItemxaml.isChanged
     L"isChanged",
     &GetValueTypeMember_isChanged<::Just_Editor::DuronWindowItemxaml, ::Platform::Boolean>,
     &SetValueTypeMember_isChanged<::Just_Editor::DuronWindowItemxaml, ::Platform::Boolean>,
     4, // Boolean
     -1,
     false, false, false,
-    //  15 - Just_Editor.DuronWindowItemxaml.isSelected
+    //  16 - Just_Editor.DuronWindowItemxaml.isSelected
     L"isSelected",
     &GetValueTypeMember_isSelected<::Just_Editor::DuronWindowItemxaml, ::Platform::Boolean>,
     &SetValueTypeMember_isSelected<::Just_Editor::DuronWindowItemxaml, ::Platform::Boolean>,
     4, // Boolean
     -1,
     false, false, false,
-    //  16 - Just_Editor.DuronWindowItemxaml.FrameContent
+    //  17 - Just_Editor.DuronWindowItemxaml.FrameContent
     L"FrameContent",
     &GetReferenceTypeMember_FrameContent<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_FrameContent<::Just_Editor::DuronWindowItemxaml, ::Platform::Object>,
     3, // Object
     -1,
     false, false, false,
-    //  17 - Just_Editor.DuronWindowItemxaml.ItemFile
+    //  18 - Just_Editor.DuronWindowItemxaml.ItemFile
     L"ItemFile",
     &GetReferenceTypeMember_ItemFile<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_ItemFile<::Just_Editor::DuronWindowItemxaml, ::Windows::Storage::StorageFile>,
-    13, // Windows.Storage.StorageFile
+    14, // Windows.Storage.StorageFile
     -1,
     false, false, false,
-    //  18 - Just_Editor.DuronWindowItemxaml.OriginalText
+    //  19 - Just_Editor.DuronWindowItemxaml.OriginalText
     L"OriginalText",
     &GetReferenceTypeMember_OriginalText<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_OriginalText<::Just_Editor::DuronWindowItemxaml, ::Platform::String>,
     2, // String
     -1,
     false, false, false,
-    //  19 - Just_Editor.DuronWindowItemxaml.FileName
+    //  20 - Just_Editor.DuronWindowItemxaml.FileName
     L"FileName",
     &GetReferenceTypeMember_FileName<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_FileName<::Just_Editor::DuronWindowItemxaml, ::Platform::String>,
     2, // String
     -1,
     false, false, false,
-    //  20 - Just_Editor.DuronWindowItemxaml.FilePath
+    //  21 - Just_Editor.DuronWindowItemxaml.FilePath
     L"FilePath",
     &GetReferenceTypeMember_FilePath<::Just_Editor::DuronWindowItemxaml>,
     &SetReferenceTypeMember_FilePath<::Just_Editor::DuronWindowItemxaml, ::Platform::String>,

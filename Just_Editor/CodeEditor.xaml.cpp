@@ -15,7 +15,6 @@ using namespace Just_Editor;
 using namespace Platform;
 using namespace concurrency;
 using namespace Windows::Foundation;
-using namespace Windows::UI::Core;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Media;
@@ -108,7 +107,7 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 	}
 
-	if (e->Key == Windows::System::VirtualKey::Escape && SmartDetect->Width)
+	if ((e->Key == Windows::System::VirtualKey::Escape || e->Key == Windows::System::VirtualKey::Left || e->Key == Windows::System::VirtualKey::Right) && SmartDetect->Width)
 	{
 		SmartDetect->Width = 0;
 		SmartDetect->SelectedItem = nullptr;
@@ -119,7 +118,9 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		e->Handled = true;
 		if (SmartDetect->SelectedItem != nullptr)
 		{
-			CodeEditorBox->Document->Selection->Text += Editor_Tools::SubPStr(SmartDetect->SelectedItem->Identifier, SmartDetect->StartIndex);
+			SmartDetect->wordRange->Text += Editor_Tools::SubPStr(SmartDetect->SelectedItem->Identifier, SmartDetect->StartIndex);
+			SmartDetect->wordRange->MatchSelection();
+			SmartDetect->wordRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::MediumBlue;
 			SmartDetect->SelectedItem = nullptr;
 			SmartDetect->Width = 0;
 		}
@@ -130,6 +131,7 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 	}
+
 }
 
 
@@ -219,3 +221,4 @@ void Just_Editor::CodeEditor::MainGrid_SizeChanged(Platform::Object^ sender, Win
 		ExtraColumn->Width = e->NewSize.Width > 600 ? e->NewSize.Width / 2 : MainGrid->ActualWidth;
 	}
 }
+

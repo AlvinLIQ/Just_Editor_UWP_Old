@@ -38,7 +38,6 @@ namespace Just_Editor
 			auto thisRange = CodeEditorBox->Document->GetRange(0, SelectionIndex);
 			auto wholeWord = thisRange->Text->Data();
 			bool isReturned = false;
-
 			do
 			{
 				thisRange->StartPosition = SelectionIndex;
