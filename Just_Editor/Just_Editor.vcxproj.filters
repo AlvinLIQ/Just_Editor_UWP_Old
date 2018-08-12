@@ -25,6 +25,7 @@
     <ClCompile Include="RecentListItem.xaml.cpp" />
     <ClCompile Include="CaesarPanel.xaml.cpp" />
     <ClCompile Include="DuronSmartDetect.xaml.cpp" />
+    <ClCompile Include="DuronWordItem.xaml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -39,6 +40,7 @@
     <ClInclude Include="RecentListItem.xaml.h" />
     <ClInclude Include="CaesarPanel.xaml.h" />
     <ClInclude Include="DuronSmartDetect.xaml.h" />
+    <ClInclude Include="DuronWordItem.xaml.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -96,6 +98,9 @@
       <Filter>Assets</Filter>
     </Image>
     <Image Include="Assets\Caesar_Icon.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Leave_Icon.png">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>

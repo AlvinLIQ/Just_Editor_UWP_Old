@@ -1,8 +1,15 @@
 #pragma once
+#include "MainPage.xaml.h"
 const wchar_t UnabledWords[] = L"\\/:*?<>|";
 
 namespace Just_Editor
-{
+{/*
+	public value class Position
+	{
+	public:
+		int StartPosition;
+		int EndPosition;
+	};*/
 	class Editor_Tools
 	{
 	public:
@@ -59,7 +66,6 @@ namespace Just_Editor
 			return ((Windows::UI::Xaml::Controls::Panel^)sender)->Background != nullptr && ((Windows::UI::Xaml::Media::SolidColorBrush^)((Windows::UI::Xaml::Controls::Panel^)sender)->Background)->Color.B == Windows::UI::Colors::White.B;
 		}
 		*/
-
 
 		static concurrency::task<Platform::String^> ReadFileInAppFolderAsync(Platform::String^ FolderName, Platform::String^ FileName)
 		{

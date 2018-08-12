@@ -16,6 +16,7 @@ using namespace Windows::UI::Xaml;
 using namespace concurrency;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+Platform::String^ TokenString;
 
 StartPage::StartPage()
 {
@@ -28,11 +29,10 @@ void StartPage::LoadRecentList()
 	//Get Recent File List
 	create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([this](task<String^> thisTask) 
 	{
-		String^ thisString;
 		try
 		{
-			thisString = thisTask.get();
-			if (thisString == nullptr)
+			TokenString = thisTask.get();
+			if (TokenString == nullptr)
 				return;
 		}
 		catch (Exception^ WTF)
@@ -41,7 +41,7 @@ void StartPage::LoadRecentList()
 			return;
 		}
 		//thisItem->FileName = recentFileList->Name;
-		auto thisPath = (wchar_t*)thisString->Data();
+		auto thisPath = (wchar_t*)TokenString->Data();
 		int QMIndex = (int)Editor_Tools::FindStr(thisPath, L"?");
 		while (QMIndex != -1)
 		{
@@ -52,7 +52,7 @@ void StartPage::LoadRecentList()
 			thisItem->Token = thisToken;
 
 			create_task(Windows::Storage::AccessCache::StorageApplicationPermissions::FutureAccessList->GetFileAsync(thisToken)).then(
-				[thisItem, thisString, this]
+				[thisItem, this]
 			(task<Windows::Storage::StorageFile^>thisTask)
 			{
 				Windows::Storage::StorageFile^ thisFile;
@@ -62,16 +62,18 @@ void StartPage::LoadRecentList()
 				}
 				catch (Exception^)
 				{
-					Editor_Tools::WriteInAppFile("User_Files", "RecentList", Editor_Tools::ReplacePStr(thisString, thisItem->Token + L"?", L""));
+					TokenString = Editor_Tools::ReplacePStr(TokenString, thisItem->Token + L"?", L"");
+					Editor_Tools::WriteInAppFile("User_Files", "RecentList", TokenString);
 					return;
 				}
 				thisItem->FilePath = thisFile->Path;
 				thisItem->FileName = thisFile->Name;
 
 				((Windows::UI::Xaml::Controls::Button^)((Windows::UI::Xaml::Controls::Grid^)thisItem->Content)->Children->GetAt(1))->Click += ref new Windows::UI::Xaml::RoutedEventHandler(
-					[thisItem, thisString, this](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args)
+					[thisItem, this](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args)
 				{
-					Editor_Tools::WriteInAppFile("User_Files", "RecentList", Editor_Tools::ReplacePStr(thisString, thisItem->Token + L"?", L""));
+					TokenString = Editor_Tools::ReplacePStr(TokenString, thisItem->Token + L"?", L"");
+					Editor_Tools::WriteInAppFile("User_Files", "RecentList", TokenString);
 
 					int ItemIndex = GetRecentItemIndex(thisItem, RecentListPanel);
 					RecentListPanel->Children->RemoveAt(ItemIndex);
@@ -86,7 +88,7 @@ void StartPage::LoadRecentList()
 						try
 						{
 							Windows::Storage::StorageFile^ thisFile = thisTask.get();
-							this->Frame->Navigate(CodeEditor::typeid, thisFile);
+							this->Frame->Navigate(CodeEditor::typeid, thisFile, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
 						}
 						catch (Exception^ WTF)
 						{
@@ -142,7 +144,7 @@ void Just_Editor::StartPage::NewOptionView_SelectionChanged(Platform::Object^ se
 	switch (NewOptionView->SelectedIndex)
 	{
 	case 0:
-		Frame->Navigate(CodeEditor::typeid, "Untitled");
+		Frame->Navigate(CodeEditor::typeid, "Untitled", ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
 		break;
 	case 1:
 		auto ThisFileDialog = ref new NewFileDialog;
@@ -152,7 +154,7 @@ void Just_Editor::StartPage::NewOptionView_SelectionChanged(Platform::Object^ se
 		{
 			if (ThisFileDialog->FileName != nullptr && ThisFileDialog->FileName != "")
 			{
-				this->Frame->Navigate(CodeEditor::typeid, ThisFileDialog->FileName);
+				this->Frame->Navigate(CodeEditor::typeid, ThisFileDialog->FileName, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
 			}
 		});
 			
@@ -194,7 +196,7 @@ void Just_Editor::StartPage::OpenOptionView_SelectionChanged(Platform::Object^ s
 				if (thisFile != nullptr)
 				{
 					Editor_Tools::AddToRecentFile(thisFile);
-					this->Frame->Navigate(CodeEditor::typeid, thisFile);
+					this->Frame->Navigate(CodeEditor::typeid, thisFile, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
 				}
 			}
 			catch (Exception^ WTF)

@@ -24,6 +24,7 @@ namespace XamlBindingInfo
         virtual void Recycle() = 0;
         virtual void ProcessBindings(::Platform::Object^ item, int itemIndex, int phase, int* nextPhase) = 0;
         virtual void SubscribeForDataContextChanged(::Windows::UI::Xaml::FrameworkElement^ object, ::XamlBindingInfo::XamlBindings^ handler) = 0;
+        virtual void DisconnectUnloadedObject(int connectionId) = 0;
     };
 
     class IXamlBindingTracking
@@ -63,6 +64,7 @@ namespace XamlBindingInfo
         virtual int ProcessBindings(::Windows::UI::Xaml::Controls::ContainerContentChangingEventArgs^ args);
         virtual void ResetTemplate();
 
+        virtual void DisconnectUnloadedObject(int connectionId);
     private:
         ~XamlBindings();
         ::XamlBindingInfo::IXamlBindings* _pBindings = nullptr;
@@ -218,7 +220,7 @@ namespace XamlBindingInfo
 
         virtual void Update() override
         {
-            this->Update_(this->GetDataRoot(), NOT_PHASED);
+            this->Update_(this->GetDataRoot(), this->NOT_PHASED);
             this->_isInitialized = true;
         }
     };
@@ -255,7 +257,7 @@ namespace XamlBindingInfo
 
         virtual void Update() override
         {
-            this->Update_(this->GetDataRoot(), NOT_PHASED);
+            this->Update_(this->GetDataRoot(), this->NOT_PHASED);
             this->_isInitialized = true;
         }
     };

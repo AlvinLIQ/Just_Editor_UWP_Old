@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
     <Grid Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" KeyDown="MainGrid_KeyDown" SizeChanged="MainGrid_SizeChanged">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -33,8 +32,9 @@
         </StackPanel>
         <ScrollViewer HorizontalScrollMode="Enabled" Grid.Row="1" Padding="0,0,20,0">
             <Grid>
-                <RichEditBox  Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" TextChanging="CodeEditorBox_TextChanging"
-                         KeyDown="CodeEditorBox_KeyDown" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" AcceptsReturn="False">
+                <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle"
+                         ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" AcceptsReturn="False" TextChanging="CodeEditorBox_TextChanging"
+                              PreviewKeyDown="CodeEditorBox_KeyDown">
                 </RichEditBox>
                 <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0" Grid.RowSpan="2">
                     <local:DuronSmartDetect.RenderTransform>

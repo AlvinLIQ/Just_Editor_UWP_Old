@@ -5,7 +5,7 @@
     xmlns:local="using:Just_Editor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" SizeChanged="WindowPanel_SizeChanged">
+    mc:Ignorable="d" SizeChanged="WindowPanel_SizeChanged" Background="#787878">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid>
@@ -42,7 +42,7 @@
 
                 <Grid Background="WhiteSmoke" VerticalAlignment="Bottom" Height="30" Padding="10,0,10,0">
                     <TextBlock Text="Just_Editor Ver.Test" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
-                    <Button Name="SettingsButton" HorizontalAlignment="Right" Padding="0" Background="#0000" BorderThickness="0" Height="20"
+                    <Button Name="SettingsButton" HorizontalAlignment="Right" Padding="0" Background="#0000" BorderThickness="0"
                             Width="30" VerticalAlignment="Stretch" Click="SettingsButton_Click">
                         <Image Height="15" Source="Assets/Setting_Icon.png"/>
                     </Button>
@@ -54,17 +54,31 @@
         </Grid>
         <SplitView Name="SettingsSplit" DisplayMode="Overlay" PanePlacement="Right" HorizontalAlignment="Right" OpenPaneLength="300">
             <SplitView.Pane>
-                <StackPanel>
-                    <TextBlock FontWeight="Bold" FontSize="20" Padding="10,10,0,0" Foreground="#5D5B5B">
+                <Grid Padding="10,0,10,0">
+                    <TextBlock FontWeight="Bold" FontSize="20" Padding="0,10,0,0" Foreground="#5D5B5B">
                         Settings
                     </TextBlock>
-                    <StackPanel Padding="20,10,0,0">
-                        <ComboBox Header="Save files before exit" SelectedIndex="1">
+                    <StackPanel Padding="10,10,0,0" Margin="0,40">
+                        <ToggleSwitch Name="DetectSwitch" Toggled="DetectSwitch_Toggled" Foreground="#5D5B5B">
+                            <ToggleSwitch.Header>
+                                <TextBlock Foreground="#5D5B5B" Text="Is smart detect enabled"/>
+                            </ToggleSwitch.Header>
+                        </ToggleSwitch>
+                        <ToggleSwitch Name="HighlightSwitch" Toggled="HighlightSwitch_Toggled" Foreground="#5D5B5B">
+                            <ToggleSwitch.Header>
+                                <TextBlock Foreground="#5D5B5B" Text="Is highlight enabled (beta)" />
+                            </ToggleSwitch.Header>
+                        </ToggleSwitch>
+                        <!--ComboBox Header="Save files before exit" SelectedIndex="1">
                             <ComboBoxItem Content="Ask me every time"/>
                             <ComboBoxItem Content="Auto save"/>
-                        </ComboBox>
+                        </ComboBox-->
+
                     </StackPanel>
-                </StackPanel>
+                    <Button Name="ClosePaneButton" Background="#0000" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="SettingsButton_Click">
+                        <Image Source="Assets/Leave_Icon.png" Width="25"/>
+                    </Button>
+                </Grid>
             </SplitView.Pane>
         </SplitView>
     </Grid>

@@ -29,7 +29,9 @@ L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"s
 CodeEditor::CodeEditor()
 {
 	InitializeComponent();
-	isSmartDetectEnabled = true;//Editor_Tools::ReadSetting("Editor_Settings", "isDetectEnabled") == "1";
+	isSmartDetectEnabled = Editor_Tools::ReadSetting("Editor_Settings", "isDetectEnabled")->ToString() == "";
+	if (isSmartDetectEnabled)
+		isHighlightEnabled = Editor_Tools::ReadSetting("Editor_Settings", "isHighlightEnabled")->ToString() == "1";
 	//this->Frame->Navigated += ref new NavigatedEventHandler(this, &CodeEditor::ThisFrame_Navigated);
 }
 /*
@@ -41,6 +43,8 @@ void CodeEditor::ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml
 
 void Just_Editor::CodeEditor::AutoDetect()
 {
+	if (!isHighlightEnabled)
+		return;
 	int c = 41, sl;
 	Windows::UI::Text::ITextRange^ searchRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 	searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
@@ -58,33 +62,6 @@ void Just_Editor::CodeEditor::AutoDetect()
 			charFormatting->ForegroundColor = Windows::UI::Colors::MediumBlue;
 			sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
 		}
-	}
-}
-
-void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Controls::RichEditBox^ sender, Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^ args)
-{
-	Undo_Button->IsEnabled = sender->Document->CanUndo();
-	Redo_Button->IsEnabled = sender->Document->CanRedo();
-
-	//Seeach IDentifier && Highlight
-
-	if (thisWindowItem == nullptr)
-		return;
-
-
-	thisWindowItem->SetChanged(true);
-	if (isSmartDetectEnabled)
-	{
-		SmartDetect->DetectWordFromStrArray(GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition));
-		Point* thisPoint = new Point;
-
-		CodeEditorBox->Document->Selection->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Right, Windows::UI::Text::VerticalCharacterAlignment::Bottom,
-			Windows::UI::Text::PointOptions::ClientCoordinates, thisPoint);
-		//auto thisTransform = ref new TranslateTransform;
-		Pipe_Trans->X = CodeEditorBox->ActualWidth >= thisPoint->X + SmartDetect->Width ? thisPoint->X : CodeEditorBox->ActualWidth - SmartDetect->Width;
-		Pipe_Trans->Y = thisPoint->Y + 10;
-
-		delete[] thisPoint;
 	}
 }
 
@@ -106,27 +83,35 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		((RichEditBox^)sender)->Document->Selection->Text += "    ";
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 	}
-
-	if ((e->Key == Windows::System::VirtualKey::Escape || e->Key == Windows::System::VirtualKey::Left || e->Key == Windows::System::VirtualKey::Right) && SmartDetect->Width)
+	else if (e->Key == Windows::System::VirtualKey::Escape && SmartDetect->Width)
 	{
 		SmartDetect->Width = 0;
 		SmartDetect->SelectedItem = nullptr;
 	}
-
-	if (e->Key == Windows::System::VirtualKey::Enter)
+	else if (e->Key == Windows::System::VirtualKey::Up && SmartDetect->SelectedItem != nullptr)
 	{
 		e->Handled = true;
+		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex - 1);
+	}
+	else if (e->Key == Windows::System::VirtualKey::Down && SmartDetect->SelectedItem != nullptr)
+	{
+		e->Handled = true;
+		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex + 1);
+	}
+	else if (e->Key == Windows::System::VirtualKey::Enter)
+	{
 		if (SmartDetect->SelectedItem != nullptr)
 		{
 			SmartDetect->wordRange->Text += Editor_Tools::SubPStr(SmartDetect->SelectedItem->Identifier, SmartDetect->StartIndex);
 			SmartDetect->wordRange->MatchSelection();
-			SmartDetect->wordRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::MediumBlue;
+			if (isHighlightEnabled)
+				SmartDetect->wordRange->CharacterFormat->ForegroundColor =  Windows::UI::Colors::MediumBlue;
 			SmartDetect->SelectedItem = nullptr;
 			SmartDetect->Width = 0;
 		}
 		else
 		{
-			CodeEditorBox->Document->Selection->Text += L"\r";
+			CodeEditorBox->Document->Selection->Text += L"\r\n";
 		}
 
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
@@ -181,11 +166,6 @@ void Just_Editor::CodeEditor::MainGrid_KeyDown(Platform::Object^ sender, Windows
 		SaveFile();
 	}
 	isCtrlHeld = (e->Key == Windows::System::VirtualKey::Control);
-	if (e->Key == Windows::System::VirtualKey::Up && SmartDetect->SelectedItem != nullptr)
-		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex - 1);
-
-	if (e->Key == Windows::System::VirtualKey::Down && SmartDetect->SelectedItem != nullptr)
-		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex + 1);
 
 }
 
@@ -222,3 +202,29 @@ void Just_Editor::CodeEditor::MainGrid_SizeChanged(Platform::Object^ sender, Win
 	}
 }
 
+
+void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Controls::RichEditBox^ sender, Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^ args)
+{
+	Undo_Button->IsEnabled = CodeEditorBox->Document->CanUndo();
+	Redo_Button->IsEnabled = CodeEditorBox->Document->CanRedo();
+
+	//Seeach IDentifier && Highlight
+
+	if (thisWindowItem == nullptr)
+		return;
+
+	if (!thisWindowItem->isChanged)
+		thisWindowItem->SetChanged(true);
+
+	if (isSmartDetectEnabled)
+	{
+		SmartDetect->DetectWordFromStrArray(GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition), isHighlightEnabled);
+		Point thisPoint;
+
+		CodeEditorBox->Document->Selection->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Right, Windows::UI::Text::VerticalCharacterAlignment::Bottom,
+			Windows::UI::Text::PointOptions::ClientCoordinates, &thisPoint);
+		//auto thisTransform = ref new TranslateTransform;
+		Pipe_Trans->X = CodeEditorBox->ActualWidth >= thisPoint.X + SmartDetect->Width ? thisPoint.X : CodeEditorBox->ActualWidth - SmartDetect->Width;
+		Pipe_Trans->Y = thisPoint.Y + 10;
+	}
+}

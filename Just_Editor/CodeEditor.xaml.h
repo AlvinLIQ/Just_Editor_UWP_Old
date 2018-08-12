@@ -23,6 +23,7 @@ namespace Just_Editor
 		property DuronWindowItemxaml^ thisWindowItem;
 
 		property bool isSmartDetectEnabled;
+		property bool isHighlightEnabled;
 
 //		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
 
@@ -35,13 +36,19 @@ namespace Just_Editor
 
 		Windows::UI::Text::ITextRange^ GetWordFromSelection(int SelectionIndex)
 		{
-			auto thisRange = CodeEditorBox->Document->GetRange(0, SelectionIndex);
+			auto thisRange = CodeEditorBox->Document->GetRange(0, SelectionIndex + 10);
 			auto wholeWord = thisRange->Text->Data();
+			size_t WordLength = wcslen(wholeWord);
 			bool isReturned = false;
+			thisRange->EndPosition = SelectionIndex;
 			do
 			{
 				thisRange->StartPosition = SelectionIndex;
-			} while (--SelectionIndex >= 0 && wholeWord[SelectionIndex] != ' ' && wholeWord[SelectionIndex] != L'\r');
+				if (SelectionIndex < thisRange->EndPosition && wholeWord[thisRange->EndPosition] >= 'a' && wholeWord[thisRange->EndPosition] <= 'z')
+				{
+					thisRange->EndPosition++;
+				}
+			} while (--SelectionIndex >= 0 && wholeWord[SelectionIndex] != L' ' && wholeWord[SelectionIndex] != L'\r');
 			return thisRange;
 		}
 
@@ -93,7 +100,6 @@ namespace Just_Editor
 			}
 		}
 	private:
-		void CodeEditorBox_TextChanging(Windows::UI::Xaml::Controls::RichEditBox^ sender, Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^ args);
 		void CodeEditorBox_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 		void Undo_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void Redo_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
@@ -102,5 +108,6 @@ namespace Just_Editor
 		void ChangeTextColor(Platform::String^ thisIDentifier, Windows::UI::Text::ITextRange^ searchRange, Windows::UI::Color foreColor, Windows::UI::Color backColor);
 		void Caesar_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void MainGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);
+		void CodeEditorBox_TextChanging(Windows::UI::Xaml::Controls::RichEditBox^ sender, Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^ args);
 	};
 }

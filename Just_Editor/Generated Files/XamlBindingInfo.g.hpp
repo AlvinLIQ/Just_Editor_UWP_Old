@@ -58,6 +58,11 @@ void ::XamlBindingInfo::XamlBindings::SubscribeForDataContextChanged(::Windows::
     this->_pBindings->SubscribeForDataContextChanged(object, this);
 }
 
+void ::XamlBindingInfo::XamlBindings::DisconnectUnloadedObject(int connectionId)
+{
+    this->_pBindings->DisconnectUnloadedObject(connectionId);
+}
+
 void ::XamlBindingInfo::XamlBindings::Connect(int connectionId, ::Platform::Object^ target)
 {
     this->_pBindings->Connect(connectionId, target);

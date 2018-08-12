@@ -17,6 +17,8 @@ using namespace Platform;
 using namespace Windows::UI::Xaml::Controls;
 using namespace concurrency;
 
+int OldIndex = -1;
+
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 //int lastWindowIndex;
 
@@ -46,7 +48,7 @@ void MainPage::InitializePage()
 	CoreTitleBar->ExtendViewIntoTitleBar = true;
 	Windows::UI::Xaml::Window::Current->SetTitleBar(TitleBar_Block);
 
-
+	/*
 	if (Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 	{
 		auto statusBar = Windows::UI::ViewManagement::StatusBar::GetForCurrentView();
@@ -61,10 +63,16 @@ void MainPage::InitializePage()
 		statusBar->ForegroundColor = Windows::UI::Colors::LightGray;
 		statusBar->ShowAsync();
 	}
-	else
+	else*/
+	if (!Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 	{
 		TopBar_Grid->Margin = Windows::UI::Xaml::Thickness(0, 0, 182, 0);
 	}
+	DetectSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", "isDetectEnabled")->ToString() == "";
+	if (DetectSwitch->IsOn)
+		HighlightSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", "isHighlightEnabled")->ToString() == "1";
+	else
+		HighlightSwitch->Height = 0;
 }
 
 void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File_Path = "" , bool AutoSelect, Platform::Object^ Frame_Content, Windows::Storage::StorageFile^ Item_File, bool isChanged)
@@ -95,6 +103,12 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 			ref new Windows::UI::Xaml::Input::RightTappedEventHandler(this,
 				&MainPage::WindowItem_RightTapped);
 	}
+
+	thisItem->PointerPressed +=
+		ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Pressed);
+
+	thisItem->PointerReleased +=
+		ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Released);
 
 	((Button^)((Grid^)thisItem->Content)->Children->GetAt(1))->Click += 
 		ref new Windows::UI::Xaml::RoutedEventHandler(this,
@@ -160,13 +174,9 @@ void MainPage::WindowSelectAt(int Item_Index)
 	{
 		MainFrame->Content = thisItem->FrameContent;
 	}
-	else if (thisItem->FilePath != "?S")
-	{
-		MainFrame->Navigate(CodeEditor::typeid);
-	}
 	else
-	{
-		MainFrame->Navigate(StartPage::typeid);
+	{		
+		MainFrame->Navigate(thisItem->FilePath != "?S" ? CodeEditor::typeid : StartPage::typeid, nullptr, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
 	}
 	//thisItem->SetChanged(false);
 }
@@ -240,6 +250,9 @@ void MainPage::CheckWindowItem()
 
 			delete[] sender;
 		});
+
+		targetItem->PointerPressed += ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Pressed);
+		targetItem->PointerReleased += ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Released);
 
 		((Button^)((Grid^)targetItem->Content)->Children->GetAt(1))->Click +=
 			ref new Windows::UI::Xaml::RoutedEventHandler(this,
@@ -317,6 +330,22 @@ void MainPage::WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xam
 
 }
 
+void MainPage::WindowItem_Pressed(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+{
+	OldIndex = GetWindowItemIndex((DuronWindowItemxaml^)sender, (Panel^)((DuronWindowItemxaml^)sender)->Parent);
+}
+
+void MainPage::WindowItem_Released(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+{
+	if (OldIndex != -1)
+	{
+		int NewIndex = GetWindowItemIndex((DuronWindowItemxaml^)sender, (Panel^)((DuronWindowItemxaml^)sender)->Parent);
+		if (NewIndex != -1)
+			((Panel^)((DuronWindowItemxaml^)sender)->Parent)->Children->Move(OldIndex, NewIndex);
+	}
+	OldIndex = -1;
+}
+
 void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
 	if (e->Parameter != nullptr)
@@ -391,4 +420,26 @@ void Just_Editor::MainPage::GetHiddenWindow_Button_Click(Platform::Object^ sende
 void Just_Editor::MainPage::WindowPanel_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
 {
 	CheckWindowItem();
+}
+
+
+void Just_Editor::MainPage::HighlightSwitch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	Editor_Tools::WriteSetting("Editor_Settings", "isHighlightEnabled", HighlightSwitch->IsOn ? "1" : "0");
+}
+
+
+void Just_Editor::MainPage::DetectSwitch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	if (DetectSwitch->IsOn)
+	{
+		Editor_Tools::DeleteSettingItem("Editor_Settings", "isDetectEnabled");
+		HighlightSwitch->Height = Height;
+	}
+	else
+	{
+		Editor_Tools::WriteSetting("Editor_Settings", "isDetectEnabled", "1");
+		HighlightSwitch->IsOn = false;
+		HighlightSwitch->Height = 0;
+	}
 }

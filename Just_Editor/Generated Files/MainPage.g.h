@@ -12,11 +12,12 @@ namespace Windows {
         namespace Xaml {
             namespace Controls {
                 ref class SplitView;
+                ref class Button;
+                ref class ToggleSwitch;
                 ref class Border;
                 ref class Grid;
                 ref class StackPanel;
                 ref class Frame;
-                ref class Button;
             }
         }
     }
@@ -35,10 +36,17 @@ namespace Just_Editor
         virtual ::Windows::UI::Xaml::Markup::IComponentConnector^ GetBindingConnector(int connectionId, ::Platform::Object^ target);
     
     private:
+        void UnloadObject(::Windows::UI::Xaml::DependencyObject^ dependencyObject);
+        void DisconnectUnloadedObject(int connectionId);
+    
+    private:
         bool _contentLoaded;
     
     
         private: ::Windows::UI::Xaml::Controls::SplitView^ SettingsSplit;
+        private: ::Windows::UI::Xaml::Controls::Button^ ClosePaneButton;
+        private: ::Windows::UI::Xaml::Controls::ToggleSwitch^ DetectSwitch;
+        private: ::Windows::UI::Xaml::Controls::ToggleSwitch^ HighlightSwitch;
         private: ::Windows::UI::Xaml::Controls::Border^ TitleBar_Block;
         private: ::Windows::UI::Xaml::Controls::Grid^ TopBar_Grid;
         private: ::Windows::UI::Xaml::Controls::StackPanel^ HiddenWindowPanel;
