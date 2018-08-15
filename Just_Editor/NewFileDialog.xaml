@@ -1,0 +1,49 @@
+﻿<ContentDialog
+    x:Class="Just_Editor.NewFileDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Just_Editor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    >
+    <ContentDialog.Title>
+        <StackPanel Orientation="Horizontal">
+            <Button Name="CloseButton" Click="CloseButton_Click" VerticalContentAlignment="Top" FontWeight="Bold" Background="#0000" BorderThickness="0">
+                x
+            </Button>
+            <TextBlock x:Name="DialogTitle" Foreground="#5D5B5B" FontSize="16" VerticalAlignment="Center"/>
+        </StackPanel>
+    </ContentDialog.Title>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Padding="5" Text="File Type" Foreground="#5D5B5B" FontWeight="Bold" FontSize="20"/>
+        <StackPanel Padding="10" Grid.Row="1">
+            <ListView Name="FileTypeList" SelectionChanged="FileTypeList_SelectionChanged">
+                <ListViewItem x:Uid="c">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Assets/New_Icon.png" Width="30"/>
+                        <TextBlock Text=" Text" Foreground="#5D5B5B" FontWeight="Bold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ListViewItem>
+            </ListView>
+        </StackPanel>
+        <TextBlock Padding="5" Text="File Settings" Foreground="#5D5B5B" Grid.Column="1" FontWeight="Bold" FontSize="20"/>
+        <Grid Padding="10" Name="FileSettingColumn" Grid.Row="1" Grid.Column="1">
+            <StackPanel Margin="0,0,0,45">
+                <TextBlock Foreground="{x:Bind DialogTitle.Foreground}" HorizontalAlignment="Left" FontSize="16" Text="File Name"/>
+                <TextBox x:Name="FileName_TextBox" Foreground="#999" BorderThickness="0,0,0,0.5" IsEnabled="False" TextChanging="FileName_TextBox_TextChanging"/>
+                <TextBlock x:Name="ErrorMsg_Block" Foreground="Red" HorizontalAlignment="Left" FontSize="16" Text=" "/>
+            </StackPanel>
+            <Button Name="CreateFile_Button" Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Foreground="{x:Bind DialogTitle.Foreground}" 
+                BorderThickness="0" Background="#EFEFEF" Height="35" Content="OK" Click="CreateFile_Button_Click" IsEnabled="False"/>
+        </Grid>
+    </Grid>
+</ContentDialog>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <DebuggerFlavor>WindowsDeviceDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <DebuggerFlavor>WindowsDeviceDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AppxPackageIsForStore>True</AppxPackageIsForStore>
+    <AppxShowAllApps>False</AppxShowAllApps>
+    <AppxBuildConfigurationSelection>x86|x64|arm</AppxBuildConfigurationSelection>
+    <PackageOptionalProjectsInIdeBuilds>False</PackageOptionalProjectsInIdeBuilds>
+    <Source>C:\Users\Duron\Pictures\Just_Editor_Icon.png</Source>
+    <SmallTileSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</SmallTileSource>
+    <MediumTileSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</MediumTileSource>
+    <WideTileSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</WideTileSource>
+    <LargeTileSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</LargeTileSource>
+    <AppIconSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</AppIconSource>
+    <SplashScreenSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</SplashScreenSource>
+    <PackageLogoSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</PackageLogoSource>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,12 @@
+.vs/
+AppPackages/
+ARM/
+Debug
+Release/
+x64/
+Just_Editor/ARM/
+Just_Editor/Debug/
+Just_Editor/Generated Files/
+Just_Editor/Release/
+Just_Editor/x64/
+Just_Editor/*.pfx

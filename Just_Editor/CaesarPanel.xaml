@@ -1,0 +1,25 @@
+﻿<UserControl
+    x:Class="Just_Editor.CaesarPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Just_Editor"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="400"
+    d:DesignWidth="250">
+    <ScrollViewer Background="WhiteSmoke" HorizontalScrollBarVisibility="Visible" HorizontalScrollMode="Enabled">
+        <Grid Padding="20,10">
+            <TextBlock Name="PanelTitle" FontWeight="Bold" FontSize="22" Foreground="#5D5B5B" HorizontalAlignment="Left" PointerEntered="PanelTitle_PointerEntered" 
+                       PointerCaptureLost="PanelTitle_PointerCaptureLost" PointerExited="PanelTitle_PointerCaptureLost" Tapped="PanelTitle_Tapped" VerticalAlignment="Top"/>
+            <WebView Name="thisWebView" Margin="10,85,0,0" Width="0"/>
+            <StackPanel Padding="10" Name="MainPanel" Margin="10,30,0,0">
+            </StackPanel>
+
+            <GridView Name="CipherType_List" Background="WhiteSmoke" SelectionMode="Single" SelectionChanged="CipherType_List_SelectionChanged" Header="Select a feature"
+                      Foreground="#5D5B5B" FontWeight="Bold">
+                
+            </GridView>
+        </Grid>
+    </ScrollViewer>
+</UserControl>
