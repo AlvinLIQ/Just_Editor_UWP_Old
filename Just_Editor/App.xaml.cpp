@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "MainPage.xaml.h"
+#include "CodeEditor.xaml.h"
 
 using namespace Just_Editor;
 
@@ -44,6 +45,7 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
 
         rootFrame->NavigationFailed += ref new Windows::UI::Xaml::Navigation::NavigationFailedEventHandler(this, &App::OnNavigationFailed);
 
+
         if (e->PreviousExecutionState == ApplicationExecutionState::Terminated)
         {
             // TODO: Restore the saved session state only when appropriate, scheduling the
@@ -82,6 +84,26 @@ void App::OnLaunched(Windows::ApplicationModel::Activation::LaunchActivatedEvent
         }
     }
 }
+
+void App::OnFileActivated(Windows::ApplicationModel::Activation::FileActivatedEventArgs^ args)
+{
+	auto rootFrame = dynamic_cast<Frame^>(Window::Current->Content);
+
+	if (rootFrame == nullptr)
+	{
+		rootFrame = ref new Frame;
+		rootFrame->NavigationFailed += ref new Windows::UI::Xaml::Navigation::NavigationFailedEventHandler(this, &App::OnNavigationFailed);
+		rootFrame->Navigate(TypeName(MainPage::typeid));
+		Window::Current->Content = rootFrame;
+		Window::Current->Activate();
+	}
+
+	if (args->Files->Size)
+	{
+		((Frame^)((Grid^)((Grid^)((Grid^)((MainPage^)rootFrame->Content)->Content)->Children->GetAt(0))->Children->GetAt(2))->Children->GetAt(0))->Navigate(CodeEditor::typeid, args->Files->GetAt(0), ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
+	}
+}
+
 
 /// <summary>
 /// Invoked when application execution is being suspended.  Application state is saved

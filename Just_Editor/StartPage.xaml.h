@@ -15,7 +15,7 @@ namespace Just_Editor
 	/// </summary>
 	[Windows::Foundation::Metadata::WebHostHidden]
 	public ref class StartPage sealed
-	{
+	{	
 	public:
 		StartPage();
 	private:

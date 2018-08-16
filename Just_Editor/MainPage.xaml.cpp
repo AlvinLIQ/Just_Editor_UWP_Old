@@ -26,7 +26,6 @@ MainPage::MainPage()
 {
 	InitializeComponent();
 	InitializePage();
-
 	NewWindowItem("StartPage", "?S");
 }
 
