@@ -49,7 +49,7 @@ void Just_Editor::DuronWindowItemxaml::SetFileName(Platform::String^ newFileName
 {
 	this->FileName = newFileName;
 
-	if (this->ItemFile != nullptr)
+	if (this->ItemFile != nullptr && this->ItemFile->Name != newFileName)
 	{
 		concurrency::create_task(ItemFile->RenameAsync(newFileName)).then([this]() 
 		{
@@ -59,4 +59,9 @@ void Just_Editor::DuronWindowItemxaml::SetFileName(Platform::String^ newFileName
 
 	FileName_Block->Text = newFileName;
 	if (this->isChanged) FileName_Block->Text += L"*";
+}
+
+void Just_Editor::DuronWindowItemxaml::SetDisplayName(Platform::String^ newDisplayName)
+{
+	FileName_Block->Text = newDisplayName;
 }

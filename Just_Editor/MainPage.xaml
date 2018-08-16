@@ -23,7 +23,7 @@
                 </StackPanel>
                 <StackPanel Name="TopStackPanel" Orientation="Horizontal" Margin="34,0,32,0">
                     <StackPanel Name="WindowPanel" Orientation="Horizontal" BorderThickness="0.4, 0, 0.4, 0" BorderBrush="LightGray" HorizontalAlignment="Left"
-                                SizeChanged="WindowPanel_SizeChanged">
+                                >
                     </StackPanel>
                     <Button Name="AddWindow_Button" Foreground="#5D5B5B" VerticalContentAlignment="Center"
                             Click="AddWindow_Button_Click" VerticalAlignment="Stretch" Background="#0000" Content="+" FontWeight="Bold">
@@ -41,7 +41,7 @@
                 <Frame Name="MainFrame" Navigated="MainFrame_Navigated" Margin="0,0,0,30"/>
 
                 <Grid Background="WhiteSmoke" VerticalAlignment="Bottom" Height="30" Padding="10,0,10,0">
-                    <TextBlock Text="Just_Editor Ver.0.0.1(Test)" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
+                    <TextBlock Text="Just_Editor Ver.0.0.2" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
                     <Button Name="SettingsButton" HorizontalAlignment="Right" Padding="0" Background="#0000" BorderThickness="0"
                             Width="30" VerticalAlignment="Stretch" Click="SettingsButton_Click">
                         <Image Height="15" Source="Assets/Setting_Icon.png"/>

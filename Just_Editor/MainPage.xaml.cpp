@@ -14,6 +14,7 @@
 using namespace Just_Editor;
 
 using namespace Platform;
+using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace concurrency;
 
@@ -75,7 +76,6 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 {
 	auto thisItem = ref new DuronWindowItemxaml;
 
-	thisItem->FileName = File_Name;
 	thisItem->FilePath = File_Path;
 	if (Frame_Content != nullptr)
 	{
@@ -86,8 +86,30 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 	if (Item_File != nullptr)
 		thisItem->ItemFile = Item_File;
 
+	thisItem->Width = 0;
 	WindowPanel->Children->Append(thisItem);
 
+	//Show
+	auto thisTimer = ref new DispatcherTimer;
+	Windows::Foundation::TimeSpan ts;
+	ts.Duration = 5;
+	thisTimer->Interval = ts;
+	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem, AutoSelect, File_Name](Object^ sender, Object^ e) 
+	{
+		if (120 > thisItem->ActualWidth)
+			thisItem->Width += 30;
+		else
+		{
+			thisTimer->Stop();
+			delete[] thisTimer;
+			thisItem->FileName = File_Name;
+			thisItem->SetDisplayName(File_Name);
+			if (AutoSelect)
+				WindowSelectAt(WindowPanel->Children->Size - 1);
+			CheckWindowItem();
+		}
+	});
+	thisTimer->Start();
 
 	thisItem->Tapped +=
 		ref new Windows::UI::Xaml::Input::TappedEventHandler(this,
@@ -110,8 +132,6 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 		ref new Windows::UI::Xaml::RoutedEventHandler(this,
 		&MainPage::WindowItemCloseButton_Click);
 
-	if(AutoSelect)
-		WindowSelectAt(WindowPanel->Children->Size - 1);
 }
 
 void MainPage::WindowUnSelectAt(int Item_Index)
@@ -180,16 +200,35 @@ void MainPage::WindowSelectAt(int Item_Index)
 
 void MainPage::RemoveWindowItem(DuronWindowItemxaml^ sender)
 {
-	auto thisPanel = (Panel^)sender->Parent;
-	int Item_Index = GetWindowItemIndex(sender, thisPanel);
-
 	delete sender->ItemFile;
-
-	thisPanel->Children->RemoveAt(Item_Index);
-	if (((DuronWindowItemxaml^)sender)->isSelected)
+	sender->FileName = "";
+	//Hide && Remove
+	auto thisTimer = ref new DispatcherTimer;
+	Windows::Foundation::TimeSpan ts;
+	ts.Duration = 5;
+	thisTimer->Interval = ts;
+	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem = sender](Object^ sender, Object^ e)
 	{
-		WindowSelectAt(WindowPanel->Children->Size - 1);
-	}
+		if (30 <= thisItem->ActualWidth)
+			thisItem->Width -= 30;
+		else
+		{
+			thisTimer->Stop();
+			delete[] thisTimer;
+
+			auto thisPanel = (Panel^)thisItem->Parent;
+			int Item_Index = GetWindowItemIndex(thisItem, thisPanel);
+			thisPanel->Children->RemoveAt(Item_Index);
+
+			if (thisItem->isSelected)
+			{
+				WindowSelectAt(WindowPanel->Children->Size - 1);
+			}
+			CheckWindowItem();
+		}
+	});
+	thisTimer->Start();
+	
 }
 
 int MainPage::GetSelectedItemIndex()
@@ -234,6 +273,8 @@ void MainPage::CheckWindowItem()
 		targetItem->FilePath = thisItem->FilePath;
 		targetItem->FrameContent = thisItem->FrameContent;
 		targetItem->ItemFile = thisItem->ItemFile;
+		targetItem->Width = thisItem->Width;
+
 
 		targetItem->isChanged = thisItem->isChanged;
 
@@ -279,20 +320,17 @@ void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI
 	if (thisItem->isChanged)
 	{
 		auto theDialog = Editor_Tools::GetContentDialog("Tips", "Do you want to save it?", true, true);
-		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
 		{
 			((CodeEditor^)thisItem->FrameContent)->SaveFile();
+			RemoveWindowItem(thisItem);
 		});
-		theDialog->CloseButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([](ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		theDialog->SecondaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this](ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
 		{
-			sender->CloseButtonText = "";
+			RemoveWindowItem(thisItem);
 		});
-		theDialog->Closed += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogClosedEventArgs^>([thisItem, this](ContentDialog^ sender, ContentDialogClosedEventArgs^ args)
+		theDialog->Closed += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogClosedEventArgs^>([](ContentDialog^ sender, ContentDialogClosedEventArgs^ args)
 		{
-			if (sender->CloseButtonText != "")
-			{
-				RemoveWindowItem(thisItem);
-			}
 			delete sender;
 		});
 		theDialog->ShowAsync();
@@ -342,6 +380,11 @@ void MainPage::WindowItem_Released(Platform::Object^ sender, Windows::UI::Xaml::
 	OldIndex = -1;
 }
 
+void MainPage::OpenFromStorageFile(Windows::Storage::StorageFile^ thisFile, bool AutoSelect)
+{
+	NewWindowItem(thisFile->Name, thisFile->Path, AutoSelect, nullptr, thisFile, false);
+}
+
 void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
 	if (e->Parameter != nullptr)
@@ -366,13 +409,19 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 			{
 				String^ thisText = thisTask.get();
 				thisItem->OriginalText = thisText;
-
+				CodeEditor^ thisEditor = (CodeEditor^)MainFrame->Content;
 				//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
-				((RichEditBox^)((Grid^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Children->GetAt(0))->Document->Selection->Text += thisText;
-				((CodeEditor^)MainFrame->Content)->isHighlightEnabled = HighlightSwitch->IsOn;
-				((CodeEditor^)MainFrame->Content)->isSmartDetectEnabled = DetectSwitch->IsOn;
-				((CodeEditor^)MainFrame->Content)->AutoDetect();
+				thisEditor->isHighlightEnabled = HighlightSwitch->IsOn;
+				thisEditor->isSmartDetectEnabled = DetectSwitch->IsOn;
 
+				RichEditBox^ EditBox = ((RichEditBox^)((Grid^)((Panel^)thisEditor->Content)->Children->GetAt(1))->Children->GetAt(0));
+				EditBox->Document->EndUndoGroup();
+				EditBox->Document->UndoLimit = 0;
+				EditBox->Document->Selection->Text += thisText;
+				thisEditor->AutoDetect();
+
+				EditBox->Document->UndoLimit = 80;
+				EditBox->Document->BeginUndoGroup();
 			}
 			catch (Exception^ WTF)
 			{
@@ -389,7 +438,8 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 		((CodeEditor^)MainFrame->Content)->isHighlightEnabled = HighlightSwitch->IsOn;
 		((CodeEditor^)MainFrame->Content)->isSmartDetectEnabled = DetectSwitch->IsOn;
 	}
-	thisItem->FrameContent = MainFrame->Content;
+	if (thisItem->FrameContent == nullptr)
+		thisItem->FrameContent = MainFrame->Content;
 }
 
 
@@ -413,10 +463,17 @@ void Just_Editor::MainPage::HomeButton_Click(Platform::Object^ sender, Windows::
 
 void Just_Editor::MainPage::GetHiddenWindow_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	HiddenWindowPanel->Height = HiddenWindowPanel->Height ? 0 : Height;
+	if (HiddenWindowPanel->Height)
+	{
+		HiddenWindowPanel->Height = 0;
+		GetHiddenWindow_Button->Content = L"\uE011";
+	}
+	else if (HiddenWindowPanel->Children->Size)
+	{
+		HiddenWindowPanel->Height = Height;
+		GetHiddenWindow_Button->Content = L"\uE010";
+	}
 }
-
-
 
 void Just_Editor::MainPage::WindowPanel_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
 {

@@ -58,6 +58,7 @@ namespace Just_Editor
 		}
 
 		void SetFileName(Platform::String^ newFileName);
+		void SetDisplayName(Platform::String^ newDisplayName);
 	private:
 		void MainGrid_PointerEntered(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
 		void MainGrid_PointerCaptureLost(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);

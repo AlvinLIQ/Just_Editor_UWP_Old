@@ -98,9 +98,13 @@ void App::OnFileActivated(Windows::ApplicationModel::Activation::FileActivatedEv
 		Window::Current->Activate();
 	}
 
-	if (args->Files->Size)
+	int FilesNum = (int)args->Files->Size;
+	//Frame^ MainFrame = ((Frame^)((Grid^)((Grid^)((Grid^)((MainPage^)rootFrame->Content)->Content)->Children->GetAt(0))->Children->GetAt(2))->Children->GetAt(0));
+	auto mainPage = (MainPage^)rootFrame->Content;
+	while (--FilesNum >= 0)
 	{
-		((Frame^)((Grid^)((Grid^)((Grid^)((MainPage^)rootFrame->Content)->Content)->Children->GetAt(0))->Children->GetAt(2))->Children->GetAt(0))->Navigate(CodeEditor::typeid, args->Files->GetAt(0), ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
+		//MainFrame->Navigate(CodeEditor::typeid, args->Files->GetAt(FilesNum), ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
+		mainPage->OpenFromStorageFile(dynamic_cast<Windows::Storage::StorageFile^>(args->Files->GetAt(FilesNum)), !FilesNum);
 	}
 }
 

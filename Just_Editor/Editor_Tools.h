@@ -1,5 +1,9 @@
 #pragma once
 #include "MainPage.xaml.h"
+
+#define MaxUndoLimit 80
+#define IdentifierNum 41
+
 const wchar_t UnabledWords[] = L"\\/:*?<>|";
 
 namespace Just_Editor

@@ -36,6 +36,8 @@ CodeEditor::CodeEditor()
 	else
 		CodeEditorBox->KeyDown += ref new Windows::UI::Xaml::Input::KeyEventHandler(this, &Just_Editor::CodeEditor::CodeEditorBox_KeyDown);
 
+	CodeEditorBox->Document->UndoLimit = MaxUndoLimit;
+	CodeEditorBox->Document->BeginUndoGroup();
 	//this->Frame->Navigated += ref new NavigatedEventHandler(this, &CodeEditor::ThisFrame_Navigated);
 }
 /*
@@ -49,7 +51,7 @@ void Just_Editor::CodeEditor::AutoDetect()
 {
 	if (!isHighlightEnabled)
 		return;
-	int c = 41, sl;
+	int c = IdentifierNum, sl;
 	Windows::UI::Text::ITextRange^ searchRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 	searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
 	Windows::UI::Text::ITextCharacterFormat^ charFormatting = searchRange->CharacterFormat;
@@ -213,13 +215,13 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 	Undo_Button->IsEnabled = CodeEditorBox->Document->CanUndo();
 	Redo_Button->IsEnabled = CodeEditorBox->Document->CanRedo();
 
-	//Seeach IDentifier && Highlight
-
 	if (thisWindowItem == nullptr)
 		return;
 
 	if (!thisWindowItem->isChanged)
+	{
 		thisWindowItem->SetChanged(true);
+	}
 
 	if (isSmartDetectEnabled)
 	{

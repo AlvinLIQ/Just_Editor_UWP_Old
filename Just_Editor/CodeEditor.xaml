@@ -33,7 +33,7 @@
         <Grid Grid.Row="1">
             <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle"
                              ScrollViewer.HorizontalScrollMode="Enabled" AcceptsReturn="False" TextChanging="CodeEditorBox_TextChanging"
-                             SelectionHighlightColor="DarkGray">
+                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False">
             </RichEditBox>
             <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <local:DuronSmartDetect.RenderTransform>

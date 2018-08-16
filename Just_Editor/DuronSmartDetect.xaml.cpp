@@ -42,7 +42,7 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 			thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::Gray;
 		int count = 0;
 
-		for (size_t i = 0, j, thisIDLength; i < 41; i++, count = 0)
+		for (size_t i = 0, j, thisIDLength; i < IdentifierNum; i++, count = 0)
 		{
 			thisIDLength = IdentifierArray[i].length();
 			if (thisIDLength < thisWordLength)

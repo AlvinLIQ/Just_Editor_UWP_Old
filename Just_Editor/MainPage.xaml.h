@@ -17,6 +17,7 @@ namespace Just_Editor
 	{
 	public:
 		MainPage();
+		void OpenFromStorageFile(Windows::Storage::StorageFile^ thisFile, bool AutoSelect);
 	private:
 		void InitializePage();
 		void CheckWindowItem();
