@@ -65,11 +65,12 @@ void MainPage::InitializePage()
 	}
 	else*/
 	if (!Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-	{
 		TopBar_Grid->Margin = Windows::UI::Xaml::Thickness(0, 0, 182, 0);
-	}
-	DetectSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", "isDetectEnabled")->ToString() != "0";
-	HighlightSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", "isHighlightEnabled")->ToString() != "0";
+	else
+		TopBar_Grid->Height = 40;
+
+	DetectSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", DetectSwitch->Name)->ToString() != "0";
+	HighlightSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", DetectSwitch->Name)->ToString() != "0";
 }
 
 void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File_Path = "" , bool AutoSelect, Platform::Object^ Frame_Content, Windows::Storage::StorageFile^ Item_File, bool isChanged)
@@ -94,7 +95,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 	Windows::Foundation::TimeSpan ts;
 	ts.Duration = 5;
 	thisTimer->Interval = ts;
-	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem, AutoSelect, File_Name](Object^ sender, Object^ e) 
+	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem, AutoSelect, File_Name, File_Path](Object^ sender, Object^ e) 
 	{
 		if (120 > thisItem->ActualWidth)
 			thisItem->Width += 30;
@@ -107,30 +108,30 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 			if (AutoSelect)
 				WindowSelectAt(WindowPanel->Children->Size - 1);
 			CheckWindowItem();
+			thisItem->Tapped +=
+				ref new Windows::UI::Xaml::Input::TappedEventHandler(this,
+					&MainPage::WindowItem_Tapped);
+
+			if (File_Path != "?S")
+			{
+				thisItem->RightTapped +=
+					ref new Windows::UI::Xaml::Input::RightTappedEventHandler(this,
+						&MainPage::WindowItem_RightTapped);
+			}
+
+			thisItem->PointerPressed +=
+				ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Pressed);
+
+			thisItem->PointerReleased +=
+				ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Released);
+
+			((Button^)((Grid^)thisItem->Content)->Children->GetAt(1))->Click +=
+				ref new Windows::UI::Xaml::RoutedEventHandler(this,
+					&MainPage::WindowItemCloseButton_Click);
 		}
 	});
 	thisTimer->Start();
 
-	thisItem->Tapped +=
-		ref new Windows::UI::Xaml::Input::TappedEventHandler(this,
-		&MainPage::WindowItem_Tapped);
-
-	if (File_Path != "?S")
-	{
-		thisItem->RightTapped +=
-			ref new Windows::UI::Xaml::Input::RightTappedEventHandler(this,
-				&MainPage::WindowItem_RightTapped);
-	}
-
-	thisItem->PointerPressed +=
-		ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Pressed);
-
-	thisItem->PointerReleased +=
-		ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Released);
-
-	((Button^)((Grid^)thisItem->Content)->Children->GetAt(1))->Click += 
-		ref new Windows::UI::Xaml::RoutedEventHandler(this,
-		&MainPage::WindowItemCloseButton_Click);
 
 }
 
@@ -196,7 +197,6 @@ void MainPage::WindowSelectAt(int Item_Index)
 	}
 	//thisItem->SetChanged(false);
 }
-
 
 void MainPage::RemoveWindowItem(DuronWindowItemxaml^ sender)
 {
@@ -311,7 +311,7 @@ void MainPage::CheckWindowItem()
 		NewWindowItem(thisItem->FileName, thisItem->FilePath, !WindowPanel->Children->Size, thisItem->FrameContent, thisItem->ItemFile, thisItem->isChanged);
 		thisItem = nullptr;
 	}
-	HiddenWindowPanel->Margin = Windows::UI::Xaml::Thickness(WindowPanel->ActualWidth, 0, 0, 0);
+	HiddenMenuTrans->X = WindowPanel->Children->Size * 120;
 }
 
 void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
@@ -442,37 +442,24 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 		thisItem->FrameContent = MainFrame->Content;
 }
 
-
 void Just_Editor::MainPage::AddWindow_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	NewWindowItem("Untitled " + WindowPanel->Children->Size);
 }
-
 
 void Just_Editor::MainPage::SettingsButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	SettingsSplit->IsPaneOpen = !SettingsSplit->IsPaneOpen;
 }
 
-
 void Just_Editor::MainPage::HomeButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	NewWindowItem("StartPage", "?S");
 }
 
-
 void Just_Editor::MainPage::GetHiddenWindow_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	if (HiddenWindowPanel->Height)
-	{
-		HiddenWindowPanel->Height = 0;
-		GetHiddenWindow_Button->Content = L"\uE011";
-	}
-	else if (HiddenWindowPanel->Children->Size)
-	{
-		HiddenWindowPanel->Height = Height;
-		GetHiddenWindow_Button->Content = L"\uE010";
-	}
+	ChangeHiddenPanelExpand();
 }
 
 void Just_Editor::MainPage::WindowPanel_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
@@ -480,14 +467,54 @@ void Just_Editor::MainPage::WindowPanel_SizeChanged(Platform::Object^ sender, Wi
 	CheckWindowItem();
 }
 
-
-void Just_Editor::MainPage::HighlightSwitch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	Editor_Tools::WriteSetting("Editor_Settings", "isHighlightEnabled", HighlightSwitch->IsOn ? "1" : "0");
+	auto thisSwitch = (ToggleSwitch^)sender;
+	Editor_Tools::WriteSetting("Editor_Settings", thisSwitch->Name, thisSwitch->IsOn ? "1" : "0");
 }
 
 
-void Just_Editor::MainPage::DetectSwitch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Just_Editor::MainPage::ChangeHiddenPanelExpand()
 {
-	Editor_Tools::WriteSetting("Editor_Settings", "isDetectEnabled", DetectSwitch->IsOn ? "1" : "0");
+	if (HiddenScrollViewer->ActualHeight && HiddenScrollViewer->ActualHeight < 120)
+	{
+		return;
+	}
+
+	int icNum;
+	if (HiddenScrollViewer->ActualHeight)
+	{
+		GetHiddenWindow_Button->Content = L"\uE011";
+		icNum = -40;
+	}
+	else
+	{
+		GetHiddenWindow_Button->Content = L"\uE010";
+		icNum = 40;
+	}
+	//Show || Hide
+	auto thisTimer = ref new DispatcherTimer;
+	Windows::Foundation::TimeSpan ts;
+	ts.Duration = 5;
+	thisTimer->Interval = ts;
+	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem = HiddenScrollViewer, icNum](Object^ sender, Object^ e)
+	{
+		int NextHeight = (int)thisItem->ActualHeight + icNum;
+		if (NextHeight >= 0 && NextHeight <= 120)
+			thisItem->Height = NextHeight;
+		else
+		{
+			thisTimer->Stop();
+			delete[] thisTimer;
+		}
+	});
+	thisTimer->Start();
+}
+
+void Just_Editor::MainPage::Page_Tapped(Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)
+{
+	if (HiddenScrollViewer->ActualHeight)
+	{
+		ChangeHiddenPanelExpand();
+	}
 }

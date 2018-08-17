@@ -34,7 +34,10 @@ CodeEditor::CodeEditor()
 	if (!Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 		CodeEditorBox->PreviewKeyDown += ref new Windows::UI::Xaml::Input::KeyEventHandler(this, &Just_Editor::CodeEditor::CodeEditorBox_KeyDown);
 	else
+	{
+		ToolBar_Row->Height = 35;
 		CodeEditorBox->KeyDown += ref new Windows::UI::Xaml::Input::KeyEventHandler(this, &Just_Editor::CodeEditor::CodeEditorBox_KeyDown);
+	}
 
 	CodeEditorBox->Document->UndoLimit = MaxUndoLimit;
 	CodeEditorBox->Document->BeginUndoGroup();

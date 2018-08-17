@@ -7,21 +7,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="WindowPanel_SizeChanged" Background="#787878" NavigationCacheMode="Disabled">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Tapped="Page_Tapped">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="32"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Border Name="TitleBar_Block" Background="#999"/>
-            <Grid Name="TopBar_Grid">
-                <StackPanel Name="ToolBar1" HorizontalAlignment="Left">
-                    <Button Name="HomeButton" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+            <Grid Name="TopBar_Grid" Height="34">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="34"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Name="ToolBar1">
+                    <Button Name="HomeButton" Height="{x:Bind TopBar_Grid.Height, Mode=OneWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                             Click="HomeButton_Click" Background="#0000" >
                         <Image Source="Assets/Home_Icon.png" Width="18"/>
                     </Button>
                 </StackPanel>
-                <StackPanel Name="TopStackPanel" Orientation="Horizontal" Margin="34,0,32,0">
+                <StackPanel Name="TopStackPanel" Orientation="Horizontal" Margin="0,0,32,0" Grid.Column="1">
                     <StackPanel Name="WindowPanel" Orientation="Horizontal" BorderThickness="0.4, 0, 0.4, 0" BorderBrush="LightGray" HorizontalAlignment="Left"
                                 >
                     </StackPanel>
@@ -29,7 +33,7 @@
                             Click="AddWindow_Button_Click" VerticalAlignment="Stretch" Background="#0000" Content="+" FontWeight="Bold">
                     </Button>
                     <Button Name="GetHiddenWindow_Button" Foreground="#5D5B5B" Background="#0000" Content="&#xE011;" FontSize="8" VerticalContentAlignment="Center"
-                            VerticalAlignment="Stretch" FontWeight="Bold" Height="32" Width="32" Click="GetHiddenWindow_Button_Click"
+                            VerticalAlignment="Stretch" FontWeight="Bold" Width="32" Click="GetHiddenWindow_Button_Click"
                              FontFamily="Segoe MDL2 Assets" Padding="8,4,8,0"/>
                 </StackPanel>
                 <!--StackPanel HorizontalAlignment="Right">
@@ -48,9 +52,15 @@
                     </Button>
                 </Grid>
             </Grid>
-            <StackPanel Name="HiddenWindowPanel" Grid.Row="1" HorizontalAlignment="Left" Background="#CCC" Height="0" VerticalAlignment="Top" Margin="0,0,10,0">
+            <ScrollViewer Name="HiddenScrollViewer" Height="0" Grid.Row="1" Width="135" Background="#EEE" HorizontalAlignment="Left" VerticalAlignment="Top"
+                          Padding="0,0,15,0" BorderBrush="LightGray" BorderThickness="0.4">
+                <ScrollViewer.RenderTransform>
+                    <TranslateTransform x:Name="HiddenMenuTrans"/>
+                </ScrollViewer.RenderTransform>
+                <StackPanel Name="HiddenWindowPanel" Background="WhiteSmoke">
 
-            </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
         <SplitView Name="SettingsSplit" DisplayMode="Overlay" PanePlacement="Right" HorizontalAlignment="Right" OpenPaneLength="300">
             <SplitView.Pane>
@@ -59,12 +69,12 @@
                         Settings
                     </TextBlock>
                     <StackPanel Padding="10,10,0,0" Margin="0,40">
-                        <ToggleSwitch Name="DetectSwitch" Toggled="DetectSwitch_Toggled" Foreground="#5D5B5B">
+                        <ToggleSwitch Name="DetectSwitch" Toggled="Switch_Toggled" Foreground="#5D5B5B">
                             <ToggleSwitch.Header>
                                 <TextBlock Foreground="#5D5B5B" Text="Is smart detect enabled"/>
                             </ToggleSwitch.Header>
                         </ToggleSwitch>
-                        <ToggleSwitch Name="HighlightSwitch" Toggled="HighlightSwitch_Toggled" Foreground="#5D5B5B">
+                        <ToggleSwitch Name="HighlightSwitch" Toggled="Switch_Toggled" Foreground="#5D5B5B">
                             <ToggleSwitch.Header>
                                 <TextBlock Foreground="#5D5B5B" Text="Is highlight enabled" />
                             </ToggleSwitch.Header>

@@ -8,7 +8,7 @@
     mc:Ignorable="d">
     <Grid Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" KeyDown="MainGrid_KeyDown" SizeChanged="MainGrid_SizeChanged">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition x:Name="ToolBar_Row" Height="30"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -16,17 +16,17 @@
             <ColumnDefinition x:Name="ExtraColumn" Width="0"/>
         </Grid.ColumnDefinitions>
         <StackPanel Background="WhiteSmoke" Orientation="Horizontal" Grid.ColumnSpan="2">
-            <Button Name="Undo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold" Click="Undo_Button_Click">
+            <Button Name="Undo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold" Click="Undo_Button_Click">
                 &lt;
             </Button>
-            <Button Name="Redo_Button" Width="30" Height="30" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold" Click="Redo_Button_Click">
+            <Button Name="Redo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="#5D5B5B" FontWeight="ExtraBold" Click="Redo_Button_Click">
                 &gt;
             </Button>
 
-            <Button Name="Save_Button" Width="30" Height="30" Padding="0,4.5,0,0" Background="#0000" BorderThickness="0" Click="Save_Button_Click">
+            <Button Name="Save_Button" Width="30" VerticalAlignment="Stretch" Padding="0,4.5,0,0" Background="#0000" BorderThickness="0" Click="Save_Button_Click">
                 <Image Source="Assets/Save_Icon.png"  Width="18"/>
             </Button>
-            <Button Name="Caesar_Button" Width="30" Height="30" Padding="0,1,0,0" Background="#0000" BorderThickness="0" Click="Caesar_Button_Click">
+            <Button Name="Caesar_Button" Width="30" VerticalAlignment="Stretch" Padding="0,1,0,0" Background="#0000" BorderThickness="0" Click="Caesar_Button_Click">
                 <Image Source="Assets/Caesar_Icon.png"  Width="18"/>
             </Button>
         </StackPanel>
