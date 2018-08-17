@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="10688Duronsoft.JustEditor" Publisher="CN=45CC454F-71BD-4227-BA24-168CAF6CC92E" Version="0.0.2.0" />
+  <Identity Name="10688Duronsoft.JustEditor" Publisher="CN=45CC454F-71BD-4227-BA24-168CAF6CC92E" Version="0.0.3.0" />
   <mp:PhoneIdentity PhoneProductId="777e85f9-b510-4fa5-a1cd-120dcfeaf887" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Just Editor</DisplayName>

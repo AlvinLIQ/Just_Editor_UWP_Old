@@ -19,6 +19,8 @@ using namespace Windows::UI::Xaml::Controls;
 using namespace concurrency;
 
 int OldIndex = -1;
+DispatcherTimer^ dTimer;
+Windows::Foundation::EventRegistrationToken tickToken;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 //int lastWindowIndex;
@@ -71,6 +73,11 @@ void MainPage::InitializePage()
 
 	DetectSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", DetectSwitch->Name)->ToString() != "0";
 	HighlightSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", DetectSwitch->Name)->ToString() != "0";
+
+	dTimer = ref new DispatcherTimer;
+	Windows::Foundation::TimeSpan ts;
+	ts.Duration = 5;
+	dTimer->Interval = ts;
 }
 
 void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File_Path = "" , bool AutoSelect, Platform::Object^ Frame_Content, Windows::Storage::StorageFile^ Item_File, bool isChanged)
@@ -91,18 +98,15 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 	WindowPanel->Children->Append(thisItem);
 
 	//Show
-	auto thisTimer = ref new DispatcherTimer;
-	Windows::Foundation::TimeSpan ts;
-	ts.Duration = 5;
-	thisTimer->Interval = ts;
-	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem, AutoSelect, File_Name, File_Path](Object^ sender, Object^ e) 
+	tickToken = dTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisItem, AutoSelect, File_Name, File_Path](Object^ sender, Object^ e) 
 	{
 		if (120 > thisItem->ActualWidth)
 			thisItem->Width += 30;
 		else
 		{
-			thisTimer->Stop();
-			delete[] thisTimer;
+			dTimer->Stop();
+			dTimer->Tick -= tickToken;
+
 			thisItem->FileName = File_Name;
 			thisItem->SetDisplayName(File_Name);
 			if (AutoSelect)
@@ -130,7 +134,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 					&MainPage::WindowItemCloseButton_Click);
 		}
 	});
-	thisTimer->Start();
+	dTimer->Start();
 
 
 }
@@ -203,18 +207,14 @@ void MainPage::RemoveWindowItem(DuronWindowItemxaml^ sender)
 	delete sender->ItemFile;
 	sender->FileName = "";
 	//Hide && Remove
-	auto thisTimer = ref new DispatcherTimer;
-	Windows::Foundation::TimeSpan ts;
-	ts.Duration = 5;
-	thisTimer->Interval = ts;
-	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem = sender](Object^ sender, Object^ e)
+	tickToken = dTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisItem = sender](Object^ sender, Object^ e)
 	{
 		if (30 <= thisItem->ActualWidth)
 			thisItem->Width -= 30;
 		else
 		{
-			thisTimer->Stop();
-			delete[] thisTimer;
+			dTimer->Stop();
+			dTimer->Tick -= tickToken;
 
 			auto thisPanel = (Panel^)thisItem->Parent;
 			int Item_Index = GetWindowItemIndex(thisItem, thisPanel);
@@ -227,7 +227,7 @@ void MainPage::RemoveWindowItem(DuronWindowItemxaml^ sender)
 			CheckWindowItem();
 		}
 	});
-	thisTimer->Start();
+	dTimer->Start();
 	
 }
 
@@ -493,22 +493,19 @@ void Just_Editor::MainPage::ChangeHiddenPanelExpand()
 		icNum = 40;
 	}
 	//Show || Hide
-	auto thisTimer = ref new DispatcherTimer;
-	Windows::Foundation::TimeSpan ts;
-	ts.Duration = 5;
-	thisTimer->Interval = ts;
-	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem = HiddenScrollViewer, icNum](Object^ sender, Object^ e)
+	auto dTimer = ref new DispatcherTimer;
+	tickToken = dTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([dTimer, thisItem = HiddenScrollViewer, icNum](Object^ sender, Object^ e)
 	{
 		int NextHeight = (int)thisItem->ActualHeight + icNum;
 		if (NextHeight >= 0 && NextHeight <= 120)
 			thisItem->Height = NextHeight;
 		else
 		{
-			thisTimer->Stop();
-			delete[] thisTimer;
+			dTimer->Stop();
+			dTimer->Tick -= tickToken;
 		}
 	});
-	thisTimer->Start();
+	dTimer->Start();
 }
 
 void Just_Editor::MainPage::Page_Tapped(Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)
