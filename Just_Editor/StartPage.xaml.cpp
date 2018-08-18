@@ -148,9 +148,15 @@ void Just_Editor::StartPage::NewOptionView_SelectionChanged(Platform::Object^ se
 		break;
 	case 1:
 		auto ThisFileDialog = ref new NewFileDialog;
+		
 		ThisFileDialog->Closed +=
 			ref new Windows::Foundation::TypedEventHandler<Windows::UI::Xaml::Controls::ContentDialog^, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^>(
 				[this, ThisFileDialog](Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^ args)
+		{
+			delete[] sender;
+		});
+		((Windows::UI::Xaml::Controls::Button^)((Windows::UI::Xaml::Controls::Grid^)((Windows::UI::Xaml::Controls::Grid^)ThisFileDialog->Content)->Children->GetAt(3))->Children->GetAt(1))->Click +=
+			ref new RoutedEventHandler([this, ThisFileDialog](Object^ sender, RoutedEventArgs^ e) 
 		{
 			if (ThisFileDialog->FileName != nullptr && ThisFileDialog->FileName != "")
 			{
@@ -158,7 +164,7 @@ void Just_Editor::StartPage::NewOptionView_SelectionChanged(Platform::Object^ se
 			}
 		});
 			
-		ThisFileDialog->ShowAsync();
+		create_task(ThisFileDialog->ShowAsync());
 		
 		break;
 	}

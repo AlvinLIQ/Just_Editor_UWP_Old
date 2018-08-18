@@ -2,7 +2,7 @@
 #include "MainPage.xaml.h"
 
 #define MaxUndoLimit 80
-#define IdentifierNum 41
+#define IdentifierNum 43
 
 const wchar_t UnabledWords[] = L"\\/:*?<>|";
 

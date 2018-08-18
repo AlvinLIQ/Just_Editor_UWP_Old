@@ -331,9 +331,9 @@ void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI
 		});
 		theDialog->Closed += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogClosedEventArgs^>([](ContentDialog^ sender, ContentDialogClosedEventArgs^ args)
 		{
-			delete sender;
+			delete[] sender;
 		});
-		theDialog->ShowAsync();
+		create_task(theDialog->ShowAsync());
 
 	}
 	else

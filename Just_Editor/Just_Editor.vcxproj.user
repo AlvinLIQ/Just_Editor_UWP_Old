@@ -10,7 +10,7 @@
     <AppxPackageIsForStore>True</AppxPackageIsForStore>
     <AppxShowAllApps>False</AppxShowAllApps>
     <AppxBuildConfigurationSelection>x86|x64|arm</AppxBuildConfigurationSelection>
-    <PackageOptionalProjectsInIdeBuilds>True</PackageOptionalProjectsInIdeBuilds>
+    <PackageOptionalProjectsInIdeBuilds>False</PackageOptionalProjectsInIdeBuilds>
     <Source>C:\Users\Duron\Pictures\Just_Editor_Icon.png</Source>
     <SmallTileSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</SmallTileSource>
     <MediumTileSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</MediumTileSource>
