@@ -26,6 +26,7 @@
     <ClCompile Include="CaesarPanel.xaml.cpp" />
     <ClCompile Include="DuronSmartDetect.xaml.cpp" />
     <ClCompile Include="DuronWordItem.xaml.cpp" />
+    <ClCompile Include="Editor_Data.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -41,6 +42,7 @@
     <ClInclude Include="CaesarPanel.xaml.h" />
     <ClInclude Include="DuronSmartDetect.xaml.h" />
     <ClInclude Include="DuronWordItem.xaml.h" />
+    <ClInclude Include="Editor_Data.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">

@@ -5,7 +5,6 @@
 
 #include "pch.h"
 #include "DuronWindowItemxaml.xaml.h"
-#include "Editor_Tools.h"
 
 using namespace Just_Editor;
 

@@ -14,7 +14,7 @@ namespace Just_Editor
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Windows::Foundation::Metadata::WebHostHidden]
+	[Windows::UI::Xaml::Data::Bindable]
 	public ref class CodeEditor sealed
 	{
 	public:
@@ -22,15 +22,14 @@ namespace Just_Editor
 
 		property DuronWindowItemxaml^ thisWindowItem;
 
-		property bool isSmartDetectEnabled;
-		property bool isHighlightEnabled;
+		property Editor_Data^ thisData;
 
 //		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
 
 		Platform::String^ GetEditBoxText()
 		{
 			Platform::String^ thisText = "";
-			CodeEditorBox->Document->GetText(Windows::UI::Text::TextGetOptions::None, &thisText);
+			CodeEditorBox->Document->GetText(Windows::UI::Text::TextGetOptions::UseCrlf, &thisText);
 			return thisText;
 		}
 
@@ -45,7 +44,7 @@ namespace Just_Editor
 			{
 				if (CanAddBackLength)
 				{
-					CanAddBackLength = SelectionIndex < thisRange->EndPosition && wholeWord[thisRange->EndPosition] >= L'a' && wholeWord[thisRange->EndPosition] <= L'z';
+					CanAddBackLength = SelectionIndex < thisRange->EndPosition && ((wholeWord[thisRange->EndPosition] >= L'a' && wholeWord[thisRange->EndPosition] <= L'z') || wholeWord[thisRange->EndPosition] == L'#');
 					if (CanAddBackLength)
 						thisRange->EndPosition++;
 				}
@@ -53,9 +52,14 @@ namespace Just_Editor
 				{
 					thisRange->StartPosition = SelectionIndex;
 				}
-				CanAddFrontLength = --SelectionIndex >= 0 && wholeWord[SelectionIndex] >= L'a' && wholeWord[SelectionIndex] <= L'z';
+				CanAddFrontLength = --SelectionIndex >= 0 && ((wholeWord[SelectionIndex] >= L'a' && wholeWord[SelectionIndex] <= L'z') || wholeWord[SelectionIndex] == L'#');
 			} while (CanAddFrontLength || CanAddBackLength);
 			return thisRange;
+		}
+
+		void UpdateBindings()
+		{
+			this->Bindings->Update();
 		}
 
 		void AutoDetect();
@@ -120,5 +124,7 @@ namespace Just_Editor
 		void Search_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void Search_Box_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 		void SearchInRange(Windows::UI::Text::ITextRange^ searchRange);
+		void MainGrid_KeyUp(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
+		void Hide_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 };
 }

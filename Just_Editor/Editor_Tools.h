@@ -380,10 +380,32 @@ namespace Just_Editor
 		static Windows::UI::Color GetColorFromHexChar(char* colorHex)
 		{
 			Windows::UI::Color thisColor;
-			thisColor.A = 255;
-			thisColor.R = GetDecFromHexChar(colorHex[0]) * 16 + GetDecFromHexChar(colorHex[1]);
-			thisColor.G = GetDecFromHexChar(colorHex[2]) * 16 + GetDecFromHexChar(colorHex[3]);
-			thisColor.B = GetDecFromHexChar(colorHex[4]) * 16 + GetDecFromHexChar(colorHex[5]);
+
+			int Start_Index = 0;
+			if (colorHex[0] == L'#')
+			{
+				Start_Index = 1;
+			}
+			thisColor.R = GetDecFromHexChar(colorHex[Start_Index++]) * 16 + GetDecFromHexChar(colorHex[Start_Index++]);
+			thisColor.G = GetDecFromHexChar(colorHex[Start_Index++]) * 16 + GetDecFromHexChar(colorHex[Start_Index++]);
+			thisColor.B = GetDecFromHexChar(colorHex[Start_Index++]) * 16 + GetDecFromHexChar(colorHex[Start_Index]);
+			thisColor.A = thisColor.R && thisColor.G && thisColor.B ? 255 : 0;
+			
+			return thisColor;
+		}
+
+		static Windows::UI::Color GetColorFromHexWChar(wchar_t* colorHex)
+		{
+			Windows::UI::Color thisColor;
+			int Start_Index = 0;
+			if (colorHex[0] == L'#')
+			{
+				Start_Index = 1;
+			}
+			thisColor.R = GetDecFromHexChar(colorHex[Start_Index++]) * 16 + GetDecFromHexChar(colorHex[Start_Index++]);
+			thisColor.G = GetDecFromHexChar(colorHex[Start_Index++]) * 16 + GetDecFromHexChar(colorHex[Start_Index++]);
+			thisColor.B = GetDecFromHexChar(colorHex[Start_Index++]) * 16 + GetDecFromHexChar(colorHex[Start_Index]);
+			thisColor.A = thisColor.R && thisColor.G && thisColor.B ? 255 : 0;
 
 			return thisColor;
 		}

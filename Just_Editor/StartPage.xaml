@@ -6,64 +6,61 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="Page_SizeChanged">
-    <Page.Resources>
-        <SolidColorBrush x:Key="DefaultFontColor" Color="#5D5B5B"/>
-    </Page.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="MainColumn1" Width="250"/>
             <ColumnDefinition x:Name="MainColumn2"/>
         </Grid.ColumnDefinitions>
-        <Grid Background="WhiteSmoke">
+        <Grid Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackPanel Padding="10">
-                <TextBlock FontSize="28" Foreground="{StaticResource DefaultFontColor}" FontWeight="Bold">
+                <TextBlock FontSize="28" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="Bold">
                Start
                 </TextBlock>
-                <TextBlock Padding="20,0,0,0" FontSize="20" Foreground="{StaticResource DefaultFontColor}" FontWeight="Bold" Text="New"/>
+                <TextBlock Padding="20,0,0,0" FontSize="20" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="Bold" Text="New"/>
                 <GridView Name="NewOptionView" Padding="20,5,0,0" SelectionMode="Single" SelectionChanged="NewOptionView_SelectionChanged">
                     <GridViewItem>
                         <StackPanel>
                             <Image Source="Assets/New_Icon.png" Width="50"/>
-                            <TextBlock Text="Text" TextAlignment="Center" Foreground="{StaticResource DefaultFontColor}"/>
+                            <TextBlock Text="Text" TextAlignment="Center" Foreground="#5D5B5B"/>
                         </StackPanel>
                     </GridViewItem>
                     <GridViewItem>
                         <StackPanel>
                             <Image Source="Assets/Script_Icon.png" Width="50"/>
-                            <TextBlock Text="Code" TextAlignment="Center" Foreground="{StaticResource DefaultFontColor}"/>
+                            <TextBlock Text="Code" TextAlignment="Center" Foreground="#5D5B5B"/>
                         </StackPanel>
                     </GridViewItem>
                 </GridView>
-                <TextBlock Padding="20,0,0,0" FontWeight="Bold" FontSize="20" Foreground="{StaticResource DefaultFontColor}" Text="Open"/>
+                <TextBlock Padding="20,0,0,0" FontWeight="Bold" FontSize="20" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Text="Open"/>
                 <GridView Name="OpenOptionView" Padding="20,5,0,0" SelectionMode="Single" SelectionChanged="OpenOptionView_SelectionChanged">
                     <GridViewItem>
                         <StackPanel>
                             <Image Source="Assets/Saved_Icon.png" Width="50"/>
-                            <TextBlock Text="Open File" Foreground="{StaticResource DefaultFontColor}"/>
+                            <TextBlock Text="Open File" Foreground="#5D5B5B"/>
                         </StackPanel>
                     </GridViewItem>
                 </GridView>
-                <TextBlock Padding="20,0,0,0" FontWeight="Bold" FontSize="20" Foreground="{StaticResource DefaultFontColor}" Text="Recent"/>
+                <TextBlock Padding="20,0,0,0" FontWeight="Bold" FontSize="20" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Text="Recent"/>
             </StackPanel>
             <ScrollViewer Padding="20,0,20,20" Margin="0,5,0,0" Grid.Row="1">
                 <StackPanel Name="RecentListPanel">
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <Grid Background="#FEFEFE" Grid.Column="1" Padding="0,10,10,10">
+        <Grid Background="{x:Bind thisData.Editor_BackgroundBrush, Mode=OneWay}" Grid.Column="1" Padding="0,10,10,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="0.6*"/>
             </Grid.ColumnDefinitions>
             <Grid Padding="0,0,10,0">
-                <TextBlock HorizontalAlignment="Right"  VerticalAlignment="Top" Foreground="{StaticResource DefaultFontColor}" FontWeight="Bold" Text="Welcome" FontSize="28"/>
+                <TextBlock HorizontalAlignment="Right"  VerticalAlignment="Top" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="Bold" Text="Welcome" FontSize="28"/>
             </Grid>
-            <Line X1="1" X2="1" Y1="400" Fill="#EFEFEF" HorizontalAlignment="Left" Stroke="#EFEFEF" StrokeThickness="2" Grid.Column="1" VerticalAlignment="Center">
+            <Line X1="1" X2="1" Y1="400" HorizontalAlignment="Left" Stroke="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" StrokeThickness="2" Grid.Column="1" VerticalAlignment="Center">
                 
             </Line>
         </Grid>

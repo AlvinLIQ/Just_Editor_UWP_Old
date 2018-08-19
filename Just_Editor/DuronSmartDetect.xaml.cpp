@@ -27,6 +27,7 @@ L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"s
 DuronSmartDetect::DuronSmartDetect()
 {
 	InitializeComponent();
+	thisData = ref new Editor_Data;
 }
 
 void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thisRange, bool isHighlight)
@@ -39,7 +40,7 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 	{
 		wordRange = thisRange;
 		if (isHighlight)
-			thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::Gray;
+			thisRange->CharacterFormat->ForegroundColor = thisData->Editor_ForegroundBrush->Color;
 		int count = 0;
 
 		for (size_t i = 0, j, thisIDLength; i < IdentifierNum; i++, count = 0)
@@ -59,7 +60,7 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 			if (thisIDLength == count)
 			{
 				if (isHighlight)
-					thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::MediumBlue;
+					thisRange->CharacterFormat->ForegroundColor = thisData->IdentifierHighlightColor;
 			}
 			else if (thisWordLength == count)
 			{
@@ -76,12 +77,12 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 					thisRange->MatchSelection();
 					thisCodeEditor->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 					if (isHighlight)
-						thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::MediumBlue;
+						thisRange->CharacterFormat->ForegroundColor = thisData->IdentifierHighlightColor;
 					this->SelectedItem = nullptr;
 					this->Width = 0;
 				});
 				thisItem->Identifier = ref new String(IdentifierArray[i].c_str());
-				thisItem->OverBrush = MainContent->Background;
+				thisItem->OverBrush = thisData->Editor_ForegroundBrush;
 				thisItem->ItemIndex = ItemPanel->Children->Size;
 				if (!ItemPanel->Children->Size)
 				{

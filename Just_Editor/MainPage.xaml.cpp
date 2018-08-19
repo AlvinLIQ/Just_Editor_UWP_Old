@@ -10,6 +10,7 @@
 #include "Editor_Tools.h"
 #include "RenameDialog.xaml.h"
 #include "DuronWindowItemxaml.xaml.h"
+#include "DuronSmartDetect.xaml.h"
 
 using namespace Just_Editor;
 
@@ -34,6 +35,15 @@ MainPage::MainPage()
 void MainPage::InitializePage()
 {
 	//Editor_Tools::DeleteFileInAppAsync("User_Files", "RecentList");
+	thisData = ref new Editor_Data;
+	DarkSwitch->IsOn = thisData->isDark;
+	DetectSwitch->IsOn = thisData->isSmartDetectEnabled;
+	HighlightSwitch->IsOn = thisData->isHighlightEnabled;
+
+	DarkSwitch->Toggled += ref new RoutedEventHandler(this, &MainPage::Switch_Toggled);
+	DetectSwitch->Toggled += ref new RoutedEventHandler(this, &MainPage::Switch_Toggled);
+	HighlightSwitch->Toggled += ref new RoutedEventHandler(this, &MainPage::Switch_Toggled);
+
 	auto titleBar = Windows::UI::ViewManagement::ApplicationView::GetForCurrentView()->TitleBar;
 	titleBar->ForegroundColor = Windows::UI::Colors::WhiteSmoke;
 	titleBar->ButtonForegroundColor = Windows::UI::Colors::LightGray;
@@ -70,8 +80,6 @@ void MainPage::InitializePage()
 	else
 		TopBar_Grid->Height = 40;
 
-	DetectSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", DetectSwitch->Name)->ToString() != "0";
-	HighlightSwitch->IsOn = Editor_Tools::ReadSetting("Editor_Settings", DetectSwitch->Name)->ToString() != "0";
 	ts.Duration = 5;
 }
 
@@ -88,6 +96,8 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 	}
 	if (Item_File != nullptr)
 		thisItem->ItemFile = Item_File;
+
+	thisItem->thisData = thisData;
 
 	thisItem->SetDisplayName("");
 	thisItem->Width = 0;
@@ -275,7 +285,7 @@ void MainPage::CheckWindowItem()
 		targetItem->FrameContent = thisItem->FrameContent;
 		targetItem->ItemFile = thisItem->ItemFile;
 		targetItem->Width = thisItem->Width;
-
+		targetItem->thisData = thisItem->thisData;
 
 		targetItem->isChanged = thisItem->isChanged;
 
@@ -355,6 +365,7 @@ void MainPage::WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xam
 	auto thisItem = (DuronWindowItemxaml^)sender;
 
 	auto renameDialog = ref new RenameDialog;
+	renameDialog->Background = thisData->ToolBar_BackgroundBrush;
 	renameDialog->FileName = thisItem->FileName;
 	renameDialog->Closed += ref new Windows::Foundation::TypedEventHandler<Windows::UI::Xaml::Controls::ContentDialog^, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^>([thisItem, renameDialog]
 	(ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^ args)
@@ -412,8 +423,6 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 				thisItem->OriginalText = thisText;
 				CodeEditor^ thisEditor = (CodeEditor^)MainFrame->Content;
 				//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
-				thisEditor->isHighlightEnabled = HighlightSwitch->IsOn;
-				thisEditor->isSmartDetectEnabled = DetectSwitch->IsOn;
 
 				RichEditBox^ EditBox = ((RichEditBox^)((Grid^)((Panel^)thisEditor->Content)->Children->GetAt(1))->Children->GetAt(0));
 				EditBox->Document->EndUndoGroup();
@@ -433,12 +442,17 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 			((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
 		}, task_continuation_context::use_current());
 	}
-	else if (thisItem->FilePath != "?S" && ((CodeEditor^)MainFrame->Content)->thisWindowItem == nullptr)
+	else if (thisItem->FilePath != "?S")
 	{
-		((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
-		((CodeEditor^)MainFrame->Content)->isHighlightEnabled = HighlightSwitch->IsOn;
-		((CodeEditor^)MainFrame->Content)->isSmartDetectEnabled = DetectSwitch->IsOn;
+		((CodeEditor^)MainFrame->Content)->thisData = thisData;
+		if (((CodeEditor^)MainFrame->Content)->thisWindowItem == nullptr)
+			((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
 	}
+	if (MainFrame->Content->ToString() == "Just_Editor.StartPage")
+		((StartPage^)MainFrame->Content)->thisData = thisData;
+	else
+		((CodeEditor^)MainFrame->Content)->thisData = thisData;
+
 	if (thisItem->FrameContent == nullptr)
 		thisItem->FrameContent = MainFrame->Content;
 }
@@ -472,6 +486,51 @@ void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI
 {
 	auto thisSwitch = (ToggleSwitch^)sender;
 	Editor_Tools::WriteSetting("Editor_Settings", thisSwitch->Name, thisSwitch->IsOn ? "1" : "0");
+
+	if (thisSwitch != DarkSwitch)
+	{
+		return;
+	}
+
+	//once click, play a year!
+	thisData = ref new Editor_Data;
+	this->Bindings->Update();
+
+	DuronWindowItemxaml^ thisItem;
+	int ItemsNum;
+	Panel^ thisWindowPanel;
+	for (int i = 0; i < 2; i++)
+	{
+		thisWindowPanel = i ? WindowPanel : HiddenWindowPanel;
+		ItemsNum = thisWindowPanel->Children->Size;
+		while (--ItemsNum >= 0)
+		{
+			thisItem = (DuronWindowItemxaml^)thisWindowPanel->Children->GetAt(ItemsNum);
+			thisItem->thisData = thisData;
+			thisItem->UpdateBindings();
+			if (thisItem->isSelected)
+				thisItem->Background = thisData->ToolBar_BackgroundBrush;
+
+			if (thisItem->FrameContent != nullptr)
+			{
+				if (thisItem->FrameContent->ToString() == "Just_Editor.CodeEditor")
+				{
+					((CodeEditor^)thisItem->FrameContent)->thisData = thisData;
+					((CodeEditor^)thisItem->FrameContent)->UpdateBindings();
+					if (HighlightSwitch->IsOn)
+						((CodeEditor^)thisItem->FrameContent)->AutoDetect();
+
+					((DuronSmartDetect^)((Grid^)((Panel^)((CodeEditor^)thisItem->FrameContent)->Content)->Children->GetAt(1))->Children->GetAt(1))->thisData = thisData;
+					((DuronSmartDetect^)((Grid^)((Panel^)((CodeEditor^)thisItem->FrameContent)->Content)->Children->GetAt(1))->Children->GetAt(1))->UpdateBindings();
+				}
+				else
+				{
+					((StartPage^)thisItem->FrameContent)->thisData = thisData;
+					((StartPage^)thisItem->FrameContent)->UpdateBindings();
+				}
+			}
+		}
+	}
 }
 
 

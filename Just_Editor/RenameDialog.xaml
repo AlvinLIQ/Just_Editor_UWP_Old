@@ -77,7 +77,7 @@
         
     </ContentDialog.Resources>
     <StackPanel>
-        <TextBox x:Name="FileName_Box" Text="{x:Bind FileName}" BorderThickness="0,0,0,0.4" TextChanging="FileName_Box_TextChanging"/>
+        <TextBox x:Name="FileName_Box" Text="{x:Bind FileName}" Foreground="#5D5B5B" BorderThickness="0,0,0,0.4" TextChanging="FileName_Box_TextChanging"/>
         <TextBlock x:Name="ErrorMsg_Block" Foreground="Red"/>
     </StackPanel>
 </ContentDialog>

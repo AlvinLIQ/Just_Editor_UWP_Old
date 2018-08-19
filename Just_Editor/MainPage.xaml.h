@@ -7,6 +7,7 @@
 
 #include "MainPage.g.h"
 #include "DuronWindowItemxaml.xaml.h"
+#include "Editor_Data.h"
 
 namespace Just_Editor
 {
@@ -17,6 +18,7 @@ namespace Just_Editor
 	{
 	public:
 		MainPage();
+		property Editor_Data^ thisData;
 		void OpenFromStorageFile(Windows::Storage::StorageFile^ thisFile, bool AutoSelect);
 		void ChangeHiddenPanelExpand();
 	private:

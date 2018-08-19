@@ -68,6 +68,7 @@ void StartPage::LoadRecentList()
 				}
 				thisItem->FilePath = thisFile->Path;
 				thisItem->FileName = thisFile->Name;
+				thisItem->Foreground = thisData->TopBar_BackgroundBrush;
 
 				((Windows::UI::Xaml::Controls::Button^)((Windows::UI::Xaml::Controls::Grid^)thisItem->Content)->Children->GetAt(1))->Click += ref new Windows::UI::Xaml::RoutedEventHandler(
 					[thisItem, this](Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ args)
@@ -148,7 +149,7 @@ void Just_Editor::StartPage::NewOptionView_SelectionChanged(Platform::Object^ se
 		break;
 	case 1:
 		auto ThisFileDialog = ref new NewFileDialog;
-		
+		ThisFileDialog->Background = thisData->ToolBar_BackgroundBrush;
 		ThisFileDialog->Closed +=
 			ref new Windows::Foundation::TypedEventHandler<Windows::UI::Xaml::Controls::ContentDialog^, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^>(
 				[this, ThisFileDialog](Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^ args)

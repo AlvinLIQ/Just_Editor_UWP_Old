@@ -39,11 +39,11 @@
         <Grid Padding="10" Name="FileSettingColumn" Grid.Row="1" Grid.Column="1">
             <StackPanel Margin="0,0,0,45">
                 <TextBlock Foreground="{x:Bind DialogTitle.Foreground}" HorizontalAlignment="Left" FontSize="16" Text="File Name"/>
-                <TextBox x:Name="FileName_TextBox" Foreground="#999" BorderThickness="0,0,0,0.5" IsEnabled="False" TextChanging="FileName_TextBox_TextChanging"/>
+                <TextBox x:Name="FileName_TextBox" Foreground="#999" Background="#0000" BorderThickness="0,0,0,0.5" IsEnabled="False" TextChanging="FileName_TextBox_TextChanging"/>
                 <TextBlock x:Name="ErrorMsg_Block" Foreground="Red" HorizontalAlignment="Left" FontSize="16" Text=" "/>
             </StackPanel>
-            <Button Name="CreateFile_Button" Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Foreground="{x:Bind DialogTitle.Foreground}" 
-                BorderThickness="0" Background="#EFEFEF" Height="35" Content="OK" Click="CreateFile_Button_Click" IsEnabled="False"/>
+            <Button Name="CreateFile_Button" Background="#0000" Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" Foreground="{x:Bind DialogTitle.Foreground}" 
+                BorderThickness="0" Height="35" Content="OK" Click="CreateFile_Button_Click" IsEnabled="False"/>
         </Grid>
     </Grid>
 </ContentDialog>

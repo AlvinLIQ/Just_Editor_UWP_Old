@@ -165,6 +165,7 @@
     <ClInclude Include="DuronWordItem.xaml.h">
       <DependentUpon>DuronWordItem.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="Editor_Data.h" />
     <ClInclude Include="Editor_Tools.h" />
     <ClInclude Include="NewFileDialog.xaml.h">
       <DependentUpon>NewFileDialog.xaml</DependentUpon>
@@ -308,6 +309,7 @@
     <ClCompile Include="DuronWordItem.xaml.cpp">
       <DependentUpon>DuronWordItem.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="Editor_Data.cpp" />
     <ClCompile Include="Editor_Tools.cpp" />
     <ClCompile Include="MainPage.xaml.cpp">
       <DependentUpon>MainPage.xaml</DependentUpon>

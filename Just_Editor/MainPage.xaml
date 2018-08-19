@@ -13,70 +13,81 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Border Name="TitleBar_Block" Background="#999"/>
+            <Border Name="TitleBar_Block" Background="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}"/>
             <Grid Name="TopBar_Grid" Height="34">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="34"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Name="ToolBar1">
-                    <Button Name="HomeButton" Height="{x:Bind TopBar_Grid.Height, Mode=OneWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                <Grid Name="ToolBar1">
+                    <Button Name="HomeButton" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Stretch"
                             Click="HomeButton_Click" Background="#0000" >
                         <Image Source="Assets/Home_Icon.png" Width="18"/>
                     </Button>
-                </StackPanel>
+                </Grid>
                 <StackPanel Name="TopStackPanel" Orientation="Horizontal" Margin="0,0,32,0" Grid.Column="1">
-                    <StackPanel Name="WindowPanel" Orientation="Horizontal" BorderThickness="0.4, 0, 0.4, 0" BorderBrush="LightGray" HorizontalAlignment="Left"
+                    <StackPanel Name="WindowPanel" Orientation="Horizontal" BorderThickness="0.4, 0, 0.4, 0" BorderBrush="Gray" HorizontalAlignment="Left"
                                 >
                     </StackPanel>
-                    <Button Name="AddWindow_Button" Foreground="#5D5B5B" VerticalContentAlignment="Center"
+                    <Button Name="AddWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" VerticalContentAlignment="Center"
                             Click="AddWindow_Button_Click" VerticalAlignment="Stretch" Background="#0000" Content="+" FontWeight="Bold">
                     </Button>
-                    <Button Name="GetHiddenWindow_Button" Foreground="#5D5B5B" Background="#0000" Content="&#xE011;" FontSize="8" VerticalContentAlignment="Center"
+                    <Button Name="GetHiddenWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Background="#0000" Content="&#xE011;" FontSize="8" VerticalContentAlignment="Center"
                             VerticalAlignment="Stretch" FontWeight="Bold" Width="32" Click="GetHiddenWindow_Button_Click"
                              FontFamily="Segoe MDL2 Assets" Padding="8,4,8,0"/>
                 </StackPanel>
                 <!--StackPanel HorizontalAlignment="Right">
-                    <Button Name="GetHiddenWindow_Button" Foreground="#5D5B5B" Background="#0000" Content="..." VerticalContentAlignment="Center"
+                    <Button Name="GetHiddenWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Background="#0000" Content="..." VerticalContentAlignment="Center"
                             VerticalAlignment="Stretch" FontWeight="Bold" Height="32" Width="32" Click="GetHiddenWindow_Button_Click"/>
                 </StackPanel-->
             </Grid>
             <Grid Grid.Row="1">
-                <Frame Name="MainFrame" Navigated="MainFrame_Navigated" Margin="0,0,0,30"/>
+                <Frame Name="MainFrame" Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Navigated="MainFrame_Navigated" Margin="0,0,0,30"/>
 
-                <Grid Background="WhiteSmoke" VerticalAlignment="Bottom" Height="30" Padding="10,0,10,0">
-                    <TextBlock Text="Just_Editor Ver.0.0.3" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
+                <Grid Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" VerticalAlignment="Bottom" Height="30" Padding="10,0,10,0">
+                    <TextBlock Text="Just_Editor Ver.0.0.4" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
                     <Button Name="SettingsButton" HorizontalAlignment="Right" Padding="0" Background="#0000" BorderThickness="0"
                             Width="30" VerticalAlignment="Stretch" Click="SettingsButton_Click">
                         <Image Height="15" Source="Assets/Setting_Icon.png"/>
                     </Button>
                 </Grid>
             </Grid>
-            <ScrollViewer Name="HiddenScrollViewer" Height="0" Grid.Row="1" Width="135" Background="#EEE" HorizontalAlignment="Left" VerticalAlignment="Top"
-                          Padding="0,0,15,0" BorderBrush="LightGray" BorderThickness="0.4">
+            <ScrollViewer Name="HiddenScrollViewer" Height="0" Grid.Row="1" Width="135" Background="{x:Bind thisData.Editor_BackgroundBrush}" HorizontalAlignment="Left" VerticalAlignment="Top"
+                          Padding="0,0,15,0" BorderBrush="{x:Bind thisData.Editor_BorderBrush, Mode=OneWay}" BorderThickness="0.4">
                 <ScrollViewer.RenderTransform>
                     <TranslateTransform x:Name="HiddenMenuTrans"/>
                 </ScrollViewer.RenderTransform>
-                <StackPanel Name="HiddenWindowPanel" Background="WhiteSmoke">
+                <StackPanel Name="HiddenWindowPanel" Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}">
 
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <SplitView Name="SettingsSplit" DisplayMode="Overlay" PanePlacement="Right" HorizontalAlignment="Right" OpenPaneLength="300">
+        <SplitView Name="SettingsSplit" DisplayMode="Overlay" PanePlacement="Right" HorizontalAlignment="Right" OpenPaneLength="300" PaneBackground="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}">
             <SplitView.Pane>
                 <Grid Padding="10,0,10,0">
-                    <TextBlock FontWeight="Bold" FontSize="20" Padding="0,10,0,0" Foreground="#5D5B5B">
+                    <TextBlock FontWeight="Bold" FontSize="20" Padding="0,10,0,0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}">
                         Settings
                     </TextBlock>
                     <StackPanel Padding="10,10,0,0" Margin="0,40">
-                        <ToggleSwitch Name="DetectSwitch" Toggled="Switch_Toggled" Foreground="#5D5B5B">
+                        <ToggleSwitch Name="DetectSwitch" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}">
                             <ToggleSwitch.Header>
-                                <TextBlock Foreground="#5D5B5B" Text="Is smart detect enabled"/>
+                                <TextBlock Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Text="Is smart detect enabled"/>
                             </ToggleSwitch.Header>
                         </ToggleSwitch>
-                        <ToggleSwitch Name="HighlightSwitch" Toggled="Switch_Toggled" Foreground="#5D5B5B">
+                        <ToggleSwitch Name="HighlightSwitch" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}">
                             <ToggleSwitch.Header>
-                                <TextBlock Foreground="#5D5B5B" Text="Is highlight enabled" />
+                                <TextBlock Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Text="Is highlight enabled" />
+                            </ToggleSwitch.Header>
+                        </ToggleSwitch>
+                        <ToggleSwitch Name="DarkSwitch" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}">
+                            <ToggleSwitch.OnContent>
+                                <TextBlock Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Text="Light" />
+                            </ToggleSwitch.OnContent>
+                            <ToggleSwitch.OffContent>
+                                <TextBlock Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Text="Dark" />
+                            </ToggleSwitch.OffContent>
+                            <ToggleSwitch.Header>
+                                <TextBlock Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Text="Theme" />
                             </ToggleSwitch.Header>
                         </ToggleSwitch>
                         <!--ComboBox Header="Save files before exit" SelectedIndex="1">

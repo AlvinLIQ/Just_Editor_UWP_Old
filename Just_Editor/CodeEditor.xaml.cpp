@@ -8,7 +8,7 @@
 #include "DuronSmartDetect.xaml.h"
 #include "CaesarPanel.xaml.h"
 
-bool isCtrlHeld = false;
+bool isCtrlHeld = false, isGridCtrlHeld = false;
 
 using namespace Just_Editor;
 
@@ -51,13 +51,13 @@ void CodeEditor::ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml
 
 void Just_Editor::CodeEditor::AutoDetect()
 {
-	if (!isHighlightEnabled)
+	if (!thisData->isHighlightEnabled)
 		return;
 	int c = IdentifierNum, sl;
 	Windows::UI::Text::ITextRange^ searchRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 	searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
 	Windows::UI::Text::ITextCharacterFormat^ charFormatting = searchRange->CharacterFormat;
-	charFormatting->ForegroundColor = Windows::UI::Colors::Gray;
+	charFormatting->ForegroundColor = thisData->Editor_ForegroundBrush->Color;
 	while (--c >= 0)
 	{
 		//int len = (int)((RichEditBox^)sender)->PlaceholderText->Length();
@@ -67,7 +67,7 @@ void Just_Editor::CodeEditor::AutoDetect()
 		while (sl)
 		{
 			charFormatting = searchRange->CharacterFormat;
-			charFormatting->ForegroundColor = Windows::UI::Colors::MediumBlue;
+			charFormatting->ForegroundColor = thisData->IdentifierHighlightColor;
 			sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
 		}
 	}
@@ -88,8 +88,21 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 {
 	if (e->Key == Windows::System::VirtualKey::Tab)
 	{
-		((RichEditBox^)sender)->Document->Selection->Text += "    ";
-		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
+		if (isCtrlHeld)
+		{
+			e->Handled = true;
+			SearchInRange(CodeEditorBox->Document->GetRange(CodeEditorBox->Document->Selection->EndPosition, Windows::UI::Text::TextConstants::MaxUnitCount));
+		}
+		else
+		{
+			((RichEditBox^)sender)->Document->Selection->Text += "    ";
+			((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
+		}
+	}
+	else if (isCtrlHeld && e->Key == Windows::System::VirtualKey::Space && !SmartDetect->ActualWidth)
+	{
+		e->Handled = true;
+		SearchInRange(CodeEditorBox->Document->GetRange(0, CodeEditorBox->Document->Selection->StartPosition));
 	}
 	else if (e->Key == Windows::System::VirtualKey::Escape)
 	{
@@ -120,8 +133,8 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		{
 			SmartDetect->wordRange->Text += Editor_Tools::SubPStr(SmartDetect->SelectedItem->Identifier, SmartDetect->StartIndex);
 			SmartDetect->wordRange->MatchSelection();
-			if (isHighlightEnabled)
-				SmartDetect->wordRange->CharacterFormat->ForegroundColor =  Windows::UI::Colors::MediumBlue;
+			if (thisData->isHighlightEnabled)
+				SmartDetect->wordRange->CharacterFormat->ForegroundColor = thisData->IdentifierHighlightColor;
 			SmartDetect->SelectedItem = nullptr;
 			SmartDetect->Width = 0;
 		}
@@ -132,7 +145,7 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 	}
-
+	isCtrlHeld = e->Key == Windows::System::VirtualKey::Control;
 }
 
 
@@ -177,19 +190,14 @@ void Just_Editor::CodeEditor::Save_Button_Click(Platform::Object^ sender, Window
 
 void Just_Editor::CodeEditor::MainGrid_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
 {
-	if (isCtrlHeld)
+	if (isGridCtrlHeld)
 	{
 		if (e->Key == Windows::System::VirtualKey::S)
 			SaveFile();
 		else if (e->Key == Windows::System::VirtualKey::F)
-			Search_BoxShowHide(!Search_Grid->Width);
-		else if (e->Key == Windows::System::VirtualKey::Q)
-			SearchInRange(CodeEditorBox->Document->GetRange(0, CodeEditorBox->Document->Selection->StartPosition));
-		else if (e->Key == Windows::System::VirtualKey::E)
-			SearchInRange(CodeEditorBox->Document->GetRange(CodeEditorBox->Document->Selection->EndPosition, Windows::UI::Text::TextConstants::MaxUnitCount));
+			Search_BoxShowHide(true);
 	}
-	isCtrlHeld = (e->Key == Windows::System::VirtualKey::Control);
-
+	isGridCtrlHeld = (e->Key == Windows::System::VirtualKey::Control);
 }
 
 
@@ -205,7 +213,7 @@ void Just_Editor::CodeEditor::Caesar_Button_Click(Platform::Object^ sender, Wind
 	else
 	{
 		auto thisPanel = ref new CaesarPanel;
-		thisPanel->SetPanelMode(0);//Caesar
+		//thisPanel->SetPanelMode(0);//Caesar
 
 		MainGrid->Children->Append(thisPanel);
 
@@ -239,9 +247,9 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 		thisWindowItem->SetChanged(1);
 	}
 
-	if (isSmartDetectEnabled)
+	if (thisData->isSmartDetectEnabled)
 	{
-		SmartDetect->DetectWordFromStrArray(GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition), isHighlightEnabled);
+		SmartDetect->DetectWordFromStrArray(GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition), thisData->isHighlightEnabled);
 
 		if (SmartDetect->ActualHeight)
 		{
@@ -277,6 +285,7 @@ void Just_Editor::CodeEditor::Search_BoxShowHide(bool isShow)
 	}
 	else
 	{
+		Replace_Box->Foreground = Redo_Button->Foreground;
 		Search_Box->Text = "";
 		Search_Grid->Width = 180;
 		Search_Box->Focus(Windows::UI::Xaml::FocusState::Keyboard);
@@ -311,13 +320,27 @@ void Just_Editor::CodeEditor::SearchInRange(Windows::UI::Text::ITextRange^ searc
 
 	if (searchRange->FindText(Search_Box->Text, searchRange->EndPosition, Windows::UI::Text::FindOptions::None))
 	{
-		CodeEditorBox->BorderBrush = ref new SolidColorBrush(Windows::UI::Colors::Gray);
+		Replace_Box->Foreground = Redo_Button->Foreground;
 		CodeEditorBox->Document->Selection->StartPosition = searchRange->StartPosition;
 		CodeEditorBox->Document->Selection->EndPosition = searchRange->EndPosition;
 		CodeEditorBox->Focus(Windows::UI::Xaml::FocusState::Pointer);
 		Replace_Box->IsEnabled = true;
 		Replace_Row->Height = GridLength(1, GridUnitType::Auto);
+		SmartDetect->Width = 0;
+		SmartDetect->SelectedItem = nullptr;
 	}
 	else
-		CodeEditorBox->BorderBrush = ref new SolidColorBrush(Windows::UI::Colors::Red);
+		Replace_Box->Foreground = ref new SolidColorBrush(Windows::UI::Colors::Red);
+}
+
+void Just_Editor::CodeEditor::MainGrid_KeyUp(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
+{
+	if (isCtrlHeld)
+		isCtrlHeld = !(e->Key == Windows::System::VirtualKey::Control);
+}
+
+
+void Just_Editor::CodeEditor::Hide_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	Search_BoxShowHide(false);
 }

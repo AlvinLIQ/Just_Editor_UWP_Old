@@ -6,6 +6,8 @@
 #pragma once
 
 #include "DuronWindowItemxaml.g.h"
+#include "Editor_Data.h"
+#include "Editor_Tools.h"
 
 namespace Just_Editor
 {
@@ -14,6 +16,7 @@ namespace Just_Editor
 	{
 	public:
 		DuronWindowItemxaml();
+		property Editor_Data^ thisData;
 		property Platform::String^ FilePath;
 		property Platform::String^ FileName;
 		property Platform::String^ OriginalText;
@@ -26,6 +29,11 @@ namespace Just_Editor
 
 		property int isChanged;
 
+		void UpdateBindings()
+		{
+			this->Bindings->Update();
+		}
+
 		void Unselect()
 		{
 			Background = ref new Windows::UI::Xaml::Media::SolidColorBrush;
@@ -34,7 +42,7 @@ namespace Just_Editor
 
 		void Select()
 		{
-			Background = ref new Windows::UI::Xaml::Media::SolidColorBrush(Windows::UI::Colors::WhiteSmoke);
+			Background = thisData->ToolBar_BackgroundBrush;
 			isSelected = true;
 		}
 

@@ -7,16 +7,22 @@
 
 #include "StartPage.g.h"
 #include "RecentListItem.xaml.h"
+#include "Editor_Data.h"
 
 namespace Just_Editor
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[Windows::Foundation::Metadata::WebHostHidden]
+	[Windows::UI::Xaml::Data::Bindable]
 	public ref class StartPage sealed
 	{	
 	public:
+		property Editor_Data^ thisData;
+		void UpdateBindings()
+		{
+			this->Bindings->Update();
+		}
 		StartPage();
 	private:
 		void LoadRecentList();
