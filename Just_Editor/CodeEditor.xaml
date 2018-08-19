@@ -29,19 +29,31 @@
             <Button Name="Caesar_Button" Width="30" VerticalAlignment="Stretch" Padding="0,1,0,0" Background="#0000" BorderThickness="0" Click="Caesar_Button_Click">
                 <Image Source="Assets/Caesar_Icon.png"  Width="18"/>
             </Button>
+            <Button Name="Search_Button" Width="30" VerticalAlignment="Stretch" Padding="0,1,0,0" Background="#0000" BorderThickness="0" Click="Search_Button_Click">
+                <Image Source="Assets/Search_Icon.png"  Width="18"/>
+            </Button>
         </StackPanel>
         <Grid Grid.Row="1">
-            <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle"
-                             ScrollViewer.HorizontalScrollMode="Enabled" AcceptsReturn="False" TextChanging="CodeEditorBox_TextChanging"
-                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False">
+            <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" HorizontalAlignment="Stretch"
+                             ScrollViewer.HorizontalScrollMode="Enabled" ScrollViewer.HorizontalScrollBarVisibility="Visible" AcceptsReturn="False" TextChanging="CodeEditorBox_TextChanging"
+                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="Wrap">
             </RichEditBox>
-            <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0">
                 <local:DuronSmartDetect.RenderTransform>
                     <TranslateTransform x:Name="Pipe_Trans">
 
                     </TranslateTransform>
                 </local:DuronSmartDetect.RenderTransform>
             </local:DuronSmartDetect>
+            <Grid Name="Search_Grid" Background="WhiteSmoke" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="15" Width="0" Margin="0,0,15,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition x:Name="Replace_Row" Height="0"/>
+                </Grid.RowDefinitions>
+                <Image Source="Assets/Search_Icon.png" Width="16" HorizontalAlignment="Right"/>
+                <TextBox Name="Search_Box" Foreground="{Binding ElementName=Undo_Button, Path=Foreground}" Background="#0000" Padding="5,0,20,0" KeyDown="Search_Box_KeyDown"/>
+                <TextBox Name="Replace_Box" Foreground="{Binding ElementName=Undo_Button, Path=Foreground}" Background="#0000" Padding="5,0,20,0" KeyDown="Search_Box_KeyDown" IsEnabled="False" Grid.Row="1"/>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

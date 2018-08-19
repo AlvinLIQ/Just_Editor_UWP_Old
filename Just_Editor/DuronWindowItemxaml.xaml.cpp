@@ -58,7 +58,7 @@ void Just_Editor::DuronWindowItemxaml::SetFileName(Platform::String^ newFileName
 	}
 
 	FileName_Block->Text = newFileName;
-	if (this->isChanged) FileName_Block->Text += L"*";
+	this->isChanged;
 }
 
 void Just_Editor::DuronWindowItemxaml::SetDisplayName(Platform::String^ newDisplayName)

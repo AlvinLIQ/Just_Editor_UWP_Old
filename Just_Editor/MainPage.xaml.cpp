@@ -84,7 +84,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 	{
 		thisItem->FrameContent = Frame_Content;
 		if (isChanged)
-			thisItem->SetChanged(true);
+			thisItem->SetChanged(1);
 	}
 	if (Item_File != nullptr)
 		thisItem->ItemFile = Item_File;
@@ -107,8 +107,9 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 
 			
 			thisItem->SetDisplayName(File_Name);
+			if (AutoSelect)
+				WindowSelectAt(WindowPanel->Children->Size - 1);
 
-			WindowSelectAt(WindowPanel->Children->Size - 1);
 			CheckWindowItem();
 			thisItem->Tapped +=
 				ref new Windows::UI::Xaml::Input::TappedEventHandler(this,

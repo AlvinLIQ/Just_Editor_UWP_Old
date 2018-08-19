@@ -24,7 +24,6 @@ L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",
 L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto"};
 Point thisPoint;
-int V = 100;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -92,10 +91,17 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		((RichEditBox^)sender)->Document->Selection->Text += "    ";
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 	}
-	else if (e->Key == Windows::System::VirtualKey::Escape && SmartDetect->Width)
+	else if (e->Key == Windows::System::VirtualKey::Escape)
 	{
-		SmartDetect->Width = 0;
-		SmartDetect->SelectedItem = nullptr;
+		if (SmartDetect->Width)
+		{
+			SmartDetect->Width = 0;
+			SmartDetect->SelectedItem = nullptr;
+		}
+		if (Search_Grid->Width)
+		{
+			Search_BoxShowHide(false);
+		}
 	}
 	else if (e->Key == Windows::System::VirtualKey::Up && SmartDetect->SelectedItem != nullptr)
 	{
@@ -171,9 +177,16 @@ void Just_Editor::CodeEditor::Save_Button_Click(Platform::Object^ sender, Window
 
 void Just_Editor::CodeEditor::MainGrid_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
 {
-	if (isCtrlHeld && e->Key == Windows::System::VirtualKey::S)
+	if (isCtrlHeld)
 	{
-		SaveFile();
+		if (e->Key == Windows::System::VirtualKey::S)
+			SaveFile();
+		else if (e->Key == Windows::System::VirtualKey::F)
+			Search_BoxShowHide(!Search_Grid->Width);
+		else if (e->Key == Windows::System::VirtualKey::Q)
+			SearchInRange(CodeEditorBox->Document->GetRange(0, CodeEditorBox->Document->Selection->StartPosition));
+		else if (e->Key == Windows::System::VirtualKey::E)
+			SearchInRange(CodeEditorBox->Document->GetRange(CodeEditorBox->Document->Selection->EndPosition, Windows::UI::Text::TextConstants::MaxUnitCount));
 	}
 	isCtrlHeld = (e->Key == Windows::System::VirtualKey::Control);
 
@@ -223,7 +236,7 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 
 	if (!thisWindowItem->isChanged)
 	{
-		thisWindowItem->SetChanged(true);
+		thisWindowItem->SetChanged(1);
 	}
 
 	if (isSmartDetectEnabled)
@@ -240,9 +253,71 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 
 			CodeEditorBox->Document->Selection->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Right,
 				Windows::UI::Text::VerticalCharacterAlignment::Bottom, Windows::UI::Text::PointOptions::NoVerticalScroll, &thisPoint);
+			thisPoint.Y -= Window::Current->CoreWindow->Bounds.Top + 55;
 			Pipe_Trans->Y = thisPoint.Y + SmartDetect->Height > CodeEditorBox->RenderSize.Height ? CodeEditorBox->RenderSize.Height - SmartDetect->Height : thisPoint.Y;
 		}
 	}
 	else
 		AutoDetect();
+}
+
+
+void Just_Editor::CodeEditor::Search_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	Search_BoxShowHide(!Search_Grid->Width);
+}
+
+void Just_Editor::CodeEditor::Search_BoxShowHide(bool isShow)
+{
+	if (!isShow)
+	{
+		Search_Grid->Width = 0;
+		Replace_Box->IsEnabled = false;
+		Replace_Row->Height = 0;
+	}
+	else
+	{
+		Search_Box->Text = "";
+		Search_Grid->Width = 180;
+		Search_Box->Focus(Windows::UI::Xaml::FocusState::Keyboard);
+	}
+}
+
+void Just_Editor::CodeEditor::Search_Box_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
+{
+	auto thisTextBox = dynamic_cast<TextBox^>(sender);
+	if (e->Key == Windows::System::VirtualKey::Enter)
+	{
+		if (Search_Box == thisTextBox)
+		{
+			SearchInRange(CodeEditorBox->Document->GetRange(CodeEditorBox->Document->Selection->EndPosition, Windows::UI::Text::TextConstants::MaxUnitCount));
+		}
+		else if (Replace_Box == thisTextBox && CodeEditorBox->Document->Selection->EndPosition != CodeEditorBox->Document->Selection->StartPosition)
+		{
+			CodeEditorBox->Document->Selection->Text = Replace_Box->Text;
+		}
+	}
+	else if (e->Key == Windows::System::VirtualKey::Escape)
+	{
+		Search_BoxShowHide(false);
+		CodeEditorBox->Focus(Windows::UI::Xaml::FocusState::Pointer);
+	}
+}
+
+void Just_Editor::CodeEditor::SearchInRange(Windows::UI::Text::ITextRange^ searchRange)
+{
+	if (Search_Box->Text == "")
+		return;
+
+	if (searchRange->FindText(Search_Box->Text, searchRange->EndPosition, Windows::UI::Text::FindOptions::None))
+	{
+		CodeEditorBox->BorderBrush = ref new SolidColorBrush(Windows::UI::Colors::Gray);
+		CodeEditorBox->Document->Selection->StartPosition = searchRange->StartPosition;
+		CodeEditorBox->Document->Selection->EndPosition = searchRange->EndPosition;
+		CodeEditorBox->Focus(Windows::UI::Xaml::FocusState::Pointer);
+		Replace_Box->IsEnabled = true;
+		Replace_Row->Height = GridLength(1, GridUnitType::Auto);
+	}
+	else
+		CodeEditorBox->BorderBrush = ref new SolidColorBrush(Windows::UI::Colors::Red);
 }

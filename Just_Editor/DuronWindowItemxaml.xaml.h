@@ -24,7 +24,7 @@ namespace Just_Editor
 
 		property bool isSelected;
 
-		property bool isChanged;
+		property int isChanged;
 
 		void Unselect()
 		{
@@ -38,23 +38,10 @@ namespace Just_Editor
 			isSelected = true;
 		}
 
-		void SetChanged(bool Parameter)
+		void SetChanged(int Parameter)
 		{
-			if (Parameter == isChanged) return;
-
-			wchar_t* tempName = (wchar_t*)FileName_Block->Text->Data();
-			size_t lengthOfName = wcslen(tempName) - 1;
-			if (tempName[lengthOfName] != '*' && Parameter)
-			{
-				FileName_Block->Text += L"*";
-			}
-			else
-			{
-				FileName_Block->Text = FileName;
-				//delete[] tempName;
-			}
-
 			isChanged = Parameter;
+			isChangedName_Block->Opacity = Parameter;
 		}
 
 		void SetFileName(Platform::String^ newFileName);

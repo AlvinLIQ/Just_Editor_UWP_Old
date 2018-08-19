@@ -39,16 +39,22 @@ namespace Just_Editor
 			auto thisRange = CodeEditorBox->Document->GetRange(0, SelectionIndex + 10);
 			auto wholeWord = thisRange->Text->Data();
 			size_t WordLength = wcslen(wholeWord);
-			bool isReturned = false;
+			bool CanAddBackLength = true, CanAddFrontLength = true;
 			thisRange->EndPosition = SelectionIndex;
 			do
 			{
-				thisRange->StartPosition = SelectionIndex;
-				if (SelectionIndex < thisRange->EndPosition && wholeWord[thisRange->EndPosition] >= 'a' && wholeWord[thisRange->EndPosition] <= 'z')
+				if (CanAddBackLength)
 				{
-					thisRange->EndPosition++;
+					CanAddBackLength = SelectionIndex < thisRange->EndPosition && wholeWord[thisRange->EndPosition] >= L'a' && wholeWord[thisRange->EndPosition] <= L'z';
+					if (CanAddBackLength)
+						thisRange->EndPosition++;
 				}
-			} while (--SelectionIndex >= 0 && wholeWord[SelectionIndex] != L' ' && wholeWord[SelectionIndex] != L'\r');
+				if (CanAddFrontLength)
+				{
+					thisRange->StartPosition = SelectionIndex;
+				}
+				CanAddFrontLength = --SelectionIndex >= 0 && wholeWord[SelectionIndex] >= L'a' && wholeWord[SelectionIndex] <= L'z';
+			} while (CanAddFrontLength || CanAddBackLength);
 			return thisRange;
 		}
 
@@ -99,6 +105,8 @@ namespace Just_Editor
 
 			}
 		}
+
+		void Search_BoxShowHide(bool isShow);
 	private:
 		void CodeEditorBox_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 		void Undo_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
@@ -109,5 +117,8 @@ namespace Just_Editor
 		void Caesar_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void MainGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);
 		void CodeEditorBox_TextChanging(Windows::UI::Xaml::Controls::RichEditBox^ sender, Windows::UI::Xaml::Controls::RichEditBoxTextChangingEventArgs^ args);
-	};
+		void Search_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void Search_Box_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
+		void SearchInRange(Windows::UI::Text::ITextRange^ searchRange);
+};
 }
