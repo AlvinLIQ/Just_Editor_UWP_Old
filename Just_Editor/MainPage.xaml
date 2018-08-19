@@ -26,7 +26,7 @@
                     </Button>
                 </Grid>
                 <StackPanel Name="TopStackPanel" Orientation="Horizontal" Margin="0,0,32,0" Grid.Column="1">
-                    <StackPanel Name="WindowPanel" Orientation="Horizontal" BorderThickness="0.4, 0, 0.4, 0" BorderBrush="Gray" HorizontalAlignment="Left"
+                    <StackPanel Name="WindowPanel" Orientation="Horizontal" BorderThickness="0.4, 0, 0.4, 0" BorderBrush="{x:Bind thisData.Editor_BorderBrush, Mode=OneWay}" HorizontalAlignment="Left"
                                 >
                     </StackPanel>
                     <Button Name="AddWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" VerticalContentAlignment="Center"

@@ -331,6 +331,10 @@ void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI
 	if (thisItem->isChanged)
 	{
 		auto theDialog = Editor_Tools::GetContentDialog("Tips", "Do you want to save it?", true, true);
+		theDialog->Background = thisData->ToolBar_BackgroundBrush;
+		theDialog->Foreground = thisData->Editor_ForegroundBrush;
+		theDialog->RequestedTheme = thisData->isDark ? Windows::UI::Xaml::ElementTheme::Light : Windows::UI::Xaml::ElementTheme::Dark;
+
 		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
 		{
 			((CodeEditor^)thisItem->FrameContent)->SaveFile();

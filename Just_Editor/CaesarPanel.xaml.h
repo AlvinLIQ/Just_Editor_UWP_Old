@@ -6,6 +6,7 @@
 #pragma once
 
 #include "CaesarPanel.g.h"
+#include "Editor_Data.h"
 
 namespace Just_Editor
 {
@@ -14,6 +15,7 @@ namespace Just_Editor
 	{
 	public:
 		CaesarPanel();
+		property Editor_Data^ thisData;
 		void SetPanelMode(int PanelMode);
 	private:
 		void Post_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);

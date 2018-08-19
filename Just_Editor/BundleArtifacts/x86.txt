@@ -1,2 +1,2 @@
-MainPackage=E:\Just_Editor\Release\Just_Editor\Just_Editor_0.0.3.0_Win32.appx
-SymbolPackage=E:\Just_Editor\AppPackages\Just_Editor\Just_Editor_0.0.3.0_Test\Just_Editor_0.0.3.0_Win32.appxsym
+MainPackage=E:\Just_Editor\Release\Just_Editor\Just_Editor_0.0.4.0_Win32.appx
+SymbolPackage=E:\Just_Editor\AppPackages\Just_Editor\Just_Editor_0.0.4.0_Test\Just_Editor_0.0.4.0_Win32.appxsym

@@ -8,16 +8,16 @@
     mc:Ignorable="d"
     d:DesignHeight="400"
     d:DesignWidth="250">
-    <ScrollViewer Background="WhiteSmoke" HorizontalScrollBarVisibility="Visible" HorizontalScrollMode="Enabled">
+    <ScrollViewer Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" HorizontalScrollBarVisibility="Visible" HorizontalScrollMode="Enabled">
         <Grid Padding="20,10">
-            <TextBlock Name="PanelTitle" FontWeight="Bold" FontSize="22" Foreground="#5D5B5B" HorizontalAlignment="Left" PointerEntered="PanelTitle_PointerEntered" 
+            <TextBlock Name="PanelTitle" FontWeight="Bold" FontSize="22" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" HorizontalAlignment="Left" PointerEntered="PanelTitle_PointerEntered" 
                        PointerCaptureLost="PanelTitle_PointerCaptureLost" PointerExited="PanelTitle_PointerCaptureLost" Tapped="PanelTitle_Tapped" VerticalAlignment="Top"/>
             <WebView Name="thisWebView" Margin="10,85,0,0" Width="0"/>
             <StackPanel Padding="10" Name="MainPanel" Margin="10,30,0,0">
             </StackPanel>
 
-            <GridView Name="CipherType_List" Background="WhiteSmoke" SelectionMode="Single" SelectionChanged="CipherType_List_SelectionChanged" Header="Select a feature"
-                      Foreground="#5D5B5B" FontWeight="Bold">
+            <GridView Name="CipherType_List" Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" SelectionMode="Single" SelectionChanged="CipherType_List_SelectionChanged" Header="Select a feature"
+                      Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="Bold">
                 
             </GridView>
         </Grid>

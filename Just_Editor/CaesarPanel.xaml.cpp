@@ -31,10 +31,11 @@ CaesarPanel::CaesarPanel()
 
 void Just_Editor::CaesarPanel::InitializePanel()
 {
+	thisData = ref new Editor_Data;
 	for (int i = 0; i < 3; i++)
 	{
 		auto PanelType_Block = ref new TextBlock;
-		PanelType_Block->Foreground = PanelTitle->Foreground;
+		PanelType_Block->Foreground = thisData->Editor_ForegroundBrush;
 		PanelType_Block->Text = PanelTitleArray[i];
 
 		auto thisItem = ref new GridViewItem;
@@ -54,45 +55,50 @@ void Just_Editor::CaesarPanel::SetPanelMode(int PanelMode)
 	thisWebView->Width = 0;
 	thisWebView->Opacity = 0;
 	MainPanel->Children->Clear();
-
+	thisData = ref new Editor_Data;
+	this->Bindings->Update();
 	PanelTitle->Text = PanelTitleArray[PanelMode];
 	switch (PanelMode)
 	{
 	case 0://Caesar
 	{
-		Cipher_Box = Editor_Tools::GetTextBox(PanelTitle->Foreground);
+		Cipher_Box = Editor_Tools::GetTextBox(thisData->Editor_ForegroundBrush);
+		Cipher_Box->BorderBrush = thisData->Editor_BorderBrush;
 		Cipher_Box->MinHeight = 80;
 
-		Calculate_Button = Editor_Tools::GetButton("Calculate", 16, ref new SolidColorBrush(Editor_Tools::GetColorFromHexChar("EFEFEF")) ,PanelTitle->Foreground, PanelTitle->FontWeight);
+		Calculate_Button = Editor_Tools::GetButton("Calculate", 16, thisData->Editor_BackgroundBrush ,thisData->Editor_ForegroundBrush, PanelTitle->FontWeight);
 		Calculate_Button->Click += ref new RoutedEventHandler(this, &Just_Editor::CaesarPanel::Calculate_Button_Click);
 
 		Result_Block = ref new TextBlock;
-		Result_Block->Foreground = PanelTitle->Foreground;
+		Result_Block->Foreground = thisData->Editor_ForegroundBrush;
 		Result_Block->FontSize = 15;
 		Result_Block->IsTextSelectionEnabled = true;
 
-		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Cipher", 16, PanelTitle->Foreground, PanelTitle->FontWeight));
+		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Cipher", 16, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight));
 		MainPanel->Children->Append(Cipher_Box);
 		MainPanel->Children->Append(Calculate_Button);
-		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Result", 16, PanelTitle->Foreground, PanelTitle->FontWeight));
+		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Result", 16, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight));
 		MainPanel->Children->Append(Result_Block);
 	}
 		break;
 	case 1://Request
 	{
-		Cipher_Box = Editor_Tools::GetTextBox(PanelTitle->Foreground);
+		Cipher_Box = Editor_Tools::GetTextBox(thisData->Editor_ForegroundBrush);
+		Cipher_Box->BorderBrush = thisData->Editor_BorderBrush;
 		Cipher_Box->MinHeight = 140;
 
-		auto Url_Box = Editor_Tools::GetTextBox(PanelTitle->Foreground, false);
+		auto Url_Box = Editor_Tools::GetTextBox(thisData->Editor_ForegroundBrush, false);
+		Url_Box->BorderBrush = thisData->Editor_BorderBrush;
 
-		auto Body_Box = Editor_Tools::GetTextBox(PanelTitle->Foreground, false);
+		auto Body_Box = Editor_Tools::GetTextBox(thisData->Editor_ForegroundBrush, false);
+		Body_Box->BorderBrush = thisData->Editor_BorderBrush;
 
 		Result_Block = ref new TextBlock;
-		Result_Block->Foreground = PanelTitle->Foreground;
+		Result_Block->Foreground = thisData->Editor_ForegroundBrush;
 		Result_Block->FontSize = 15;
 		Result_Block->IsTextSelectionEnabled = true;
 
-		Calculate_Button = Editor_Tools::GetButton("Execute", 16, ref new SolidColorBrush(Editor_Tools::GetColorFromHexChar("EFEFEF")), PanelTitle->Foreground, PanelTitle->FontWeight);
+		Calculate_Button = Editor_Tools::GetButton("Execute", 16, thisData->Editor_BackgroundBrush, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight);
 		Calculate_Button->Click += ref new Windows::UI::Xaml::RoutedEventHandler([this, Url_Box, Body_Box] (Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 		{
 			Url_Box->Text = Editor_Tools::GetRegularUrl(Url_Box->Text);
@@ -182,19 +188,19 @@ void Just_Editor::CaesarPanel::SetPanelMode(int PanelMode)
 			});
 		});
 
-		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Url", 16, PanelTitle->Foreground, PanelTitle->FontWeight));
+		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Url", 16, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight));
 		MainPanel->Children->Append(Url_Box);
-		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Header", 16, PanelTitle->Foreground, PanelTitle->FontWeight));
+		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Header", 16, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight));
 		MainPanel->Children->Append(Cipher_Box);
-		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Body(Post)", 16, PanelTitle->Foreground, PanelTitle->FontWeight));
+		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Body(Post)", 16, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight));
 		MainPanel->Children->Append(Body_Box);
 		MainPanel->Children->Append(Calculate_Button);
-		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Result", 16, PanelTitle->Foreground, PanelTitle->FontWeight));
+		MainPanel->Children->Append(Editor_Tools::GetTextBlock("Result", 16, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight));
 		MainPanel->Children->Append(Result_Block);
 	}
 		break;
 	case 2://WebView
-		Calculate_Button = Editor_Tools::GetButton("Navigate From Editor", 16, ref new SolidColorBrush(Editor_Tools::GetColorFromHexChar("EFEFEF")), PanelTitle->Foreground, PanelTitle->FontWeight);
+		Calculate_Button = Editor_Tools::GetButton("Navigate From Editor", 16, thisData->Editor_BackgroundBrush, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight);
 		Calculate_Button->Click += ref new Windows::UI::Xaml::RoutedEventHandler([this](Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 		{
 			thisWebView->NavigateToString(((RichEditBox^)((Grid^)((Grid^)this->Parent)->Children->GetAt(1))->Children->GetAt(0))->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount)->Text);
@@ -247,13 +253,13 @@ void Just_Editor::CaesarPanel::AddParameter()
 
 void Just_Editor::CaesarPanel::PanelTitle_PointerEntered(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
 {
-	PanelTitle->Foreground = ref new SolidColorBrush(Windows::UI::Colors::LightGray);
+	PanelTitle->Foreground = thisData->Editor_BackgroundBrush;
 }
 
 
 void Just_Editor::CaesarPanel::PanelTitle_PointerCaptureLost(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
 {
-	PanelTitle->Foreground = ref new SolidColorBrush(Editor_Tools::GetColorFromHexChar("5D5B5B"));
+	PanelTitle->Foreground = thisData->Editor_ForegroundBrush;
 }
 
 

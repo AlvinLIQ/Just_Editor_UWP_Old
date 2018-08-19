@@ -57,14 +57,6 @@
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="Normal"/>
-                                    <VisualState x:Name="PointerOver">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement"
-                                               Storyboard.TargetProperty="BorderBrush">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightChromeAltLowBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
                                     <VisualState x:Name="Focused">
                                         <Storyboard>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter"
@@ -117,12 +109,6 @@
                             <ScrollViewer x:Name="ContentElement"
                       Grid.Row="1"
                       Background="{TemplateBinding Background}"
-                      HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                      HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                      VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                      VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                      IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                      IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
                       Margin="{TemplateBinding BorderThickness}"
                       Padding="{TemplateBinding Padding}"
                       IsTabStop="False"
@@ -137,7 +123,6 @@
                       Padding="{TemplateBinding Padding}"
                       IsTabStop="False"
                       Grid.ColumnSpan="2"
-                      Content="{TemplateBinding PlaceholderText}"
                       IsHitTestVisible="False"/>
                         </Grid>
                     </ControlTemplate>
@@ -191,7 +176,7 @@
                                                                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ButtonLayoutGrid" Storyboard.TargetProperty="Background">
                                                                         <DiscreteObjectKeyFrame KeyTime="0" Value="#EFEFEF"/>
                                                                     </ObjectAnimationUsingKeyFrames>
-  
+
                                                                 </Storyboard>
                                                             </VisualState>
                                                             <VisualState x:Name="Disabled">
@@ -558,7 +543,6 @@
                                             <Setter Target="Root.Background" Value="{ThemeResource ScrollBarBackgroundPointerOver}"/>
                                             <Setter Target="Root.BorderBrush" Value="{ThemeResource ScrollBarBorderBrushPointerOver}"/>
                                         </VisualState.Setters>
-                                        
                                     </VisualState>
                                     <VisualState x:Name="Disabled">
                                         <VisualState.Setters>
@@ -599,8 +583,8 @@
                                 </Grid.ColumnDefinitions>
                                 <RepeatButton x:Name="HorizontalSmallDecrease" AllowFocusOnInteraction="False" Grid.Column="0" Interval="50" IsTabStop="False" MinHeight="{ThemeResource ScrollBarSize}" Margin="0" Opacity="0" Template="{StaticResource HorizontalDecrementTemplate}" VerticalAlignment="Center" Width="{ThemeResource ScrollBarSize}"/>
                                 <RepeatButton x:Name="HorizontalLargeDecrease" AllowFocusOnInteraction="False" Grid.Column="1" HorizontalAlignment="Stretch" Interval="50" IsTabStop="False" Opacity="0" Template="{StaticResource RepeatButtonTemplate}" VerticalAlignment="Stretch" Width="0"/>
-                                <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Background="#BBBBBB" 
-                                       Grid.Column="2" Height="{ThemeResource ScrollBarSize}" MinWidth="{ThemeResource ScrollBarSize}" Opacity="1" RenderTransformOrigin="0.5,1" 
+                                <Thumb x:Name="HorizontalThumb" AutomationProperties.AccessibilityView="Raw" Background="#232323" 
+                                       Grid.Column="2" Height="{ThemeResource ScrollBarSize}" MinWidth="{ThemeResource ScrollBarSize}" Opacity="0.7" RenderTransformOrigin="0.5,1" 
                                        Template="{StaticResource HorizontalThumbTemplate}" VerticalAlignment="Bottom" Visibility="Collapsed">
                                     <Thumb.RenderTransform>
                                         <CompositeTransform x:Name="HorizontalThumbTransform" ScaleX="1.0" ScaleY="1.0" TranslateX="0" TranslateY="0"/>
@@ -614,17 +598,17 @@
                             </Grid>
                             <Grid x:Name="VerticalRoot" Background="#0000" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="10"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="10"/>
                                 </Grid.RowDefinitions>
                                 <RepeatButton x:Name="VerticalSmallDecrease" HorizontalAlignment="Center" Height="{ThemeResource ScrollBarSize}" Interval="50" IsTabStop="False" MinWidth="{ThemeResource ScrollBarSize}" Margin="0" Opacity="0" Grid.Row="0" Template="{StaticResource VerticalDecrementTemplate}"/>
                                 <RepeatButton x:Name="VerticalLargeDecrease" AllowFocusOnInteraction="False" HorizontalAlignment="Stretch" Height="0" Interval="50"
                                               IsTabStop="False" Opacity="0" Grid.Row="1" Template="{StaticResource RepeatButtonTemplate}" VerticalAlignment="Stretch"/>
-                                <Thumb x:Name="VerticalThumb" AutomationProperties.AccessibilityView="Raw" Background="#BBBBBB" 
-                                       MinHeight="{ThemeResource ScrollBarSize}" Opacity="1" RenderTransformOrigin="1,0.5" Grid.Row="2" Visibility="Collapsed"
+                                <Thumb x:Name="VerticalThumb" AutomationProperties.AccessibilityView="Raw" Background="#232323" 
+                                       MinHeight="{ThemeResource ScrollBarSize}" Opacity="0.7" RenderTransformOrigin="1,0.5" Grid.Row="2" Visibility="Collapsed"
                                        Template="{StaticResource VerticalThumbTemplate}" Width="{ThemeResource ScrollBarSize}">
                                     <Thumb.RenderTransform>
                                         <CompositeTransform x:Name="VerticalThumbTransform" ScaleX="1.0" ScaleY="1.0" TranslateX="0" TranslateY="0"/>
@@ -643,7 +627,7 @@
         </Style>
         <Style TargetType="Button">
             <Setter Property="Background" Value="{ThemeResource ButtonBackground}"/>
-            <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}"/>
+            <Setter Property="Foreground" Value="#5D5B5B"/>
             <Setter Property="Padding" Value="8,4,8,4"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
