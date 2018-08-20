@@ -17,6 +17,10 @@ namespace Just_Editor
 		CaesarPanel();
 		property Editor_Data^ thisData;
 		void SetPanelMode(int PanelMode);
+		void UpdateBindings()
+		{
+			this->Bindings->Update();
+		}
 	private:
 		void Post_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void Calculate_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);

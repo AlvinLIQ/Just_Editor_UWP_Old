@@ -19,7 +19,7 @@ using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Media;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-const std::wstring IdentifierArray[] = { L"[code]", L"[/code]" ,L"[image]",L"[/image]",L"int",L"char",L"if",L"for",L"while",
+const std::wstring IdentifierArray[] = {L"Vector", L"Task" ,L"Array",L"Enum",L"int",L"char",L"if",L"for",L"while",
 L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
 L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto" };
@@ -40,7 +40,7 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 	{
 		wordRange = thisRange;
 		if (isHighlight)
-			thisRange->CharacterFormat->ForegroundColor = thisData->Editor_ForegroundBrush->Color;
+			thisRange->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 		int count = 0;
 
 		for (size_t i = 0, j, thisIDLength; i < IdentifierNum; i++, count = 0)
@@ -60,30 +60,36 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 			if (thisIDLength == count)
 			{
 				if (isHighlight)
-					thisRange->CharacterFormat->ForegroundColor = thisData->IdentifierHighlightColor;
+					thisRange->CharacterFormat->ForegroundColor = i <= 3 ? thisData->Editor_ForegroundBrush->Color : thisData->IdentifierHighlightColor;
 			}
 			else if (thisWordLength == count)
 			{
 				StartIndex = count;
 				auto thisItem = ref new DuronWordItem;
-				((Grid^)thisItem->Content)->Tapped += ref new Windows::UI::Xaml::Input::TappedEventHandler([this, thisItem](Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)
+				((Grid^)thisItem->Content)->Tapped += ref new Windows::UI::Xaml::Input::TappedEventHandler(
+					[this, thisItem](Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)
 				{
 					SelectItem(thisItem);
 				});
-				((Grid^)thisItem->Content)->DoubleTapped += ref new Windows::UI::Xaml::Input::DoubleTappedEventHandler([this, thisItem, thisRange, isHighlight](Platform::Object^ sender, Windows::UI::Xaml::Input::DoubleTappedRoutedEventArgs^ e)
+				((Grid^)thisItem->Content)->DoubleTapped += ref new Windows::UI::Xaml::Input::DoubleTappedEventHandler(
+					[this, thisItem, thisRange, isHighlight](Platform::Object^ sender, Windows::UI::Xaml::Input::DoubleTappedRoutedEventArgs^ e)
 				{
 					thisRange->Text += Editor_Tools::SubPStr(thisItem->Identifier, StartIndex);
 					auto thisCodeEditor = ((RichEditBox^)((Grid^)this->Parent)->Children->GetAt(0));
 					thisRange->MatchSelection();
 					thisCodeEditor->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 					if (isHighlight)
-						thisRange->CharacterFormat->ForegroundColor = thisData->IdentifierHighlightColor;
+					{
+						thisRange->CharacterFormat->ForegroundColor = thisItem->isClass ?
+							thisData->Editor_ForegroundBrush->Color : thisData->IdentifierHighlightColor;
+					}
 					this->SelectedItem = nullptr;
 					this->Width = 0;
 				});
 				thisItem->Identifier = ref new String(IdentifierArray[i].c_str());
 				thisItem->OverBrush = thisData->Editor_ForegroundBrush;
 				thisItem->ItemIndex = ItemPanel->Children->Size;
+				thisItem->isClass = i <= 3;
 				if (!ItemPanel->Children->Size)
 				{
 					thisItem->Select();

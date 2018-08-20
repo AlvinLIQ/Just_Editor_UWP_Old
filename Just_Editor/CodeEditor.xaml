@@ -36,7 +36,7 @@
         <Grid Grid.Row="1">
             <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" HorizontalAlignment="Stretch" KeyUp="MainGrid_KeyUp"
                              AcceptsReturn="False" TextChanging="CodeEditorBox_TextChanging"
-                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="Wrap" Background="{x:Bind thisData.Editor_BackgroundBrush}">
+                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="Wrap" Background="{x:Bind thisData.Editor_BackgroundBrush, Mode=OneWay}">
             </RichEditBox>
             <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0">
                 <local:DuronSmartDetect.RenderTransform>

@@ -19,10 +19,11 @@ using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Media;
 
-String^ MyIdentifierArray[] = { L"[code]", L"[/code]" ,L"[image]",L"[/image]",L"int",L"char",L"if",L"for",L"while",
+String^ MyIdentifierArray[] = {L"//", L"/*", L"Vector", L"Task" ,L"Array",L"Enum",L"int",L"char",L"if",L"for",L"while",
 L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
 L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
-L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto"};
+L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto" };
+const wchar_t EndChar[] = L"\r*/";
 Point thisPoint;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -37,7 +38,6 @@ CodeEditor::CodeEditor()
 		ToolBar_Row->Height = 35;
 		CodeEditorBox->KeyDown += ref new Windows::UI::Xaml::Input::KeyEventHandler(this, &Just_Editor::CodeEditor::CodeEditorBox_KeyDown);
 	}
-
 	CodeEditorBox->Document->UndoLimit = MaxUndoLimit;
 	CodeEditorBox->Document->BeginUndoGroup();
 	//this->Frame->Navigated += ref new NavigatedEventHandler(this, &CodeEditor::ThisFrame_Navigated);
@@ -53,23 +53,39 @@ void Just_Editor::CodeEditor::AutoDetect()
 {
 	if (!thisData->isHighlightEnabled)
 		return;
-	int c = IdentifierNum, sl;
+	int c = IdentifierNum + 2, sl;
 	Windows::UI::Text::ITextRange^ searchRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
-	searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
-	Windows::UI::Text::ITextCharacterFormat^ charFormatting = searchRange->CharacterFormat;
-	charFormatting->ForegroundColor = thisData->Editor_ForegroundBrush->Color;
+	searchRange->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
+	auto thisChar = std::wstring(searchRange->Text->Data());
+	int End;
 	while (--c >= 0)
 	{
 		//int len = (int)((RichEditBox^)sender)->PlaceholderText->Length();
-		searchRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
-		searchRange->Move(Windows::UI::Text::TextRangeUnit::Character, 0);
-		sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
+		sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
 		while (sl)
 		{
-			charFormatting = searchRange->CharacterFormat;
-			charFormatting->ForegroundColor = thisData->IdentifierHighlightColor;
-			sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, Windows::UI::Text::FindOptions::Word);
+			if (c > 1)
+			{
+				searchRange->CharacterFormat->ForegroundColor = c > 5 ? 
+					thisData->IdentifierHighlightColor :
+					thisData->Editor_ForegroundBrush->Color;
+			}
+			else
+			{
+				End = searchRange->EndPosition;
+				while (thisChar[searchRange->EndPosition] != L'\0' && (thisChar[searchRange->EndPosition] != EndChar[c] )
+					|| (c && !(thisChar[searchRange->EndPosition] == EndChar[c] && thisChar[searchRange->EndPosition + 1] == EndChar[c + 1])))
+				{
+					searchRange->EndPosition++;
+				}
+				if (c)
+					searchRange->EndPosition += 2;
+				searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+				searchRange->EndPosition = End;
+			}
+			sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
 		}
+		searchRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 	}
 }
 
@@ -96,7 +112,8 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		else
 		{
 			((RichEditBox^)sender)->Document->Selection->Text += "    ";
-			((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
+			((RichEditBox^)sender)->Document->Selection->StartPosition = ((RichEditBox^)sender)->Document->Selection->EndPosition;
+			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 		}
 	}
 	else if (isCtrlHeld && e->Key == Windows::System::VirtualKey::Space && !SmartDetect->ActualWidth)
@@ -131,12 +148,16 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		e->Handled = true;
 		if (SmartDetect->SelectedItem != nullptr)
 		{
+			bool isClass = SmartDetect->SelectedItem->isClass;
 			SmartDetect->wordRange->Text += Editor_Tools::SubPStr(SmartDetect->SelectedItem->Identifier, SmartDetect->StartIndex);
-			SmartDetect->wordRange->MatchSelection();
-			if (thisData->isHighlightEnabled)
-				SmartDetect->wordRange->CharacterFormat->ForegroundColor = thisData->IdentifierHighlightColor;
+			
+			if (isClass)
+			{
+				SmartDetect->wordRange->CharacterFormat->ForegroundColor = thisData->Editor_ForegroundBrush->Color;
+			}
 			SmartDetect->SelectedItem = nullptr;
 			SmartDetect->Width = 0;
+			SmartDetect->wordRange->MatchSelection();
 		}
 		else
 		{
@@ -144,6 +165,10 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		}
 
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
+	}
+	else
+	{
+		CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 	}
 	isCtrlHeld = e->Key == Windows::System::VirtualKey::Control;
 }
@@ -206,7 +231,7 @@ void Just_Editor::CodeEditor::Caesar_Button_Click(Platform::Object^ sender, Wind
 	if (MainGrid->Children->Size > 2)
 	{
 		ExtraColumn->Width = 0;
-		auto thisItem = MainGrid->Children->GetAt(3);
+		auto thisItem = MainGrid->Children->GetAt(2);
 		MainGrid->Children->RemoveAtEnd();
 		delete[] thisItem;
 	}
@@ -249,6 +274,7 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 
 	if (thisData->isSmartDetectEnabled)
 	{
+
 		SmartDetect->DetectWordFromStrArray(GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition), thisData->isHighlightEnabled);
 
 		if (SmartDetect->ActualHeight)

@@ -84,6 +84,7 @@ void StartPage::LoadRecentList()
 
 				((Windows::UI::Xaml::Controls::Grid^)thisItem->Content)->Tapped += ref new Windows::UI::Xaml::Input::TappedEventHandler([this, thisItem](Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ args)
 				{
+					thisItem->Background = ref new Windows::UI::Xaml::Media::SolidColorBrush;
 					concurrency::create_task(Windows::Storage::StorageFile::GetFileFromPathAsync(thisItem->FilePath)).then([this](task<Windows::Storage::StorageFile^> thisTask)
 					{
 						try

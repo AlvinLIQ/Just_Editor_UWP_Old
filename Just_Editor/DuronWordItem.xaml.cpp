@@ -24,7 +24,7 @@ DuronWordItem::DuronWordItem()
 
 void DuronWordItem::Word_PointerOver(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args)
 {
-	ItemTitle->Foreground = ref new SolidColorBrush(Editor_Tools::GetColorFromHexChar("DEDEDE"));
+	ItemTitle->Foreground = ref new SolidColorBrush(Editor_Tools::GetColorFromHexChar("CCCCCC"));
 }
 
 void DuronWordItem::Word_PointerOut(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ args)

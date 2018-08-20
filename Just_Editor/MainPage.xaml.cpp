@@ -11,6 +11,7 @@
 #include "RenameDialog.xaml.h"
 #include "DuronWindowItemxaml.xaml.h"
 #include "DuronSmartDetect.xaml.h"
+#include "CaesarPanel.xaml.h"
 
 using namespace Just_Editor;
 
@@ -370,6 +371,7 @@ void MainPage::WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xam
 
 	auto renameDialog = ref new RenameDialog;
 	renameDialog->Background = thisData->ToolBar_BackgroundBrush;
+	renameDialog->RequestedTheme = thisData->isDark ? Windows::UI::Xaml::ElementTheme::Light : Windows::UI::Xaml::ElementTheme::Dark;
 	renameDialog->FileName = thisItem->FileName;
 	renameDialog->Closed += ref new Windows::Foundation::TypedEventHandler<Windows::UI::Xaml::Controls::ContentDialog^, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^>([thisItem, renameDialog]
 	(ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^ args)
@@ -521,11 +523,15 @@ void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI
 				{
 					((CodeEditor^)thisItem->FrameContent)->thisData = thisData;
 					((CodeEditor^)thisItem->FrameContent)->UpdateBindings();
-					if (HighlightSwitch->IsOn)
-						((CodeEditor^)thisItem->FrameContent)->AutoDetect();
 
-					((DuronSmartDetect^)((Grid^)((Panel^)((CodeEditor^)thisItem->FrameContent)->Content)->Children->GetAt(1))->Children->GetAt(1))->thisData = thisData;
-					((DuronSmartDetect^)((Grid^)((Panel^)((CodeEditor^)thisItem->FrameContent)->Content)->Children->GetAt(1))->Children->GetAt(1))->UpdateBindings();
+					auto thisMainPanel = (Panel^)((CodeEditor^)thisItem->FrameContent)->Content;
+					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(1))->Children->GetAt(1))->thisData = thisData;
+					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(1))->Children->GetAt(1))->UpdateBindings();
+					if (thisMainPanel->Children->Size == 3)
+					{
+						((CaesarPanel^)thisMainPanel->Children->GetAt(2))->thisData = thisData;
+						((CaesarPanel^)thisMainPanel->Children->GetAt(2))->UpdateBindings();
+					}
 				}
 				else
 				{

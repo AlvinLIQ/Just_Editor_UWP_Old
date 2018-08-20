@@ -35,31 +35,72 @@ namespace Just_Editor
 
 		Windows::UI::Text::ITextRange^ GetWordFromSelection(int SelectionIndex)
 		{
-			auto thisRange = CodeEditorBox->Document->GetRange(0, SelectionIndex + 10);
+			auto thisRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 			auto wholeWord = thisRange->Text->Data();
-			size_t WordLength = wcslen(wholeWord);
 			bool CanAddBackLength = true, CanAddFrontLength = true;
+			
 			thisRange->EndPosition = SelectionIndex;
-			do
+			while (CanAddFrontLength || CanAddBackLength)
 			{
-				if (CanAddBackLength)
-				{
-					CanAddBackLength = SelectionIndex < thisRange->EndPosition && ((wholeWord[thisRange->EndPosition] >= L'a' && wholeWord[thisRange->EndPosition] <= L'z') || wholeWord[thisRange->EndPosition] == L'#');
-					if (CanAddBackLength)
-						thisRange->EndPosition++;
-				}
 				if (CanAddFrontLength)
 				{
 					thisRange->StartPosition = SelectionIndex;
+					CanAddFrontLength = --SelectionIndex >= 0 && ((wholeWord[SelectionIndex] >= L'a' && wholeWord[SelectionIndex] <= L'z') ||
+						(wholeWord[SelectionIndex] >= L'A' && wholeWord[SelectionIndex] <= L'Z') || wholeWord[SelectionIndex] == L'#');
 				}
-				CanAddFrontLength = --SelectionIndex >= 0 && ((wholeWord[SelectionIndex] >= L'a' && wholeWord[SelectionIndex] <= L'z') || wholeWord[SelectionIndex] == L'#');
-			} while (CanAddFrontLength || CanAddBackLength);
+				if (CanAddBackLength)
+				{
+					CanAddBackLength = SelectionIndex < thisRange->EndPosition && wholeWord[thisRange->EndPosition] != '\r' && 
+						((wholeWord[thisRange->EndPosition] >= L'a' && wholeWord[thisRange->EndPosition] <= L'z') ||
+						(wholeWord[SelectionIndex] >= L'A' && wholeWord[SelectionIndex] <= L'Z' || wholeWord[thisRange->EndPosition] == L'#'));
+					if (CanAddBackLength)
+						thisRange->EndPosition++;
+				}
+			}
+			/*
+			SelectionIndex = thisRange->StartPosition;
+			while (SelectionIndex-- > 0 && wholeWord[SelectionIndex] != L'\r')
+			{
+				if (wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/')
+				{
+					thisRange->StartPosition = SelectionIndex - 1;
+					SelectionIndex = thisRange->EndPosition;
+					while (wholeWord[SelectionIndex] != L'*' && wholeWord[SelectionIndex + 1] != L'/' && wholeWord[SelectionIndex] != L'\0')
+					{
+						thisRange->EndPosition = SelectionIndex;
+						SelectionIndex++;
+					}
+					thisRange->EndPosition += 3;
+					thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+					thisRange->StartPosition = thisRange->EndPosition;
+					break;
+				}
+			}*/
+			SelectionIndex = thisRange->StartPosition;
+			while (--SelectionIndex > 0 && wholeWord[SelectionIndex] != L'\r')
+			{
+				if (wholeWord[SelectionIndex] == L'/' && wholeWord[SelectionIndex - 1] == L'/')
+				{
+					thisRange->StartPosition = SelectionIndex - 1;
+					SelectionIndex = thisRange->EndPosition;
+					while (wholeWord[SelectionIndex] != L'\r' && wholeWord[SelectionIndex] != L'\0')
+					{
+						thisRange->EndPosition = SelectionIndex;
+						SelectionIndex++;
+					}
+					thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+					thisRange->StartPosition = thisRange->EndPosition;
+					break;
+				}
+			}
+			
 			return thisRange;
 		}
 
 		void UpdateBindings()
 		{
 			this->Bindings->Update();
+			AutoDetect();
 		}
 
 		void AutoDetect();

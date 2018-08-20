@@ -5,7 +5,7 @@
     xmlns:local="using:Just_Editor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" SizeChanged="WindowPanel_SizeChanged" Background="#787878" NavigationCacheMode="Disabled">
+    mc:Ignorable="d" SizeChanged="WindowPanel_SizeChanged" Background="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}" NavigationCacheMode="Disabled">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Tapped="Page_Tapped">
         <Grid>

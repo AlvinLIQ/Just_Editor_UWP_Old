@@ -19,6 +19,8 @@ namespace Just_Editor
 		property Windows::UI::Xaml::Media::Brush^ OverBrush;
 		property int ItemIndex;
 
+		property bool isClass;
+
 		void Select();
 		void UnSelect();
 	private:
