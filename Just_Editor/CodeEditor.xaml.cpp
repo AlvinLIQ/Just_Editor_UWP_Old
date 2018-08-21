@@ -25,6 +25,7 @@ L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto" };
 const wchar_t EndChar[] = L"\r*/";
 Point thisPoint;
+Platform::Collections::Vector<Windows::UI::Text::ITextRange^>^ CommentList;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 

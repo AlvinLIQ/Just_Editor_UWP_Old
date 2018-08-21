@@ -50,9 +50,9 @@ namespace Just_Editor
 				}
 				if (CanAddBackLength)
 				{
-					CanAddBackLength = SelectionIndex < thisRange->EndPosition && wholeWord[thisRange->EndPosition] != '\r' && 
+					CanAddBackLength = SelectionIndex < thisRange->EndPosition && 
 						((wholeWord[thisRange->EndPosition] >= L'a' && wholeWord[thisRange->EndPosition] <= L'z') ||
-						(wholeWord[SelectionIndex] >= L'A' && wholeWord[SelectionIndex] <= L'Z' || wholeWord[thisRange->EndPosition] == L'#'));
+						(wholeWord[thisRange->EndPosition] >= L'A' && wholeWord[thisRange->EndPosition] <= L'Z' || wholeWord[thisRange->EndPosition] == L'#'));
 					if (CanAddBackLength)
 						thisRange->EndPosition++;
 				}
@@ -77,6 +77,7 @@ namespace Just_Editor
 				}
 			}*/
 			SelectionIndex = thisRange->StartPosition;
+			//auto FindResult = Editor_Tools::FindAllStr(wholeWord, L"//");
 			while (--SelectionIndex > 0 && wholeWord[SelectionIndex] != L'\r')
 			{
 				if (wholeWord[SelectionIndex] == L'/' && wholeWord[SelectionIndex - 1] == L'/')
@@ -88,6 +89,7 @@ namespace Just_Editor
 						thisRange->EndPosition = SelectionIndex;
 						SelectionIndex++;
 					}
+					thisRange->EndPosition++;
 					thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
 					thisRange->StartPosition = thisRange->EndPosition;
 					break;

@@ -215,9 +215,8 @@ namespace Just_Editor
 
 			size_t findIndex = 0, i;
 
-			for (i = 0; i + Tlength - findIndex < Slength && findIndex < Tlength; i++, findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0);
-			
-			return findIndex == Tlength ? i - Tlength + 1 : -1;
+			for (i = 0; i + Tlength - findIndex - 1 < Slength && findIndex < Tlength; findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0, i++);
+			return findIndex == Tlength ? i - Tlength : -1;
 		}
 
 		static Platform::Collections::Vector<size_t>^ FindAllStr(const wchar_t* sourceStr, const wchar_t* targetStr, size_t Slength = -1, size_t Tlength = -1)
@@ -232,13 +231,12 @@ namespace Just_Editor
 
 			size_t findIndex = 0, i;
 
-			for (i = 0; i + Tlength - findIndex < Slength; i++, findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0)
+			for (i = 0; i + Tlength - findIndex - 1 < Slength; findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0, i++)
 			{
 				if (findIndex == Tlength)
 				{
 					findIndex = 0;
-
-					IndexArray->Append(i - Tlength + 1);
+					IndexArray->Append(i - Tlength);
 				}
 			}
 			return IndexArray;

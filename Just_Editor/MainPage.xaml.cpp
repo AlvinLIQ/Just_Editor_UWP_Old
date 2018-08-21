@@ -410,7 +410,7 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 		if (e->Parameter->ToString() == L"Windows.Storage.StorageFile")
 		{
 			Windows::Storage::StorageFile^ ItemFile = (Windows::Storage::StorageFile^)e->Parameter;
-			NewWindowItem(ItemFile->Name, ItemFile->Path, true, nullptr, ItemFile);
+			NewWindowItem(ItemFile->Name, ItemFile->Path, true, MainFrame->Content, ItemFile);
 		}
 		else
 		{
@@ -418,8 +418,9 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 		}
 	}
 
-	auto thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(GetSelectedItemIndex());
-	if (thisItem->ItemFile != nullptr && thisItem->FrameContent == nullptr)
+	auto thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(WindowPanel->Children->Size - 1);
+	//auto thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(GetSelectedItemIndex());
+	if (thisItem->ItemFile != nullptr)
 	{
 		create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this, thisItem](task<String^> thisTask)
 		{
