@@ -19,7 +19,6 @@ namespace Just_Editor
 		property Editor_Data^ thisData;
 		property Platform::String^ FilePath;
 		property Platform::String^ FileName;
-		property Platform::String^ OriginalText;
 
 		property Windows::Storage::StorageFile^ ItemFile;
 

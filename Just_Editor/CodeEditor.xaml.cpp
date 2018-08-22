@@ -94,7 +94,6 @@ void Just_Editor::CodeEditor::AutoDetect(int StartIndex, int EndIndex, bool isEx
 				else
 				{
 					searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-					CommentList->Append(CodeEditorBox->Document->GetRange(searchRange->StartPosition, searchRange->EndPosition));
 				}
 
 				

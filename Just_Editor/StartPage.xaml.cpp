@@ -203,7 +203,6 @@ void Just_Editor::StartPage::OpenOptionView_SelectionChanged(Platform::Object^ s
 				Windows::Storage::StorageFile^ thisFile = thisTask.get();
 				if (thisFile != nullptr)
 				{
-					Editor_Tools::AddToRecentFile(thisFile);
 					this->Frame->Navigate(CodeEditor::typeid, thisFile, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
 				}
 			}

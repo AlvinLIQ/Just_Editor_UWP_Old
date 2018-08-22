@@ -109,12 +109,16 @@ namespace Just_Editor
 					if (SelectionIndex != -1)
 					{
 						if (!CanAddFrontLength)
+						{
 							SelectionIndex += 2;
+							CommentList->Append(thisCommentRange);
+						}
+						else
+							thisRange->EndPosition = thisRange->StartPosition;
 						
 						thisCommentRange = CodeEditorBox->Document->GetRange(CommentsNum, SelectionIndex);
 						thisCommentRange->CharacterFormat->ForegroundColor =
 							Windows::UI::Colors::DarkSeaGreen;
-						CommentList->Append(thisCommentRange);
 					}
 				}
 				else if (CommentsNum && wholeWord[CommentsNum - 1] == L'*')

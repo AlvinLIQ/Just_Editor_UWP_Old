@@ -131,6 +131,14 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 				thisItem->RightTapped +=
 					ref new Windows::UI::Xaml::Input::RightTappedEventHandler(this,
 						&MainPage::WindowItem_RightTapped);
+
+				if (thisItem->FrameContent == nullptr)
+				{
+					MainFrame->Navigate(CodeEditor::typeid, nullptr, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
+					thisItem->FrameContent = MainFrame->Content;
+					((CodeEditor^)thisItem->FrameContent)->thisWindowItem = thisItem;
+				}
+				((CodeEditor^)thisItem->FrameContent)->thisWindowItem = thisItem;
 			}
 
 			thisItem->PointerPressed +=
@@ -142,6 +150,36 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 			((Button^)((Grid^)thisItem->Content)->Children->GetAt(1))->Click +=
 				ref new Windows::UI::Xaml::RoutedEventHandler(this,
 					&MainPage::WindowItemCloseButton_Click);
+
+			
+			if (thisItem->ItemFile != nullptr && thisItem->FrameContent != nullptr)
+			{
+				Editor_Tools::AddToRecentFile(thisItem->ItemFile);
+
+				create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this, thisItem](task<String^> thisTask)
+				{
+					try
+					{
+						String^ thisText = thisTask.get();
+						CodeEditor^ thisEditor = (CodeEditor^)thisItem->FrameContent;
+						//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
+
+						RichEditBox^ EditBox = ((RichEditBox^)((Grid^)((Panel^)thisEditor->Content)->Children->GetAt(1))->Children->GetAt(0));
+						EditBox->Document->EndUndoGroup();
+						EditBox->Document->UndoLimit = 0;
+						EditBox->Document->Selection->Text += thisText;
+						thisEditor->AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
+						thisItem->SetChanged(false);
+						EditBox->Document->UndoLimit = 80;
+						EditBox->Document->BeginUndoGroup();
+					}
+					catch (Exception^ WTF)
+					{
+						//Read Fail
+						Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
+					}
+				}, task_continuation_context::use_current());
+			}
 		}
 	});
 	thisTimer->Start();
@@ -196,9 +234,9 @@ void MainPage::WindowSelectAt(int Item_Index)
 
 	WindowUnSelectAll();
 	//((DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index))->Background = ref new Windows::UI::Xaml::Media::SolidColorBrush(Windows::UI::Colors::White);
-	((DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index))->Select();
 
 	auto thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index);
+	thisItem->Select();
 
 	if (thisItem->FrameContent != nullptr)
 	{
@@ -206,7 +244,15 @@ void MainPage::WindowSelectAt(int Item_Index)
 	}
 	else
 	{		
-		MainFrame->Navigate(thisItem->FilePath != "?S" ? CodeEditor::typeid : StartPage::typeid, nullptr, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
+		if (thisItem->FilePath != "?S")
+		{
+			MainFrame->Navigate(CodeEditor::typeid, nullptr, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
+			((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
+		}
+		else
+			MainFrame->Navigate(StartPage::typeid, nullptr, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
+
+		thisItem->FrameContent = MainFrame->Content;
 	}
 	//thisItem->SetChanged(false);
 }
@@ -418,50 +464,13 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 		}
 	}
 
-	auto thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(WindowPanel->Children->Size - 1);
+	
 	//auto thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(GetSelectedItemIndex());
-	if (thisItem->ItemFile != nullptr)
-	{
-		create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this, thisItem](task<String^> thisTask)
-		{
-			try
-			{
-				String^ thisText = thisTask.get();
-				thisItem->OriginalText = thisText;
-				CodeEditor^ thisEditor = (CodeEditor^)MainFrame->Content;
-				//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
-
-				RichEditBox^ EditBox = ((RichEditBox^)((Grid^)((Panel^)thisEditor->Content)->Children->GetAt(1))->Children->GetAt(0));
-				EditBox->Document->EndUndoGroup();
-				EditBox->Document->UndoLimit = 0;
-				EditBox->Document->Selection->Text += thisText;
-				thisEditor->AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
-
-				EditBox->Document->UndoLimit = 80;
-				EditBox->Document->BeginUndoGroup();
-			}
-			catch (Exception^ WTF)
-			{
-				//Read Fail
-				Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
-			}
-
-			((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
-		}, task_continuation_context::use_current());
-	}
-	else if (thisItem->FilePath != "?S")
-	{
-		((CodeEditor^)MainFrame->Content)->thisData = thisData;
-		if (((CodeEditor^)MainFrame->Content)->thisWindowItem == nullptr)
-			((CodeEditor^)MainFrame->Content)->thisWindowItem = thisItem;
-	}
+	
 	if (MainFrame->Content->ToString() == "Just_Editor.StartPage")
 		((StartPage^)MainFrame->Content)->thisData = thisData;
 	else
 		((CodeEditor^)MainFrame->Content)->thisData = thisData;
-
-	if (thisItem->FrameContent == nullptr)
-		thisItem->FrameContent = MainFrame->Content;
 }
 
 void Just_Editor::MainPage::AddWindow_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
