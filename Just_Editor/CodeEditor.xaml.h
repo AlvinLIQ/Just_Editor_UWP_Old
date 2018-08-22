@@ -37,6 +37,7 @@ namespace Just_Editor
 		{
 			auto thisRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 			auto wholeWord = thisRange->Text->Data();
+			auto wordLength = thisRange->EndPosition;
 			bool CanAddBackLength = true, CanAddFrontLength = true;
 			
 			thisRange->EndPosition = SelectionIndex;
@@ -57,55 +58,94 @@ namespace Just_Editor
 						thisRange->EndPosition++;
 				}
 			}
-			/*
-			SelectionIndex = thisRange->StartPosition;
-			while (SelectionIndex-- > 0 && wholeWord[SelectionIndex] != L'\r')
-			{
-				if (wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/')
-				{
-					thisRange->StartPosition = SelectionIndex - 1;
-					SelectionIndex = thisRange->EndPosition;
-					while (wholeWord[SelectionIndex] != L'*' && wholeWord[SelectionIndex + 1] != L'/' && wholeWord[SelectionIndex] != L'\0')
-					{
-						thisRange->EndPosition = SelectionIndex;
-						SelectionIndex++;
-					}
-					thisRange->EndPosition += 3;
-					thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-					thisRange->StartPosition = thisRange->EndPosition;
-					break;
-				}
-			}*/
 			SelectionIndex = thisRange->StartPosition;
 			//auto FindResult = Editor_Tools::FindAllStr(wholeWord, L"//");
-			while (--SelectionIndex > 0 && wholeWord[SelectionIndex] != L'\r')
+			if (!thisData->isHighlightEnabled)
+				return thisRange;
+			
+			int CommentsNum = CommentList->Size;
+			Windows::UI::Text::ITextRange^ thisCommentRange;
+			while (--CommentsNum >= 0)
 			{
-				if (wholeWord[SelectionIndex] == L'/' && wholeWord[SelectionIndex - 1] == L'/')
+				thisCommentRange = CommentList->GetAt(CommentsNum);
+				if (wordLength < thisCommentRange->EndPosition)
 				{
-					thisRange->StartPosition = SelectionIndex - 1;
-					SelectionIndex = thisRange->EndPosition;
-					while (wholeWord[SelectionIndex] != L'\r' && wholeWord[SelectionIndex] != L'\0')
+					CommentList->RemoveAt(CommentsNum);
+				}
+				else
+				{
+					auto thisCommentText = thisCommentRange->Text->Data();
+					if (SelectionIndex < thisCommentRange->EndPosition && SelectionIndex >= thisCommentRange->StartPosition)
 					{
-						thisRange->EndPosition = SelectionIndex;
-						SelectionIndex++;
+						AutoDetect(thisCommentRange->StartPosition, thisCommentRange->EndPosition + thisRange->EndPosition , true);
+						CommentList->RemoveAt(CommentsNum);
+						thisRange->StartPosition = thisRange->EndPosition;
+						//return thisRange;
 					}
-					thisRange->EndPosition++;
-					thisRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-					thisRange->StartPosition = thisRange->EndPosition;
-					break;
 				}
 			}
-			
+			try
+			{
+				while (--SelectionIndex > 0 && wholeWord[SelectionIndex] != L'\r');
+			}
+			catch (Platform::Exception^)
+			{
+				return thisRange;
+			}
+			CommentsNum = (int)Editor_Tools::FindStr(wholeWord, L"/", wordLength, 1, SelectionIndex);
+			if (CommentsNum != -1 && CommentsNum < thisRange->EndPosition)
+			{
+				CanAddFrontLength = wholeWord[CommentsNum + 1] == L'/';
+				if (CanAddFrontLength || wholeWord[CommentsNum + 1] == L'*')
+				{
+					if (CanAddFrontLength)
+					{
+						SelectionIndex = (int)Editor_Tools::FindStr(wholeWord, L"\r", wordLength, 1, CommentsNum);
+					}
+					else
+					{
+						SelectionIndex = (int)Editor_Tools::FindStr(wholeWord, L"*/", wordLength, 2, CommentsNum);
+					}
+					if (SelectionIndex != -1)
+					{
+						if (!CanAddFrontLength)
+							SelectionIndex += 2;
+						
+						thisCommentRange = CodeEditorBox->Document->GetRange(CommentsNum, SelectionIndex);
+						thisCommentRange->CharacterFormat->ForegroundColor =
+							Windows::UI::Colors::DarkSeaGreen;
+						CommentList->Append(thisCommentRange);
+					}
+				}
+				else if (CommentsNum && wholeWord[CommentsNum - 1] == L'*')
+				{
+					while (wholeWord[++SelectionIndex] != L'\0' && wholeWord[SelectionIndex] != L'\r');
+					do
+					{
+						CanAddFrontLength = !(wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/');
+					} while (--SelectionIndex > 0 && CanAddFrontLength);
+					if (!CanAddBackLength)
+					{
+						thisCommentRange = CodeEditorBox->Document->GetRange(SelectionIndex, CommentsNum + 1);
+						thisCommentRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+						CommentList->Append(thisCommentRange);
+					}
+					else
+						AutoDetect(SelectionIndex, CommentsNum + 1, true);
+				}
+			}
+			if (!thisData->isSmartDetectEnabled)
+				thisRange->EndPosition = thisRange->StartPosition;
 			return thisRange;
 		}
 
 		void UpdateBindings()
 		{
 			this->Bindings->Update();
-			AutoDetect();
+			AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
 		}
 
-		void AutoDetect();
+		void AutoDetect(int StartIndex, int EndIndex, bool isExtend);
 
 		void SaveFile()
 		{
@@ -155,6 +195,8 @@ namespace Just_Editor
 
 		void Search_BoxShowHide(bool isShow);
 	private:
+		Platform::Collections::Vector<Windows::UI::Text::ITextRange^>^ CommentList;
+
 		void CodeEditorBox_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 		void Undo_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void Redo_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);

@@ -435,7 +435,7 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 				EditBox->Document->EndUndoGroup();
 				EditBox->Document->UndoLimit = 0;
 				EditBox->Document->Selection->Text += thisText;
-				thisEditor->AutoDetect();
+				thisEditor->AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
 
 				EditBox->Document->UndoLimit = 80;
 				EditBox->Document->BeginUndoGroup();

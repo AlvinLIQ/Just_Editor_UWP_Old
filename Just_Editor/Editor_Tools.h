@@ -7,13 +7,15 @@
 const wchar_t UnabledWords[] = L"\\/:*?<>|";
 
 namespace Just_Editor
-{/*
-	public value class Position
+{
+	public ref class Position sealed
 	{
 	public:
-		int StartPosition;
-		int EndPosition;
-	};*/
+		Position();
+		property int StartPosition;
+		property int EndPosition;
+		property bool isMultiline;
+	};
 	class Editor_Tools
 	{
 	public:
@@ -205,7 +207,7 @@ namespace Just_Editor
 			return resultStr;
 		}
 
-		static size_t FindStr(const wchar_t* sourceStr, const wchar_t* targetStr, size_t Slength = -1, size_t Tlength = -1)
+		static size_t FindStr(const wchar_t* sourceStr, const wchar_t* targetStr, size_t Slength = -1, size_t Tlength = -1, size_t startFindIndex = 0)
 		{
 			if (Slength == -1)
 				Slength = wcslen(sourceStr);
@@ -215,7 +217,7 @@ namespace Just_Editor
 
 			size_t findIndex = 0, i;
 
-			for (i = 0; i + Tlength - findIndex - 1 < Slength && findIndex < Tlength; findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0, i++);
+			for (i = startFindIndex; i + Tlength - findIndex - 1 < Slength && findIndex < Tlength; findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0, i++);
 			return findIndex == Tlength ? i - Tlength : -1;
 		}
 

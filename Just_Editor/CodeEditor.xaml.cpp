@@ -25,13 +25,13 @@ L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto" };
 const wchar_t EndChar[] = L"\r*/";
 Point thisPoint;
-Platform::Collections::Vector<Windows::UI::Text::ITextRange^>^ CommentList;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 CodeEditor::CodeEditor()
 {
 	InitializeComponent();
+	CommentList = ref new Platform::Collections::Vector<Windows::UI::Text::ITextRange^>;
 	if (!Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 		CodeEditorBox->PreviewKeyDown += ref new Windows::UI::Xaml::Input::KeyEventHandler(this, &Just_Editor::CodeEditor::CodeEditorBox_KeyDown);
 	else
@@ -50,19 +50,19 @@ void CodeEditor::ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml
 }
 */
 
-void Just_Editor::CodeEditor::AutoDetect()
+void Just_Editor::CodeEditor::AutoDetect(int StartIndex, int EndIndex, bool isExtend)
 {
 	if (!thisData->isHighlightEnabled)
 		return;
 	int c = IdentifierNum + 2, sl;
-	Windows::UI::Text::ITextRange^ searchRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
+	Windows::UI::Text::ITextRange^ searchRange = CodeEditorBox->Document->GetRange(StartIndex, EndIndex);
 	searchRange->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 	auto thisChar = std::wstring(searchRange->Text->Data());
 	int End;
 	while (--c >= 0)
 	{
 		//int len = (int)((RichEditBox^)sender)->PlaceholderText->Length();
-		sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
+		sl = searchRange->FindText(MyIdentifierArray[c], StartIndex ? searchRange->Length : EndIndex, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
 		while (sl)
 		{
 			if (c > 1)
@@ -74,19 +74,35 @@ void Just_Editor::CodeEditor::AutoDetect()
 			else
 			{
 				End = searchRange->EndPosition;
-				while (thisChar[searchRange->EndPosition] != L'\0' && (thisChar[searchRange->EndPosition] != EndChar[c] )
-					|| (c && !(thisChar[searchRange->EndPosition] == EndChar[c] && thisChar[searchRange->EndPosition + 1] == EndChar[c + 1])))
+				sl = StartIndex ? 0 : searchRange->EndPosition;
+				while (thisChar[sl] != L'\0' && ((thisChar[sl] != EndChar[c] )
+					|| (c && !(thisChar[sl] == EndChar[c] && thisChar[sl + 1] == EndChar[c + 1]))))
 				{
 					searchRange->EndPosition++;
+					sl++;
 				}
 				if (c)
-					searchRange->EndPosition += 2;
-				searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+				{
+					if (thisChar[sl] != L'\0')
+					{
+						if (isExtend)
+							searchRange->EndPosition += 2;
+						searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+						CommentList->Append(CodeEditorBox->Document->GetRange(searchRange->StartPosition, searchRange->EndPosition));
+					}
+				}
+				else
+				{
+					searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+					CommentList->Append(CodeEditorBox->Document->GetRange(searchRange->StartPosition, searchRange->EndPosition));
+				}
+
+				
 				searchRange->EndPosition = End;
 			}
-			sl = searchRange->FindText(MyIdentifierArray[c], Windows::UI::Text::TextConstants::MaxUnitCount, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
+			sl = searchRange->FindText(MyIdentifierArray[c], StartIndex ? searchRange->Length : EndIndex, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
 		}
-		searchRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
+		searchRange = CodeEditorBox->Document->GetRange(StartIndex, EndIndex);
 	}
 }
 
@@ -112,8 +128,8 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		}
 		else
 		{
-			((RichEditBox^)sender)->Document->Selection->Text += "    ";
-			((RichEditBox^)sender)->Document->Selection->StartPosition = ((RichEditBox^)sender)->Document->Selection->EndPosition;
+			CodeEditorBox->Document->Selection->Text += "\t";
+			CodeEditorBox->Document->Selection->StartPosition = CodeEditorBox->Document->Selection->EndPosition;
 			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 		}
 	}
@@ -273,11 +289,9 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 		thisWindowItem->SetChanged(1);
 	}
 
+	SmartDetect->DetectWordFromStrArray(GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition), thisData->isHighlightEnabled);
 	if (thisData->isSmartDetectEnabled)
 	{
-
-		SmartDetect->DetectWordFromStrArray(GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition), thisData->isHighlightEnabled);
-
 		if (SmartDetect->ActualHeight)
 		{
 			CodeEditorBox->Document->Selection->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Right,
@@ -292,8 +306,6 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 			Pipe_Trans->Y = thisPoint.Y + SmartDetect->Height > CodeEditorBox->RenderSize.Height ? CodeEditorBox->RenderSize.Height - SmartDetect->Height : thisPoint.Y;
 		}
 	}
-	else
-		AutoDetect();
 }
 
 
