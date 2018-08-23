@@ -242,5 +242,6 @@
     <Page Include="CaesarPanel.xaml" />
     <Page Include="DuronSmartDetect.xaml" />
     <Page Include="DuronWordItem.xaml" />
+    <Page Include="Themes\Generic.xaml" />
   </ItemGroup>
 </Project>

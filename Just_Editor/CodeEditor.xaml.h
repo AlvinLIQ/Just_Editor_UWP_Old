@@ -93,9 +93,9 @@ namespace Just_Editor
 				return thisRange;
 			}
 			CommentsNum = (int)Editor_Tools::FindStr(wholeWord, L"/", wordLength, 1, SelectionIndex);
+			CanAddFrontLength = wholeWord[CommentsNum + 1] == L'/';
 			if (CommentsNum != -1 && CommentsNum < thisRange->EndPosition)
 			{
-				CanAddFrontLength = wholeWord[CommentsNum + 1] == L'/';
 				if (CanAddFrontLength || wholeWord[CommentsNum + 1] == L'*')
 				{
 					if (CanAddFrontLength)
@@ -137,6 +137,18 @@ namespace Just_Editor
 					else
 						AutoDetect(SelectionIndex, CommentsNum + 1, true);
 				}
+				else if (!CanAddFrontLength)
+				{
+					SelectionIndex = CommentsNum;
+					while (wholeWord[++SelectionIndex] != L'\0' && wholeWord[SelectionIndex] != L'\r');
+					AutoDetect(CommentsNum, SelectionIndex, false);
+				}
+			}
+			else if (CommentsNum == -1 || !CanAddFrontLength)
+			{
+				CommentsNum = SelectionIndex;
+				while (wholeWord[++SelectionIndex] != L'\0' && wholeWord[SelectionIndex] != L'\r');
+				AutoDetect(CommentsNum, SelectionIndex, false);
 			}
 			if (!thisData->isSmartDetectEnabled)
 				thisRange->EndPosition = thisRange->StartPosition;

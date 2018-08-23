@@ -7,6 +7,7 @@
 
 #include "App.g.h"
 
+
 namespace Just_Editor
 {
 	/// <summary>
