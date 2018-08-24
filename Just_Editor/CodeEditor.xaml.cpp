@@ -31,7 +31,6 @@ Point thisPoint;
 CodeEditor::CodeEditor()
 {
 	InitializeComponent();
-	CommentList = ref new Platform::Collections::Vector<Windows::UI::Text::ITextRange^>;
 	if (!Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 		CodeEditorBox->PreviewKeyDown += ref new Windows::UI::Xaml::Input::KeyEventHandler(this, &Just_Editor::CodeEditor::CodeEditorBox_KeyDown);
 	else
@@ -88,7 +87,6 @@ void Just_Editor::CodeEditor::AutoDetect(int StartIndex, int EndIndex, bool isEx
 						if (isExtend)
 							searchRange->EndPosition += 2;
 						searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-						CommentList->Append(CodeEditorBox->Document->GetRange(searchRange->StartPosition, searchRange->EndPosition));
 					}
 				}
 				else
@@ -129,7 +127,10 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		{
 			CodeEditorBox->Document->Selection->Text += "\t";
 			CodeEditorBox->Document->Selection->StartPosition = CodeEditorBox->Document->Selection->EndPosition;
-			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
+			if (CodeEditorBox->Document->Selection->Length == 0 && !(CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.R == Windows::UI::Colors::DarkSeaGreen.R &&
+				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.G == Windows::UI::Colors::DarkSeaGreen.G &&
+				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.B == Windows::UI::Colors::DarkSeaGreen.B))
+				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 		}
 	}
 	else if (isCtrlHeld && e->Key == Windows::System::VirtualKey::Space && !SmartDetect->ActualWidth)
@@ -182,9 +183,12 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 	}
-	else
+	else if(CodeEditorBox->Document->Selection->Length == 0)
 	{
-		CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
+		if (!(CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.R == Windows::UI::Colors::DarkSeaGreen.R &&
+			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.G == Windows::UI::Colors::DarkSeaGreen.G &&
+			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.B == Windows::UI::Colors::DarkSeaGreen.B))
+			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 	}
 	isCtrlHeld = e->Key == Windows::System::VirtualKey::Control;
 }
