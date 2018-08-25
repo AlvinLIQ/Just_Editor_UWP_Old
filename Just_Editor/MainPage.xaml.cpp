@@ -164,7 +164,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 						CodeEditor^ thisEditor = (CodeEditor^)thisItem->FrameContent;
 						//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
 
-						RichEditBox^ EditBox = ((RichEditBox^)((Grid^)((Panel^)thisEditor->Content)->Children->GetAt(1))->Children->GetAt(0));
+						RichEditBox^ EditBox = thisEditor->GetEditBox();
 						EditBox->Document->EndUndoGroup();
 						EditBox->Document->UndoLimit = 0;
 						EditBox->Document->Selection->Text += thisText;

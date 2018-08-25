@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "CaesarPanel.xaml.h"
+#include "CodeEditor.xaml.h"
 #include "Editor_Tools.h"
 
 using namespace Just_Editor;
@@ -203,7 +204,7 @@ void Just_Editor::CaesarPanel::SetPanelMode(int PanelMode)
 		Calculate_Button = Editor_Tools::GetButton("Navigate From Editor", 16, thisData->Editor_BackgroundBrush, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight);
 		Calculate_Button->Click += ref new Windows::UI::Xaml::RoutedEventHandler([this](Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 		{
-			thisWebView->NavigateToString(((RichEditBox^)((Grid^)((Grid^)this->Parent)->Children->GetAt(1))->Children->GetAt(0))->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount)->Text);
+			thisWebView->NavigateToString(((CodeEditor^)((Grid^)this->Parent)->Parent)->GetEditBox()->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount)->Text);
 		});
 		MainPanel->Children->Append(Calculate_Button);
 		thisWebView->Width = Width;

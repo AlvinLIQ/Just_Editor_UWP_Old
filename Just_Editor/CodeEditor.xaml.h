@@ -33,6 +33,11 @@ namespace Just_Editor
 			return thisText;
 		}
 
+		Windows::UI::Xaml::Controls::RichEditBox^ GetEditBox()
+		{
+			return CodeEditorBox;
+		}
+
 		Windows::UI::Text::ITextRange^ GetWordFromSelection(int SelectionIndex)
 		{
 			auto thisRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);

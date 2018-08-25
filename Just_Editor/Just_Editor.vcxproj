@@ -222,7 +222,6 @@
     <Page Include="StartPage.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\Generic.xaml" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
