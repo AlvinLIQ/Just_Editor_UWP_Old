@@ -104,11 +104,11 @@
                       Background="{TemplateBinding Background}"
                       Margin="{TemplateBinding BorderThickness}"
                       Padding="{TemplateBinding Padding}"
-                      HorizontalScrollBarVisibility="Hidden"
-                      HorizontalScrollMode="Disabled"
+                      HorizontalScrollMode="Enabled"
+                      HorizontalScrollBarVisibility="Visible"
                       IsTabStop="False"
                       ZoomMode="Disabled"
-                      AutomationProperties.AccessibilityView="Control"
+                      AutomationProperties.AccessibilityView="Raw"
                       ViewChanged="ContentElement_ViewChanged"
                       Loaded="ContentElement_Loaded"
                       
@@ -138,9 +138,9 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="1">
             <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" HorizontalAlignment="Stretch" KeyUp="MainGrid_KeyUp"
-                             AcceptsReturn="False" TextChanging="CodeEditorBox_TextChanging" Header=""
-                             BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}"
-                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="Wrap" Background="{x:Bind thisData.Editor_BackgroundBrush, Mode=OneWay}">
+                             AcceptsReturn="True" TextChanging="CodeEditorBox_TextChanging" Header="" Paste="CodeEditorBox_Paste"
+                             BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Padding="0,0,10,10"
+                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="NoWrap" Background="{x:Bind thisData.Editor_BackgroundBrush, Mode=OneWay}">
             </RichEditBox>
             <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0">
                 <local:DuronSmartDetect.RenderTransform>

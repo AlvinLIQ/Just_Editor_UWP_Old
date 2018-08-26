@@ -9,6 +9,8 @@
 #include "CaesarPanel.xaml.h"
 
 bool isCtrlHeld = false, isGridCtrlHeld = false;
+int LineNum, PasteNum = -1;
+
 
 using namespace Just_Editor;
 
@@ -25,7 +27,6 @@ L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto" };
 const wchar_t EndChar[] = L"\r*/";
 Point thisPoint;
-int LineNum;
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 CodeEditor::CodeEditor()
@@ -282,26 +283,19 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		e->Handled = true;
 		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex + 1);
 	}
-	else if (e->Key == Windows::System::VirtualKey::Enter)
+	else if (e->Key == Windows::System::VirtualKey::Enter && SmartDetect->SelectedItem != nullptr)
 	{
 		e->Handled = true;
-		if (SmartDetect->SelectedItem != nullptr)
+		bool isClass = SmartDetect->SelectedItem->isClass;
+		SmartDetect->wordRange->Text += Editor_Tools::SubPStr(SmartDetect->SelectedItem->Identifier, SmartDetect->StartIndex);
+
+		if (isClass)
 		{
-			bool isClass = SmartDetect->SelectedItem->isClass;
-			SmartDetect->wordRange->Text += Editor_Tools::SubPStr(SmartDetect->SelectedItem->Identifier, SmartDetect->StartIndex);
-			
-			if (isClass)
-			{
-				SmartDetect->wordRange->CharacterFormat->ForegroundColor = thisData->Editor_ForegroundBrush->Color;
-			}
-			SmartDetect->SelectedItem = nullptr;
-			SmartDetect->Width = 0;
-			SmartDetect->wordRange->MatchSelection();
+			SmartDetect->wordRange->CharacterFormat->ForegroundColor = thisData->Editor_ForegroundBrush->Color;
 		}
-		else
-		{
-			CodeEditorBox->Document->Selection->Text += L"\r\n";
-		}
+		SmartDetect->SelectedItem = nullptr;
+		SmartDetect->Width = 0;
+		SmartDetect->wordRange->MatchSelection();
 
 		((RichEditBox^)sender)->Document->Selection->MoveRight(Windows::UI::Text::TextRangeUnit::Character, 1, false);
 	}
@@ -409,6 +403,12 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 	if (thisWindowItem == nullptr)
 		return;
 
+	if (PasteNum >= 0)
+	{
+		AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
+		PasteNum = -1;
+		return;
+	}
 	if (!thisWindowItem->isChanged)
 	{
 		thisWindowItem->SetChanged(1);
@@ -516,4 +516,10 @@ void Just_Editor::CodeEditor::ContentElement_ViewChanged(Platform::Object^ sende
 
 void Just_Editor::CodeEditor::ContentElement_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
+}
+
+
+void Just_Editor::CodeEditor::CodeEditorBox_Paste(Platform::Object^ sender, Windows::UI::Xaml::Controls::TextControlPasteEventArgs^ e)
+{
+	PasteNum = CodeEditorBox->Document->Selection->StartPosition;
 }
