@@ -39,8 +39,8 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 	if (thisWordLength)
 	{
 		wordRange = thisRange;
-		if (isHighlight)
-			thisRange->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
+
+		thisRange->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 		int count = 0;
 
 		for (size_t i = 0, j, thisIDLength; i < IdentifierNum; i++, count = 0)
@@ -95,8 +95,8 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 					thisItem->Select();
 					SelectedItem = thisItem;
 				}
-
-				ItemPanel->Children->Append(thisItem);
+				if (thisData->isSmartDetectEnabled)
+					ItemPanel->Children->Append(thisItem);
 			}
 		}
 	}

@@ -38,99 +38,7 @@ namespace Just_Editor
 			return CodeEditorBox;
 		}
 
-		Windows::UI::Text::ITextRange^ GetWordFromSelection(int SelectionIndex)
-		{
-			auto thisRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
-			auto wholeWord = thisRange->Text->Data();
-			auto wordLength = thisRange->EndPosition;
-			bool CanAddBackLength = true, CanAddFrontLength = true;
-			
-			thisRange->EndPosition = SelectionIndex;
-			while (CanAddFrontLength || CanAddBackLength)
-			{
-				if (CanAddFrontLength)
-				{
-					thisRange->StartPosition = SelectionIndex;
-					CanAddFrontLength = --SelectionIndex >= 0 && ((wholeWord[SelectionIndex] >= L'a' && wholeWord[SelectionIndex] <= L'z') ||
-						(wholeWord[SelectionIndex] >= L'A' && wholeWord[SelectionIndex] <= L'Z') || wholeWord[SelectionIndex] == L'#');
-				}
-				if (CanAddBackLength)
-				{
-					CanAddBackLength = SelectionIndex < thisRange->EndPosition && 
-						((wholeWord[thisRange->EndPosition] >= L'a' && wholeWord[thisRange->EndPosition] <= L'z') ||
-						(wholeWord[thisRange->EndPosition] >= L'A' && wholeWord[thisRange->EndPosition] <= L'Z' || wholeWord[thisRange->EndPosition] == L'#'));
-					if (CanAddBackLength)
-						thisRange->EndPosition++;
-				}
-			}
-			//auto FindResult = Editor_Tools::FindAllStr(wholeWord, L"//");
-			if (!thisData->isHighlightEnabled)
-				return thisRange;
-			
-			int EndIndex = thisRange->EndPosition - 1;
-			while (wholeWord[++EndIndex] != L'\0' && wholeWord[EndIndex] != L'\r');
-			SelectionIndex = EndIndex;
-			if (SelectionIndex)
-			{
-				while (--SelectionIndex >= 0 && wholeWord[SelectionIndex] != L'\r' && wholeWord[SelectionIndex] != L'/');
-				if (SelectionIndex && wholeWord[SelectionIndex - 1] == L'/')
-					SelectionIndex -= 1;
-			}
-			int FindIndex = wholeWord[SelectionIndex] == L'/' ? SelectionIndex : -1;
-			if (FindIndex != -1)
-			{
-				if (wholeWord[FindIndex + 1] == L'*')
-				{
-					while (wholeWord[++SelectionIndex] != L'\0' && !(wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex + 1] == L'/'));
-					if (wholeWord[SelectionIndex] != L'\0')
-					{
-						CodeEditorBox->Document->GetRange(FindIndex, SelectionIndex + 2)->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-					}
-				}
-				else if (FindIndex > 0)
-				{
-					if (wholeWord[FindIndex - 1] == L'*')
-					{
-						SelectionIndex = FindIndex - 1;
-						while (--SelectionIndex && !(wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/'));
-						if (wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/')
-							CodeEditorBox->Document->GetRange(SelectionIndex - 1, FindIndex + 1)->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-					}
-					else if (wholeWord[FindIndex - 1] == L'/')
-						CodeEditorBox->Document->GetRange(FindIndex - 1, EndIndex - 1)->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-				}
-				else
-				{
-					if (wholeWord[FindIndex + 1] == L'/')
-						CodeEditorBox->Document->GetRange(FindIndex, EndIndex)->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-					else
-					{
-						SelectionIndex = EndIndex;
-						while (wholeWord[++SelectionIndex] != L'\0' && !(wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex + 1] == L'/'));
-						if (wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex + 1] == L'/')
-						{
-							EndIndex = SelectionIndex + 2;
-						}
-						AutoDetect(FindIndex, EndIndex, true);
-					}
-				}
-			}
-			else
-			{
-				FindIndex = (int)Editor_Tools::FindStr(wholeWord, L"*", EndIndex, 1, (size_t)SelectionIndex);
-				if (FindIndex != -1)
-				{
-					while (--SelectionIndex > 0 && !(wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/'));
-					if (SelectionIndex <= 0)
-						SelectionIndex = 1;
-					if (wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/')
-						AutoDetect(SelectionIndex - 1, EndIndex, false);
-				}
-			}
-			if (!thisData->isSmartDetectEnabled || thisRange->CharacterFormat->ForegroundColor.G == Windows::UI::Colors::DarkSeaGreen.G)
-				thisRange->EndPosition = thisRange->StartPosition;
-			return thisRange;
-		}
+		Windows::UI::Text::ITextRange^ GetWordFromSelection(int SelectionIndex);
 
 		void UpdateBindings()
 		{
@@ -202,5 +110,7 @@ namespace Just_Editor
 		void SearchInRange(Windows::UI::Text::ITextRange^ searchRange);
 		void MainGrid_KeyUp(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 		void Hide_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-};
+		void ContentElement_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e);
+		void ContentElement_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+	};
 }

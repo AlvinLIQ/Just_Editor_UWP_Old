@@ -6,6 +6,127 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Style TargetType="RichEditBox">
+            <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
+            <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}" />
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundAltHighBrush}" />
+            <Setter Property="SelectionHighlightColor" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}" />
+            <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+            <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Padding" Value="{ThemeResource TextControlThemePadding}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RichEditBox">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter"
+                                                 Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
+                                               Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledTransparentBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement"
+                                               Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement"
+                                               Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement"
+                                               Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledChromeDisabledLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter"
+                                               Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledChromeDisabledLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="Focused">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter"
+                                               Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlPageTextChromeBlackMediumLowBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement"
+                                               Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement"
+                                               Storyboard.TargetProperty="RequestedTheme">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Light" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="BackgroundElement"
+                Grid.Column="1"
+                Background="{TemplateBinding Background}"
+                />
+                            <Border x:Name="BorderElement"
+                Background="{TemplateBinding BorderBrush}"/>
+                            <ContentPresenter x:Name="HeaderContentPresenter"
+                          x:DeferLoadStrategy="Lazy"
+                          Margin="0"
+                          Padding="5,0,5,0"
+                          Visibility="Visible"
+                          Foreground="#999"
+                          HorizontalAlignment="Right"
+                          Content="{TemplateBinding Header}"
+                          ContentTemplate="{TemplateBinding HeaderTemplate}"
+                          FontWeight="Normal" 
+                          TextLineBounds="Full"
+                          />
+                            <ScrollViewer x:Name="ContentElement"
+                      Grid.Column="1"
+                      Background="{TemplateBinding Background}"
+                      Margin="{TemplateBinding BorderThickness}"
+                      Padding="{TemplateBinding Padding}"
+                      HorizontalScrollBarVisibility="Hidden"
+                      HorizontalScrollMode="Disabled"
+                      IsTabStop="False"
+                      ZoomMode="Disabled"
+                      AutomationProperties.AccessibilityView="Control"
+                      ViewChanged="ContentElement_ViewChanged"
+                      Loaded="ContentElement_Loaded"
+                      
+                      />
+                            <ContentControl x:Name="PlaceholderTextContentPresenter"
+                      Grid.Column="1"
+                      Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                      Margin="{TemplateBinding BorderThickness}"
+                      Padding="{TemplateBinding Padding}"
+                      IsTabStop="False"
+                      Grid.ColumnSpan="2"
+                      IsHitTestVisible="False"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
     <Grid Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" KeyDown="MainGrid_KeyDown" SizeChanged="MainGrid_SizeChanged">
         <Grid.RowDefinitions>
             <RowDefinition x:Name="ToolBar_Row" Height="30"/>
@@ -15,27 +136,10 @@
             <ColumnDefinition/>
             <ColumnDefinition x:Name="ExtraColumn" Width="0"/>
         </Grid.ColumnDefinitions>
-        <StackPanel Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Orientation="Horizontal" Grid.ColumnSpan="2">
-            <Button Name="Undo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="ExtraBold" Click="Undo_Button_Click">
-                &lt;
-            </Button>
-            <Button Name="Redo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="ExtraBold" Click="Redo_Button_Click">
-                &gt;
-            </Button>
-
-            <Button Name="Save_Button" Width="30" VerticalAlignment="Stretch" Padding="0,4.5,0,0" Background="#0000" BorderThickness="0" Click="Save_Button_Click">
-                <Image Source="Assets/Save_Icon.png"  Width="18"/>
-            </Button>
-            <Button Name="Caesar_Button" Width="30" VerticalAlignment="Stretch" Padding="0,1,0,0" Background="#0000" BorderThickness="0" Click="Caesar_Button_Click">
-                <Image Source="Assets/Caesar_Icon.png"  Width="18"/>
-            </Button>
-            <Button Name="Search_Button" Width="30" VerticalAlignment="Stretch" Padding="0,1,0,0" Background="#0000" BorderThickness="0" Click="Search_Button_Click">
-                <Image Source="Assets/Search_Icon.png"  Width="18"/>
-            </Button>
-        </StackPanel>
         <Grid Grid.Row="1">
             <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" HorizontalAlignment="Stretch" KeyUp="MainGrid_KeyUp"
-                             AcceptsReturn="False" TextChanging="CodeEditorBox_TextChanging" ScrollViewer.BringIntoViewOnFocusChange="False"
+                             AcceptsReturn="False" TextChanging="CodeEditorBox_TextChanging" Header=""
+                             BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}"
                              SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="Wrap" Background="{x:Bind thisData.Editor_BackgroundBrush, Mode=OneWay}">
             </RichEditBox>
             <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0">
@@ -60,5 +164,23 @@
                 <Button Name="Hide_Button" Grid.Column="1" Background="#0000" Padding="4,4,6,4" Foreground="{Binding ElementName=Redo_Button, Path=Foreground}" Content="x" Click="Hide_Button_Click" Margin="5,0,0,5"/>
             </Grid>
         </Grid>
+        <StackPanel Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Orientation="Horizontal" Grid.ColumnSpan="2">
+            <Button Name="Undo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="ExtraBold" Click="Undo_Button_Click">
+                &lt;
+            </Button>
+            <Button Name="Redo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="ExtraBold" Click="Redo_Button_Click">
+                &gt;
+            </Button>
+
+            <Button Name="Save_Button" Width="30" VerticalAlignment="Stretch" Padding="0,4.5,0,0" Background="#0000" BorderThickness="0" Click="Save_Button_Click">
+                <Image Source="Assets/Save_Icon.png"  Width="18"/>
+            </Button>
+            <Button Name="Caesar_Button" Width="30" VerticalAlignment="Stretch" Padding="0,1,0,0" Background="#0000" BorderThickness="0" Click="Caesar_Button_Click">
+                <Image Source="Assets/Caesar_Icon.png"  Width="18"/>
+            </Button>
+            <Button Name="Search_Button" Width="30" VerticalAlignment="Stretch" Padding="0,1,0,0" Background="#0000" BorderThickness="0" Click="Search_Button_Click">
+                <Image Source="Assets/Search_Icon.png"  Width="18"/>
+            </Button>
+        </StackPanel>
     </Grid>
 </Page>

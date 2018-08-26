@@ -126,7 +126,8 @@ namespace Just_Editor
 			concurrency::create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "RecentList")).then([thisFile](Platform::String^ thisString)
 			{
 				auto Token = Windows::Storage::AccessCache::StorageApplicationPermissions::FutureAccessList->Add(thisFile);
-				if (Editor_Tools::FindStr(thisString->Data(), Token->Data()) == -1)
+				const wchar_t* thisChar = thisString->Data();
+				if (Editor_Tools::FindStr(thisChar, Token->Data()) == -1)
 					Editor_Tools::WriteInAppFile("User_Files", "RecentList", thisString + Windows::Storage::AccessCache::StorageApplicationPermissions::FutureAccessList->Add(thisFile) + "?");
 			}, concurrency::task_continuation_context::use_current());
 		}
@@ -221,9 +222,9 @@ namespace Just_Editor
 			return findIndex == Tlength ? i - Tlength : -1;
 		}
 
-		static Platform::Collections::Vector<size_t>^ FindAllStr(const wchar_t* sourceStr, const wchar_t* targetStr, size_t Slength = -1, size_t Tlength = -1)
+		static int GetStrNum(const wchar_t* sourceStr, const wchar_t* targetStr, size_t Slength = -1, size_t Tlength = -1)
 		{
-			auto IndexArray = ref new Platform::Collections::Vector<size_t>;
+			int StrNum = 0;
 
 			if (Slength == -1)
 				Slength = wcslen(sourceStr);
@@ -238,10 +239,10 @@ namespace Just_Editor
 				if (findIndex == Tlength)
 				{
 					findIndex = 0;
-					IndexArray->Append(i - Tlength);
+					StrNum++;
 				}
 			}
-			return IndexArray;
+			return StrNum;
 		}
 
 		static size_t FindPStr(Platform::String^ sourceStr, Platform::String^ targetStr, size_t Slength = -1, size_t Tlength = -1)
@@ -251,7 +252,6 @@ namespace Just_Editor
 
 			if (Tlength == -1)
 				Tlength = targetStr->Length();
-
 			return FindStr(sourceStr->Data(), targetStr->Data(), Slength, Tlength);
 		}
 
@@ -334,7 +334,7 @@ namespace Just_Editor
 			{
 				auto values = localSettings->Containers->Lookup(ContainerName)->Values;
 				hasSetting = values->HasKey(SettingTypeName);
-				return hasSetting ? values->Lookup(SettingTypeName) : nullptr;
+				return hasSetting ? values->Lookup(SettingTypeName) : "";
 			}
 			return nullptr;
 		}

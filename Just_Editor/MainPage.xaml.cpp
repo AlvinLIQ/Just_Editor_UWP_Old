@@ -36,14 +36,16 @@ MainPage::MainPage()
 void MainPage::InitializePage()
 {
 	//Editor_Tools::DeleteFileInAppAsync("User_Files", "RecentList");
-	thisData = ref new Editor_Data;
+	thisData = ref new Editor_Data();
 	DarkSwitch->IsOn = thisData->isDark;
 	DetectSwitch->IsOn = thisData->isSmartDetectEnabled;
 	HighlightSwitch->IsOn = thisData->isHighlightEnabled;
-
-	DarkSwitch->Toggled += ref new RoutedEventHandler(this, &MainPage::Switch_Toggled);
-	DetectSwitch->Toggled += ref new RoutedEventHandler(this, &MainPage::Switch_Toggled);
-	HighlightSwitch->Toggled += ref new RoutedEventHandler(this, &MainPage::Switch_Toggled);
+	LineNumSwitch->IsOn = thisData->isLineNumEnabled;
+	auto thisToggledEvent = ref new RoutedEventHandler(this, &MainPage::Switch_Toggled);
+	DarkSwitch->Toggled += thisToggledEvent;
+	DetectSwitch->Toggled += thisToggledEvent;
+	HighlightSwitch->Toggled += thisToggledEvent;
+	LineNumSwitch->Toggled += thisToggledEvent;
 
 	auto titleBar = Windows::UI::ViewManagement::ApplicationView::GetForCurrentView()->TitleBar;
 	titleBar->ForegroundColor = Windows::UI::Colors::WhiteSmoke;
@@ -168,6 +170,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 						EditBox->Document->EndUndoGroup();
 						EditBox->Document->UndoLimit = 0;
 						EditBox->Document->Selection->Text += thisText;
+						EditBox->Document->Selection->EndPosition = 0;
 						thisEditor->AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
 						thisItem->SetChanged(false);
 						EditBox->Document->UndoLimit = 80;
@@ -500,13 +503,13 @@ void Just_Editor::MainPage::WindowPanel_SizeChanged(Platform::Object^ sender, Wi
 
 void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	auto thisSwitch = (ToggleSwitch^)sender;
-	Editor_Tools::WriteSetting("Editor_Settings", thisSwitch->Name, thisSwitch->IsOn ? "1" : "0");
-
+	auto thisSwitch = (ToggleSwitch^)e->OriginalSource;
+	Editor_Tools::WriteSetting(thisSwitch->Name, thisSwitch->Name, thisSwitch->IsOn ? L"1" : L"0");
 	if (thisSwitch != DarkSwitch)
 	{
 		return;
 	}
+
 
 	//once click, play a year!
 	thisData = ref new Editor_Data;
@@ -535,8 +538,8 @@ void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI
 					((CodeEditor^)thisItem->FrameContent)->UpdateBindings();
 
 					auto thisMainPanel = (Panel^)((CodeEditor^)thisItem->FrameContent)->Content;
-					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(1))->Children->GetAt(1))->thisData = thisData;
-					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(1))->Children->GetAt(1))->UpdateBindings();
+					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(0))->Children->GetAt(1))->thisData = thisData;
+					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(0))->Children->GetAt(1))->UpdateBindings();
 					if (thisMainPanel->Children->Size == 3)
 					{
 						((CaesarPanel^)thisMainPanel->Children->GetAt(2))->thisData = thisData;
