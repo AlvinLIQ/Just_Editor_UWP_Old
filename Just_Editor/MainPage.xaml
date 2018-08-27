@@ -17,7 +17,7 @@
                 <Frame Name="MainFrame" Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Navigated="MainFrame_Navigated" Margin="0,0,0,30"/>
 
                 <Grid Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" VerticalAlignment="Bottom" Height="30" Padding="10,0,10,0">
-                    <TextBlock Text="Just_Editor Ver.0.0.5" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
+                    <TextBlock Text="Just_Editor Ver.0.0.5-1(beta)" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
                     <Button Name="SettingsButton" HorizontalAlignment="Right" Padding="0" Background="#0000" BorderThickness="0"
                             Width="30" VerticalAlignment="Stretch" Click="SettingsButton_Click">
                         <Image Height="15" Source="Assets/Setting_Icon.png"/>

@@ -9,7 +9,8 @@
     d:DesignHeight="400"
     d:DesignWidth="250"
     x:Name="caesarPanel">
-    <ScrollViewer Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" HorizontalScrollBarVisibility="Visible" HorizontalScrollMode="Enabled">
+    <ScrollViewer Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" HorizontalScrollBarVisibility="Visible" HorizontalScrollMode="Enabled" VerticalScrollBarVisibility="Visible"
+                  BorderBrush="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}">
         <Grid Padding="20,10">
             <TextBlock Name="PanelTitle" FontWeight="Bold" FontSize="22" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" HorizontalAlignment="Left" PointerEntered="PanelTitle_PointerEntered" 
                        PointerCaptureLost="PanelTitle_PointerCaptureLost" PointerExited="PanelTitle_PointerCaptureLost" Tapped="PanelTitle_Tapped" VerticalAlignment="Top"/>

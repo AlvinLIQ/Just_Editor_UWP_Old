@@ -45,10 +45,10 @@ namespace Just_Editor
 			isSelected = true;
 		}
 
-		void SetChanged(int Parameter)
+		void SetChanged(bool Parameter)
 		{
 			isChanged = Parameter;
-			isChangedName_Block->Opacity = Parameter;
+			isChangedName_Block->Opacity = Parameter ? 1 : 0;
 		}
 
 		void SetFileName(Platform::String^ newFileName);

@@ -23,6 +23,8 @@ namespace Just_Editor
 		property DuronWindowItemxaml^ thisWindowItem;
 
 		property Editor_Data^ thisData;
+		property bool isDetecting;
+		property int LineNum;
 
 //		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
 
@@ -111,7 +113,7 @@ namespace Just_Editor
 		void MainGrid_KeyUp(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 		void Hide_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void ContentElement_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e);
-		void ContentElement_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void CodeEditorBox_Paste(Platform::Object^ sender, Windows::UI::Xaml::Controls::TextControlPasteEventArgs^ e);
+		void HeaderContentPresenter_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

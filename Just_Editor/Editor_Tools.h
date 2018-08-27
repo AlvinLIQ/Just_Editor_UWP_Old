@@ -410,7 +410,7 @@ namespace Just_Editor
 			return thisColor;
 		}
 
-		static Windows::UI::Xaml::Controls::TextBlock^ GetTextBlock(Platform::String^ text, int fontSize, Windows::UI::Xaml::Media::Brush^ foreground, Windows::UI::Text::FontWeight fontWeight)
+		static Windows::UI::Xaml::Controls::TextBlock^ GetTextBlock(Platform::String^ text, double fontSize, Windows::UI::Xaml::Media::Brush^ foreground, Windows::UI::Text::FontWeight fontWeight)
 		{
 			auto thisItem = ref new Windows::UI::Xaml::Controls::TextBlock;
 			thisItem->Text = text;
@@ -433,7 +433,7 @@ namespace Just_Editor
 			return thisItem;
 		}
 
-		static Windows::UI::Xaml::Controls::Button^ GetButton(Platform::Object^ content, int fontSize, Windows::UI::Xaml::Media::Brush^ background, Windows::UI::Xaml::Media::Brush^ foreground, Windows::UI::Text::FontWeight fontWeight)
+		static Windows::UI::Xaml::Controls::Button^ GetButton(Platform::Object^ content, double fontSize, Windows::UI::Xaml::Media::Brush^ background, Windows::UI::Xaml::Media::Brush^ foreground, Windows::UI::Text::FontWeight fontWeight)
 		{
 			auto thisItem = ref new Windows::UI::Xaml::Controls::Button;
 			thisItem->Background = background;

@@ -5,6 +5,7 @@
     xmlns:local="using:Just_Editor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x1="using:System"
     mc:Ignorable="d">
     <Page.Resources>
         <Style TargetType="RichEditBox">
@@ -97,22 +98,22 @@
                           Content="{TemplateBinding Header}"
                           ContentTemplate="{TemplateBinding HeaderTemplate}"
                           FontWeight="Normal" 
-                          TextLineBounds="Full"
+                          Loaded="HeaderContentPresenter_Loaded"
                           />
                             <ScrollViewer x:Name="ContentElement"
                       Grid.Column="1"
                       Background="{TemplateBinding Background}"
                       Margin="{TemplateBinding BorderThickness}"
                       Padding="{TemplateBinding Padding}"
+                      BorderBrush="{TemplateBinding BorderBrush}"
                       HorizontalScrollMode="Enabled"
                       HorizontalScrollBarVisibility="Visible"
                       IsTabStop="False"
                       ZoomMode="Disabled"
                       AutomationProperties.AccessibilityView="Raw"
                       ViewChanged="ContentElement_ViewChanged"
-                      Loaded="ContentElement_Loaded"
-                      
-                      />
+                      >
+                            </ScrollViewer>
                             <ContentControl x:Name="PlaceholderTextContentPresenter"
                       Grid.Column="1"
                       Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
@@ -138,9 +139,12 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="1">
             <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" HorizontalAlignment="Stretch" KeyUp="MainGrid_KeyUp"
-                             AcceptsReturn="True" TextChanging="CodeEditorBox_TextChanging" Header="" Paste="CodeEditorBox_Paste"
-                             BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Padding="0,0,10,10"
+                             AcceptsReturn="True" Paste="CodeEditorBox_Paste" TextChanging="CodeEditorBox_TextChanging"
+                             BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Padding="0,0,10,10" IsTextScaleFactorEnabled="False"
                              SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="NoWrap" Background="{x:Bind thisData.Editor_BackgroundBrush, Mode=OneWay}">
+                <RichEditBox.Header>
+                    <Grid Name="LineNums_List"/>
+                </RichEditBox.Header>
             </RichEditBox>
             <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0">
                 <local:DuronSmartDetect.RenderTransform>
@@ -165,10 +169,12 @@
             </Grid>
         </Grid>
         <StackPanel Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Orientation="Horizontal" Grid.ColumnSpan="2">
-            <Button Name="Undo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="ExtraBold" Click="Undo_Button_Click">
+            <Button Name="Undo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" 
+                    FontWeight="ExtraBold" Click="Undo_Button_Click">
                 &lt;
             </Button>
-            <Button Name="Redo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" FontWeight="ExtraBold" Click="Redo_Button_Click">
+            <Button Name="Redo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}"
+                    FontWeight="ExtraBold" Click="Redo_Button_Click">
                 &gt;
             </Button>
 

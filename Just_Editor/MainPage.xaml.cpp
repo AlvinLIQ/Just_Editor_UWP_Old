@@ -138,11 +138,36 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 				{
 					MainFrame->Navigate(CodeEditor::typeid, nullptr, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
 					thisItem->FrameContent = MainFrame->Content;
-					((CodeEditor^)thisItem->FrameContent)->thisWindowItem = thisItem;
 				}
-				((CodeEditor^)thisItem->FrameContent)->thisWindowItem = thisItem;
-			}
+				CodeEditor^ thisEditor = (CodeEditor^)thisItem->FrameContent;
+				thisEditor->thisWindowItem = thisItem;
 
+				if (thisItem->ItemFile != nullptr)
+				{
+					Editor_Tools::AddToRecentFile(thisItem->ItemFile);
+
+					create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this, thisItem, thisEditor](task<String^> thisTask)
+					{
+						RichEditBox^ EditBox = thisEditor->GetEditBox();
+						EditBox->Document->EndUndoGroup();
+						EditBox->Document->UndoLimit = 0;
+						try
+						{
+							String^ thisText = thisTask.get();
+							//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
+							EditBox->Document->SetText(Windows::UI::Text::TextSetOptions::None, thisText);
+							//EditBox->Document->Selection->EndPosition = 0;
+						}
+						catch (Exception^ WTF)
+						{
+							//Read Fail
+							Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
+						}
+						thisEditor->AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
+						thisItem->SetChanged(false);
+					});
+				}
+			}
 			thisItem->PointerPressed +=
 				ref new Windows::UI::Xaml::Input::PointerEventHandler(this, &MainPage::WindowItem_Pressed);
 
@@ -154,35 +179,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 					&MainPage::WindowItemCloseButton_Click);
 
 			
-			if (thisItem->ItemFile != nullptr && thisItem->FrameContent != nullptr)
-			{
-				Editor_Tools::AddToRecentFile(thisItem->ItemFile);
-
-				create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this, thisItem](task<String^> thisTask)
-				{
-					try
-					{
-						String^ thisText = thisTask.get();
-						CodeEditor^ thisEditor = (CodeEditor^)thisItem->FrameContent;
-						//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
-
-						RichEditBox^ EditBox = thisEditor->GetEditBox();
-						EditBox->Document->EndUndoGroup();
-						EditBox->Document->UndoLimit = 0;
-						EditBox->Document->Selection->Text += thisText;
-						EditBox->Document->Selection->EndPosition = 0;
-						thisEditor->AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
-						thisItem->SetChanged(false);
-						EditBox->Document->UndoLimit = 80;
-						EditBox->Document->BeginUndoGroup();
-					}
-					catch (Exception^ WTF)
-					{
-						//Read Fail
-						Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
-					}
-				}, task_continuation_context::use_current());
-			}
+			
 		}
 	});
 	thisTimer->Start();

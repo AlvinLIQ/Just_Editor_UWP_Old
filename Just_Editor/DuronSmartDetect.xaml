@@ -9,7 +9,8 @@
     d:DesignHeight="300"
     d:DesignWidth="250">
 
-    <ScrollViewer Name="MainContent" Background="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}" Padding="0, 0, 15, 0">
+    <ScrollViewer Name="MainContent" Background="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}" Padding="0, 0, 15, 0"
+                  BorderBrush="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}">
         <StackPanel x:Name="ItemPanel" Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}">
         </StackPanel>
     </ScrollViewer>

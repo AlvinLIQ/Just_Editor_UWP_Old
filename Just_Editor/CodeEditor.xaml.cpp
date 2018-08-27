@@ -9,7 +9,7 @@
 #include "CaesarPanel.xaml.h"
 
 bool isCtrlHeld = false, isGridCtrlHeld = false;
-int LineNum, PasteNum = -1;
+int PasteNum = -1;
 
 
 using namespace Just_Editor;
@@ -53,64 +53,76 @@ void CodeEditor::ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml
 
 void Just_Editor::CodeEditor::AutoDetect(int StartIndex, int EndIndex, bool isExtend)
 {
-	Windows::UI::Text::ITextRange^ searchRange = CodeEditorBox->Document->GetRange(StartIndex, EndIndex);
-	searchRange->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
-	if (!thisData->isHighlightEnabled)
-		return;
-	int c = IdentifierNum + 2, sl;
-	auto thisChar = std::wstring(searchRange->Text->Data());
-	int End;
-	while (--c >= 0)
+	isDetecting = true;
+	Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::High, ref new Windows::UI::Core::DispatchedHandler([=]()
 	{
-		//int len = (int)((RichEditBox^)sender)->PlaceholderText->Length();
-		sl = searchRange->FindText(MyIdentifierArray[c], StartIndex ? searchRange->Length : EndIndex, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
-		while (sl)
+		Windows::UI::Text::ITextRange^ searchRange = CodeEditorBox->Document->GetRange(StartIndex, EndIndex);
+		searchRange->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
+		if (!thisData->isHighlightEnabled)
+			return;
+		int c = IdentifierNum + 2, sl;
+		auto thisChar = std::wstring(searchRange->Text->Data());
+		int End;
+		while (--c >= 0)
 		{
-			if (c > 1)
+			//int len = (int)((RichEditBox^)sender)->PlaceholderText->Length();
+			sl = searchRange->FindText(MyIdentifierArray[c], StartIndex ? searchRange->Length : EndIndex, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
+			while (sl)
 			{
-				searchRange->CharacterFormat->ForegroundColor = c > 5 ? 
-					thisData->IdentifierHighlightColor :
-					thisData->Editor_ForegroundBrush->Color;
-			}
-			else
-			{
-				End = searchRange->EndPosition;
-				sl = StartIndex ? 0 : searchRange->EndPosition;
-				while (thisChar[sl] != L'\0' && ((thisChar[sl] != EndChar[c] )
-					|| (c && !(thisChar[sl] == EndChar[c] && thisChar[sl + 1] == EndChar[c + 1]))))
+				if (c > 1)
 				{
-					searchRange->EndPosition++;
-					sl++;
-				}
-				if (c)
-				{
-					if (thisChar[sl] != L'\0')
-					{
-						if (isExtend)
-							searchRange->EndPosition += 2;
-						searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-					}
+					searchRange->CharacterFormat->ForegroundColor = c > 5 ?
+						thisData->IdentifierHighlightColor :
+						thisData->Editor_ForegroundBrush->Color;
 				}
 				else
 				{
-					searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
-				}
+					End = searchRange->EndPosition;
+					sl = StartIndex ? 0 : searchRange->EndPosition;
+					while (thisChar[sl] != L'\0' && ((thisChar[sl] != EndChar[c])
+						|| (c && !(thisChar[sl] == EndChar[c] && thisChar[sl + 1] == EndChar[c + 1]))))
+					{
+						searchRange->EndPosition++;
+						sl++;
+					}
+					if (c)
+					{
+						if (thisChar[sl] != L'\0')
+						{
+							if (isExtend)
+								searchRange->EndPosition += 2;
+							searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+						}
+					}
+					else
+					{
+						searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+					}
 
-				
-				searchRange->EndPosition = End;
+
+					searchRange->EndPosition = End;
+				}
+				sl = searchRange->FindText(MyIdentifierArray[c], StartIndex ? searchRange->Length : EndIndex, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
 			}
-			sl = searchRange->FindText(MyIdentifierArray[c], StartIndex ? searchRange->Length : EndIndex, c > 1 ? Windows::UI::Text::FindOptions::Word : Windows::UI::Text::FindOptions::None);
+			searchRange = CodeEditorBox->Document->GetRange(StartIndex, EndIndex);
 		}
-		searchRange = CodeEditorBox->Document->GetRange(StartIndex, EndIndex);
-	}
+		if (CodeEditorBox->Document->UndoLimit == 0)
+		{
+			CodeEditorBox->Document->UndoLimit = 80;
+			CodeEditorBox->Document->BeginUndoGroup();
+		}
+		isDetecting = false;
+	}));
 }
 
 Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection(int SelectionIndex)
 {
 	auto thisRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
 	auto wholeWord = thisRange->Text->Data();
-	auto wordLength = thisRange->EndPosition;
+	auto wordLength = thisRange->Length;
+
 	bool CanAddBackLength = true, CanAddFrontLength = true;
+	
 	thisRange->EndPosition = SelectionIndex;
 	while (CanAddFrontLength || CanAddBackLength)
 	{
@@ -136,7 +148,47 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection(int
 	int EndIndex;
 	if (thisData->isLineNumEnabled)
 	{
-		EndIndex = Editor_Tools::GetStrNum(wholeWord, L"\r", wordLength, 1);
+		EndIndex = 0;
+		Point mPoint;
+		ContentPresenter^ thisItem;
+		Windows::UI::Text::ITextRange^ mRange = CodeEditorBox->Document->GetRange(0, wordLength);
+		mRange->EndPosition = 0;
+		
+		while(mRange->EndPosition < wordLength)
+		{
+			if (wholeWord[mRange->EndPosition] == L'\r')
+			{
+				if (EndIndex == LineNums_List->Children->Size)
+				{
+					thisItem = ref new ContentPresenter;
+					thisItem->Content = (EndIndex + 1).ToString();
+					LineNums_List->Children->Append(thisItem);
+				}
+				else
+				{
+					thisItem = (ContentPresenter^)LineNums_List->Children->GetAt(EndIndex);
+				}
+				mRange->StartPosition = mRange->EndPosition;
+				mRange->EndPosition++;
+				mRange->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Center, Windows::UI::Text::VerticalCharacterAlignment::Top, Windows::UI::Text::PointOptions::ClientCoordinates,
+					&mPoint);
+				if (thisItem->Margin.Top != mPoint.Y)
+					thisItem->Margin = Thickness(0, mPoint.Y, 0, 0);
+				EndIndex++;
+			}
+			else
+				mRange->EndPosition++;
+		}
+
+		/*
+		if (EndIndex > (int)LineNum_List->Children->Size)
+		{
+			auto thisNumBlock = Editor_Tools::GetTextBlock((LineNum_List->Children->Size + 1).ToString(), CodeEditorBox->FontSize, thisData->Editor_ForegroundBrush, Windows::UI::Text::FontWeights::Normal);
+			thisNumBlock->TextAlignment = Windows::UI::Xaml::TextAlignment::Right;
+			LineNum_List->Children->Append(thisNumBlock);
+		}*/
+		
+		/*
 		if (EndIndex > LineNum)
 		{
 			do
@@ -148,13 +200,20 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection(int
 		{
 			auto LineNums = CodeEditorBox->Header->ToString()->Data();
 			SelectionIndex = (int)wcslen(LineNums);
-			while (EndIndex < LineNum && --SelectionIndex > 0)
+			create_task([LineNums, SelectionIndex, EndIndex, this]()
 			{
-				if (LineNums[SelectionIndex - 1] == L'\r')
-					LineNum--;
-			}
-			CodeEditorBox->Header = ref new String(Editor_Tools::SubStr(LineNums, 0, SelectionIndex));
-		}
+				int Sl = SelectionIndex;
+				while (EndIndex < LineNum && --Sl > 0)
+				{
+					if (LineNums[Sl - 1] == L'\r')
+						LineNum--;
+				}
+				return Sl;
+			}).then([this, LineNums](task<int> thisIntTask)
+			{
+				CodeEditorBox->Header = ref new String(Editor_Tools::SubStr(LineNums, 0, thisIntTask.get()));
+			}, task_continuation_context::use_current());
+		}*/
 	}
 
 	EndIndex = thisRange->EndPosition - 1;
@@ -196,6 +255,7 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection(int
 			else if (wholeWord[FindIndex + 1] == L'/')
 			{
 				CodeEditorBox->Document->GetRange(FindIndex, EndIndex)->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 			}
 			else if (!(CanAddBackLength && wholeWord[FindIndex - 1] == L'/'))
 			{
@@ -358,6 +418,16 @@ void Just_Editor::CodeEditor::MainGrid_KeyDown(Platform::Object^ sender, Windows
 		else if (e->Key == Windows::System::VirtualKey::F)
 			Search_BoxShowHide(true);
 	}
+	else if (e->Key == Windows::System::VirtualKey::Up && SmartDetect->SelectedItem != nullptr)
+	{
+		e->Handled = true;
+		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex - 1);
+	}
+	else if (e->Key == Windows::System::VirtualKey::Down && SmartDetect->SelectedItem != nullptr)
+	{
+		e->Handled = true;
+		SmartDetect->SelectAt(SmartDetect->SelectedItem->ItemIndex + 1);
+	}
 	isGridCtrlHeld = (e->Key == Windows::System::VirtualKey::Control);
 }
 
@@ -400,7 +470,7 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 	Undo_Button->IsEnabled = CodeEditorBox->Document->CanUndo();
 	Redo_Button->IsEnabled = CodeEditorBox->Document->CanRedo();
 
-	if (thisWindowItem == nullptr)
+	if (thisWindowItem == nullptr || isDetecting)
 		return;
 
 	if (PasteNum >= 0)
@@ -411,8 +481,10 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 	}
 	if (!thisWindowItem->isChanged)
 	{
-		thisWindowItem->SetChanged(1);
+		thisWindowItem->SetChanged(true);
 	}
+	CodeEditorBox->Document->Selection->ParagraphFormat->ListType = Windows::UI::Text::MarkerType::None;
+
 	SmartDetect->DetectWordFromStrArray(GetWordFromSelection(CodeEditorBox->Document->Selection->EndPosition), thisData->isHighlightEnabled);
 	if (thisData->isSmartDetectEnabled)
 	{
@@ -514,12 +586,16 @@ void Just_Editor::CodeEditor::ContentElement_ViewChanged(Platform::Object^ sende
 }
 
 
-void Just_Editor::CodeEditor::ContentElement_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Just_Editor::CodeEditor::CodeEditorBox_Paste(Platform::Object^ sender, Windows::UI::Xaml::Controls::TextControlPasteEventArgs^ e)
 {
+	if (Windows::ApplicationModel::DataTransfer::Clipboard::GetContent()->Contains(Windows::ApplicationModel::DataTransfer::StandardDataFormats::Bitmap))
+		e->Handled = true;
+	else
+		PasteNum = CodeEditorBox->Document->Selection->StartPosition;
 }
 
 
-void Just_Editor::CodeEditor::CodeEditorBox_Paste(Platform::Object^ sender, Windows::UI::Xaml::Controls::TextControlPasteEventArgs^ e)
+void Just_Editor::CodeEditor::HeaderContentPresenter_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	PasteNum = CodeEditorBox->Document->Selection->StartPosition;
+	((ContentPresenter^)sender)->FontSize = CodeEditorBox->FontSize;
 }
