@@ -20,7 +20,7 @@ using namespace Windows::UI::Xaml::Media;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 const std::wstring IdentifierArray[] = {L"Vector", L"Task" ,L"Array",L"Enum",L"int",L"char",L"if",L"for",L"while",
-L"do",L"#include",L"#define",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
+L"do",L"#include",L"#define", L"#region", L"#endregion", L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
 L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto" };
 
@@ -128,4 +128,30 @@ void DuronSmartDetect::SelectItem(DuronWordItem^ thisItem)
 
 	thisItem->Select();
 	SelectedItem = thisItem;
+	if (MainContent->ScrollableHeight)
+	{
+		IBox<double>^ y = SelectedItem->ItemIndex * SelectedItem->ActualHeight;
+		if (y->Value >= MainContent->ActualHeight || y->Value <= MainContent->VerticalOffset)
+		{
+			IBox<double>^ x = 0.0;
+			IBox<float>^ z = MainContent->ZoomFactor;
+			MainContent->ChangeView(x, y, z);
+		}
+	}
+}
+
+
+void Just_Editor::DuronSmartDetect::UserControl_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
+{
+	if (this->SelectedItem == nullptr)
+		return;
+
+	if (e->Key == Windows::System::VirtualKey::Up)
+	{
+		this->SelectAt(this->SelectedItem->ItemIndex - 1);
+	}
+	else if (e->Key == Windows::System::VirtualKey::Down)
+	{
+		this->SelectAt(this->SelectedItem->ItemIndex + 1);
+	}
 }

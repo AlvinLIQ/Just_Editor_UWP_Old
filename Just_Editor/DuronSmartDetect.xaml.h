@@ -29,5 +29,7 @@ namespace Just_Editor
 		void DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thisRange, bool isHighlight);
 		void SelectAt(unsigned int ItemIndex);
 		void SelectItem(DuronWordItem^ thisItem);
+	private:
+		void UserControl_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e);
 	};
 }

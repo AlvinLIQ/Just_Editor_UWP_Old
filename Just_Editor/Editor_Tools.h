@@ -1,8 +1,8 @@
 #pragma once
 #include "MainPage.xaml.h"
 
-#define MaxUndoLimit 80
-#define IdentifierNum 43
+#define MaxUndoLimit 1
+#define IdentifierNum 45
 
 const wchar_t UnabledWords[] = L"\\/:*?<>|";
 

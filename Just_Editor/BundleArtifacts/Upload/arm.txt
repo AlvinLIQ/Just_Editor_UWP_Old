@@ -1,6 +1,6 @@
-MainPackage=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.5.0_ARM.appx
-SymbolPackage=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.5.0\Just_Editor_0.0.5.0_ARM.appxsym
-ResourcePack=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.5.0_scale-100.appx
-ResourcePack=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.5.0_scale-125.appx
-ResourcePack=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.5.0_scale-150.appx
-ResourcePack=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.5.0_scale-400.appx
+MainPackage=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.6.0_ARM.appx
+SymbolPackage=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.6.0\Just_Editor_0.0.6.0_ARM.appxsym
+ResourcePack=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.6.0_scale-100.appx
+ResourcePack=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.6.0_scale-125.appx
+ResourcePack=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.6.0_scale-150.appx
+ResourcePack=E:\Just_Editor\ARM\Release\Just_Editor\Upload\Just_Editor_0.0.6.0_scale-400.appx

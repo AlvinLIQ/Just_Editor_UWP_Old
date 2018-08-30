@@ -25,6 +25,7 @@ namespace Just_Editor
 		property Editor_Data^ thisData;
 		property bool isDetecting;
 		property int LineNum;
+		property Windows::UI::Xaml::Controls::ContentPresenter^ LineNums_Panel;
 
 //		void ThisFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e);
 
@@ -40,12 +41,30 @@ namespace Just_Editor
 			return CodeEditorBox;
 		}
 
-		Windows::UI::Text::ITextRange^ GetWordFromSelection(int SelectionIndex);
+		Windows::UI::Text::ITextRange^ GetWordFromSelection();
 
 		void UpdateBindings()
 		{
 			this->Bindings->Update();
+			CheckLineNums();
 			AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
+		}
+
+		void CheckLineNums()
+		{
+			if (LineNums_Panel != nullptr)
+			{
+				if (thisData->isLineNumEnabled)
+				{
+					LineNums_Panel->MinWidth = 30;
+					LineNums_Panel->Width = Width;
+				}
+				else
+				{
+					LineNums_Panel->MinWidth = 0;
+					LineNums_Panel->Width = 0;
+				}
+			}
 		}
 
 		void AutoDetect(int StartIndex, int EndIndex, bool isExtend);
@@ -83,7 +102,7 @@ namespace Just_Editor
 							}
 							catch (Platform::Exception^)
 							{
-								//Create File Error
+								//Create || Get File Error
 							}
 						});
 					}

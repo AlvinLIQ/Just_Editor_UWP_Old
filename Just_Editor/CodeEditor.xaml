@@ -79,7 +79,7 @@
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" MinWidth="30"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Border x:Name="BackgroundElement"
@@ -89,19 +89,21 @@
                             <Border x:Name="BorderElement"
                 Background="{TemplateBinding BorderBrush}"/>
                             <ContentPresenter x:Name="HeaderContentPresenter"
-                          x:DeferLoadStrategy="Lazy"
                           Margin="0"
                           Padding="5,0,5,0"
                           Visibility="Visible"
                           Foreground="#999"
-                          HorizontalAlignment="Right"
                           Content="{TemplateBinding Header}"
                           ContentTemplate="{TemplateBinding HeaderTemplate}"
                           FontWeight="Normal" 
+                          TextLineBounds="Full"
+                          FlowDirection="RightToLeft"
+                          MinWidth="30"
                           Loaded="HeaderContentPresenter_Loaded"
                           />
                             <ScrollViewer x:Name="ContentElement"
                       Grid.Column="1"
+                      Style="{StaticResource EditorScrollViewer}"
                       Background="{TemplateBinding Background}"
                       Margin="{TemplateBinding BorderThickness}"
                       Padding="{TemplateBinding Padding}"
@@ -139,12 +141,12 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="1">
             <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" HorizontalAlignment="Stretch" KeyUp="MainGrid_KeyUp"
-                             AcceptsReturn="True" Paste="CodeEditorBox_Paste" TextChanging="CodeEditorBox_TextChanging"
-                             BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Padding="0,0,10,10" IsTextScaleFactorEnabled="False"
+                             AcceptsReturn="True" Paste="CodeEditorBox_Paste" TextChanging="CodeEditorBox_TextChanging" Padding="0,0,0,15"
+                             BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" IsTextScaleFactorEnabled="False"
                              SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="NoWrap" Background="{x:Bind thisData.Editor_BackgroundBrush, Mode=OneWay}">
-                <RichEditBox.Header>
+                <!--RichEditBox.Header>
                     <Grid Name="LineNums_List"/>
-                </RichEditBox.Header>
+                </RichEditBox.Header-->
             </RichEditBox>
             <local:DuronSmartDetect x:Name="SmartDetect" Width="0" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0,0">
                 <local:DuronSmartDetect.RenderTransform>

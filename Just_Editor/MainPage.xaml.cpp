@@ -81,7 +81,10 @@ void MainPage::InitializePage()
 	if (!Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 		TopBar_Grid->Margin = Windows::UI::Xaml::Thickness(0, 0, 182, 0);
 	else
+	{
 		TopBar_Grid->Height = 40;
+		Windows::UI::ViewManagement::StatusBar::GetForCurrentView()->HideAsync();
+	}
 
 	ts.Duration = 5;
 }
@@ -144,6 +147,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 
 				if (thisItem->ItemFile != nullptr)
 				{
+					thisEditor->isDetecting = true;
 					Editor_Tools::AddToRecentFile(thisItem->ItemFile);
 
 					create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this, thisItem, thisEditor](task<String^> thisTask)
@@ -156,6 +160,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 							String^ thisText = thisTask.get();
 							//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
 							EditBox->Document->SetText(Windows::UI::Text::TextSetOptions::None, thisText);
+							//EditBox->Document->Selection->Text += thisText;
 							//EditBox->Document->Selection->EndPosition = 0;
 						}
 						catch (Exception^ WTF)
@@ -164,7 +169,6 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 							Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
 						}
 						thisEditor->AutoDetect(0, Windows::UI::Text::TextConstants::MaxUnitCount, true);
-						thisItem->SetChanged(false);
 					});
 				}
 			}
@@ -470,7 +474,10 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 	if (MainFrame->Content->ToString() == "Just_Editor.StartPage")
 		((StartPage^)MainFrame->Content)->thisData = thisData;
 	else
+	{
 		((CodeEditor^)MainFrame->Content)->thisData = thisData;
+		((CodeEditor^)MainFrame->Content)->CheckLineNums();
+	}
 }
 
 void Just_Editor::MainPage::AddWindow_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
@@ -502,7 +509,7 @@ void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI
 {
 	auto thisSwitch = (ToggleSwitch^)e->OriginalSource;
 	Editor_Tools::WriteSetting(thisSwitch->Name, thisSwitch->Name, thisSwitch->IsOn ? L"1" : L"0");
-	if (thisSwitch != DarkSwitch)
+	if (thisSwitch != DarkSwitch && thisSwitch != LineNumSwitch)
 	{
 		return;
 	}
