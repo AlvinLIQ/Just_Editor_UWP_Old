@@ -87,9 +87,31 @@ void MainPage::InitializePage()
 	}
 
 	ts.Duration = 5;
+
+	create_task(Windows::Storage::ApplicationData::Current->LocalFolder->GetFilesAsync()).then([this] (task<Windows::Foundation::Collections::IVectorView<Windows::Storage::StorageFile ^>^> thisTask) 
+	{
+		auto Files = thisTask.get();
+		create_task(Editor_Tools::ReadFileInAppFolderAsync("User_Files", "Background")).then([this, Files](String ^fileName)
+		{
+			Windows::Storage::StorageFile^ thisFile;
+			int cSize = Files->Size;
+			while (--cSize >= 0)
+			{
+				thisFile = Files->GetAt(cSize);
+				if (thisFile->Name == fileName)
+				{
+					Background_Update(thisFile);
+					return;
+				}
+			}
+			auto bgImage = ref new Media::Imaging::BitmapImage();
+			bgImage->UriSource = ref new Windows::Foundation::Uri("ms-appx:///Assets/Background.png");
+			BackgroundIMG->Source = bgImage;
+		}, task_continuation_context::use_current());
+	}, task_continuation_context::use_current());
 }
 
-void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File_Path = "" , bool AutoSelect, Platform::Object^ Frame_Content, Windows::Storage::StorageFile^ Item_File, bool isChanged)
+void MainPage::NewWindowItem(Platform::String ^File_Name, Platform::String ^File_Path = "" , bool AutoSelect, Platform::Object ^Frame_Content, Windows::Storage::StorageFile ^Item_File, bool isChanged)
 {
 	auto thisItem = ref new DuronWindowItemxaml;
 	thisItem->FileName = File_Name;
@@ -98,7 +120,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 	{
 		thisItem->FrameContent = Frame_Content;
 		if (isChanged)
-			thisItem->SetChanged(1);
+			thisItem->SetChanged(true);
 	}
 	if (Item_File != nullptr)
 		thisItem->ItemFile = Item_File;
@@ -112,7 +134,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 	//Show
 	auto thisTimer = ref new DispatcherTimer;
 	thisTimer->Interval = ts;
-	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem, AutoSelect, File_Name, File_Path](Object^ sender, Object^ e)
+	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem, AutoSelect, File_Name, File_Path](Object ^sender, Object ^e)
 	{
 		if (120 > thisItem->ActualWidth)
 			thisItem->Width += 30;
@@ -142,7 +164,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 					MainFrame->Navigate(CodeEditor::typeid, nullptr, ref new Windows::UI::Xaml::Media::Animation::SuppressNavigationTransitionInfo);
 					thisItem->FrameContent = MainFrame->Content;
 				}
-				CodeEditor^ thisEditor = (CodeEditor^)thisItem->FrameContent;
+				CodeEditor ^thisEditor = (CodeEditor^)thisItem->FrameContent;
 				thisEditor->thisWindowItem = thisItem;
 
 				if (thisItem->ItemFile != nullptr)
@@ -152,18 +174,18 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 
 					create_task(Editor_Tools::ReadFileAsync(thisItem->ItemFile)).then([this, thisItem, thisEditor](task<String^> thisTask)
 					{
-						RichEditBox^ EditBox = thisEditor->GetEditBox();
+						RichEditBox ^EditBox = thisEditor->GetEditBox();
 						EditBox->Document->EndUndoGroup();
 						EditBox->Document->UndoLimit = 0;
 						try
 						{
-							String^ thisText = thisTask.get();
+							String ^thisText = thisTask.get();
 							//((RichEditBox^)((Grid^)((ScrollViewer^)((Panel^)((Page^)MainFrame->Content)->Content)->Children->GetAt(1))->Content)->Children->GetAt(0))->Document->Selection->Text += thisText;
 							EditBox->Document->SetText(Windows::UI::Text::TextSetOptions::None, thisText);
 							//EditBox->Document->Selection->Text += thisText;
 							//EditBox->Document->Selection->EndPosition = 0;
 						}
-						catch (Exception^ WTF)
+						catch (Exception ^WTF)
 						{
 							//Read Fail
 							Editor_Tools::ShowMessageBox("Tips", "Read failed!\n" + WTF->Message);
@@ -192,7 +214,7 @@ void MainPage::NewWindowItem(Platform::String^ File_Name, Platform::String^ File
 
 void MainPage::WindowUnSelectAt(int Item_Index)
 {
-	DuronWindowItemxaml^ thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index);
+	DuronWindowItemxaml ^thisItem = (DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index);
 	if (thisItem->isSelected)
 	{
 		//((DuronWindowItemxaml^)WindowPanel->Children->GetAt(Item_Index))->Background = DefaultBrush;
@@ -220,7 +242,6 @@ void MainPage::WindowSelectAt(int Item_Index)
 		if (HiddenWindowPanel->Children->Size)
 		{
 			CheckWindowItem();
-			return;
 		}
 		else
 		{
@@ -233,6 +254,7 @@ void MainPage::WindowSelectAt(int Item_Index)
 				exit(Item_Index);
 			}
 		}
+		return;
 	}
 
 
@@ -261,14 +283,14 @@ void MainPage::WindowSelectAt(int Item_Index)
 	//thisItem->SetChanged(false);
 }
 
-void MainPage::RemoveWindowItem(DuronWindowItemxaml^ sender)
+void MainPage::RemoveWindowItem(DuronWindowItemxaml ^sender)
 {
 	delete sender->ItemFile;
 	sender->SetDisplayName("");
 	//Hide && Remove
 	auto thisTimer = ref new DispatcherTimer;
 	thisTimer->Interval = ts;
-	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem = sender](Object^ sender, Object^ e)
+	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([this, thisTimer, thisItem = sender](Object ^sender, Object ^e)
 	{
 		if (30 <= thisItem->ActualWidth)
 			thisItem->Width -= 30;
@@ -306,7 +328,7 @@ int MainPage::GetSelectedItemIndex()
 	return -1;
 }
 
-int MainPage::GetWindowItemIndex(DuronWindowItemxaml^ sender, Windows::UI::Xaml::Controls::Panel^ thisWindowPanel)
+int MainPage::GetWindowItemIndex(DuronWindowItemxaml ^sender, Windows::UI::Xaml::Controls::Panel ^thisWindowPanel)
 {
 	int  t = thisWindowPanel->Children->Size;
 	while (--t >= 0)
@@ -321,7 +343,7 @@ int MainPage::GetWindowItemIndex(DuronWindowItemxaml^ sender, Windows::UI::Xaml:
 
 void MainPage::CheckWindowItem()
 {
-	DuronWindowItemxaml^ thisItem;
+	DuronWindowItemxaml ^thisItem;
 	double WidthForWindowPanel = TopStackPanel->ActualWidth - GetHiddenWindow_Button->ActualWidth - AddWindow_Button->ActualWidth - (TopBar_Grid->Margin.Right / 3);
 	if (WindowPanel->ActualWidth >= WidthForWindowPanel && WindowPanel->Children->Size > 1)
 	{
@@ -340,7 +362,7 @@ void MainPage::CheckWindowItem()
 
 		targetItem->isChanged = thisItem->isChanged;
 
-		targetItem->Tapped += ref new Windows::UI::Xaml::Input::TappedEventHandler([targetItem, this](Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ args) 
+		targetItem->Tapped += ref new Windows::UI::Xaml::Input::TappedEventHandler([targetItem, this](Platform::Object ^sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs ^args) 
 		{
 
 			HiddenWindowPanel->Children->RemoveAt(GetWindowItemIndex(targetItem, HiddenWindowPanel));
@@ -360,7 +382,7 @@ void MainPage::CheckWindowItem()
 		HiddenWindowPanel->Children->Append(targetItem);
 
 
-		Windows::UI::Xaml::UIElement^ removeItem = WindowPanel->Children->GetAt(itemIndex);
+		Windows::UI::Xaml::UIElement ^removeItem = WindowPanel->Children->GetAt(itemIndex);
 		WindowPanel->Children->RemoveAt(itemIndex);
 
 		delete[] removeItem;
@@ -376,7 +398,7 @@ void MainPage::CheckWindowItem()
 	HiddenMenuTrans->X = WindowPanel->Children->Size * 120;
 }
 
-void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void MainPage::WindowItemCloseButton_Click(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e)
 {
 	auto thisItem = (DuronWindowItemxaml^)((Grid^)((Button^)sender)->Parent)->Parent;
 	if (thisItem->isChanged)
@@ -386,16 +408,16 @@ void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI
 		theDialog->Foreground = thisData->Editor_ForegroundBrush;
 		theDialog->RequestedTheme = thisData->isDark ? Windows::UI::Xaml::ElementTheme::Light : Windows::UI::Xaml::ElementTheme::Dark;
 
-		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this] (ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		theDialog->PrimaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this] (ContentDialog ^sender, ContentDialogButtonClickEventArgs ^args)
 		{
 			((CodeEditor^)thisItem->FrameContent)->SaveFile();
 			RemoveWindowItem(thisItem);
 		});
-		theDialog->SecondaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this](ContentDialog^ sender, ContentDialogButtonClickEventArgs^ args)
+		theDialog->SecondaryButtonClick += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogButtonClickEventArgs^>([thisItem, this](ContentDialog ^sender, ContentDialogButtonClickEventArgs ^args)
 		{
 			RemoveWindowItem(thisItem);
 		});
-		theDialog->Closed += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogClosedEventArgs^>([](ContentDialog^ sender, ContentDialogClosedEventArgs^ args)
+		theDialog->Closed += ref new Windows::Foundation::TypedEventHandler<ContentDialog^, ContentDialogClosedEventArgs^>([](ContentDialog ^sender, ContentDialogClosedEventArgs ^args)
 		{
 			delete[] sender;
 		});
@@ -410,12 +432,12 @@ void MainPage::WindowItemCloseButton_Click(Platform::Object^ sender, Windows::UI
 	thisItem = nullptr;
 }
 
-void MainPage::WindowItem_Tapped(Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)
+void MainPage::WindowItem_Tapped(Platform::Object ^sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs ^e)
 {
 	WindowSelectAt(GetWindowItemIndex((DuronWindowItemxaml^)sender, WindowPanel));
 }
 
-void MainPage::WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xaml::Input::RightTappedRoutedEventArgs^ e)
+void MainPage::WindowItem_RightTapped(Platform::Object ^sender, Windows::UI::Xaml::Input::RightTappedRoutedEventArgs ^e)
 {
 	auto thisItem = (DuronWindowItemxaml^)sender;
 
@@ -424,7 +446,7 @@ void MainPage::WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xam
 	renameDialog->RequestedTheme = thisData->isDark ? Windows::UI::Xaml::ElementTheme::Light : Windows::UI::Xaml::ElementTheme::Dark;
 	renameDialog->FileName = thisItem->FileName;
 	renameDialog->Closed += ref new Windows::Foundation::TypedEventHandler<Windows::UI::Xaml::Controls::ContentDialog^, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^>([thisItem, renameDialog]
-	(ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs^ args)
+	(ContentDialog ^sender, Windows::UI::Xaml::Controls::ContentDialogClosedEventArgs ^args)
 	{
 		thisItem->SetFileName(renameDialog->FileName);
 	});
@@ -432,12 +454,12 @@ void MainPage::WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xam
 
 }
 
-void MainPage::WindowItem_Pressed(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+void MainPage::WindowItem_Pressed(Platform::Object ^sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs ^e)
 {
 	OldIndex = GetWindowItemIndex((DuronWindowItemxaml^)sender, (Panel^)((DuronWindowItemxaml^)sender)->Parent);
 }
 
-void MainPage::WindowItem_Released(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e)
+void MainPage::WindowItem_Released(Platform::Object ^sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs ^e)
 {
 	if (OldIndex != -1)
 	{
@@ -448,18 +470,18 @@ void MainPage::WindowItem_Released(Platform::Object^ sender, Windows::UI::Xaml::
 	OldIndex = -1;
 }
 
-void MainPage::OpenFromStorageFile(Windows::Storage::StorageFile^ thisFile, bool AutoSelect)
+void MainPage::OpenFromStorageFile(Windows::Storage::StorageFile ^thisFile, bool AutoSelect)
 {
 	NewWindowItem(thisFile->Name, thisFile->Path, AutoSelect, nullptr, thisFile, false);
 }
 
-void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
+void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object ^sender, Windows::UI::Xaml::Navigation::NavigationEventArgs ^e)
 {
 	if (e->Parameter != nullptr)
 	{
 		if (e->Parameter->ToString() == L"Windows.Storage.StorageFile")
 		{
-			Windows::Storage::StorageFile^ ItemFile = (Windows::Storage::StorageFile^)e->Parameter;
+			Windows::Storage::StorageFile ^ItemFile = (Windows::Storage::StorageFile^)e->Parameter;
 			NewWindowItem(ItemFile->Name, ItemFile->Path, true, MainFrame->Content, ItemFile);
 		}
 		else
@@ -480,32 +502,32 @@ void Just_Editor::MainPage::MainFrame_Navigated(Platform::Object^ sender, Window
 	}
 }
 
-void Just_Editor::MainPage::AddWindow_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Just_Editor::MainPage::AddWindow_Button_Click(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e)
 {
 	NewWindowItem("Untitled " + WindowPanel->Children->Size);
 }
 
-void Just_Editor::MainPage::SettingsButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Just_Editor::MainPage::SettingsButton_Click(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e)
 {
 	SettingsSplit->IsPaneOpen = !SettingsSplit->IsPaneOpen;
 }
 
-void Just_Editor::MainPage::HomeButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Just_Editor::MainPage::HomeButton_Click(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e)
 {
 	NewWindowItem("StartPage", "?S");
 }
 
-void Just_Editor::MainPage::GetHiddenWindow_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Just_Editor::MainPage::GetHiddenWindow_Button_Click(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e)
 {
 	ChangeHiddenPanelExpand();
 }
 
-void Just_Editor::MainPage::WindowPanel_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
+void Just_Editor::MainPage::WindowPanel_SizeChanged(Platform::Object ^sender, Windows::UI::Xaml::SizeChangedEventArgs ^e)
 {
 	CheckWindowItem();
 }
 
-void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void Just_Editor::MainPage::Switch_Toggled(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e)
 {
 	auto thisSwitch = (ToggleSwitch^)e->OriginalSource;
 	Editor_Tools::WriteSetting(thisSwitch->Name, thisSwitch->Name, thisSwitch->IsOn ? L"1" : L"0");
@@ -519,9 +541,9 @@ void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI
 	thisData = ref new Editor_Data;
 	this->Bindings->Update();
 
-	DuronWindowItemxaml^ thisItem;
+	DuronWindowItemxaml ^thisItem;
 	int ItemsNum;
-	Panel^ thisWindowPanel;
+	Panel ^thisWindowPanel;
 	for (int i = 0; i < 2; i++)
 	{
 		thisWindowPanel = i ? WindowPanel : HiddenWindowPanel;
@@ -539,15 +561,17 @@ void Just_Editor::MainPage::Switch_Toggled(Platform::Object^ sender, Windows::UI
 				if (thisItem->FrameContent->ToString() == "Just_Editor.CodeEditor")
 				{
 					((CodeEditor^)thisItem->FrameContent)->thisData = thisData;
+					((CodeEditor^)thisItem->FrameContent)->LineNum = 0;
+					((CodeEditor^)thisItem->FrameContent)->LineNums_Panel->Content = "";
 					((CodeEditor^)thisItem->FrameContent)->UpdateBindings();
 
 					auto thisMainPanel = (Panel^)((CodeEditor^)thisItem->FrameContent)->Content;
-					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(0))->Children->GetAt(1))->thisData = thisData;
-					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(0))->Children->GetAt(1))->UpdateBindings();
-					if (thisMainPanel->Children->Size == 3)
+					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(1))->Children->GetAt(1))->thisData = thisData;
+					((DuronSmartDetect^)((Grid^)thisMainPanel->Children->GetAt(1))->Children->GetAt(1))->UpdateBindings();
+					if (thisMainPanel->Children->Size == 5)
 					{
-						((CaesarPanel^)thisMainPanel->Children->GetAt(2))->thisData = thisData;
-						((CaesarPanel^)thisMainPanel->Children->GetAt(2))->UpdateBindings();
+						((CaesarPanel^)thisMainPanel->Children->GetAt(4))->thisData = thisData;
+						((CaesarPanel^)thisMainPanel->Children->GetAt(4))->UpdateBindings();
 					}
 				}
 				else
@@ -581,7 +605,7 @@ void Just_Editor::MainPage::ChangeHiddenPanelExpand()
 	}
 	//Show || Hide
 	auto thisTimer = ref new DispatcherTimer;
-	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([thisTimer, thisItem = HiddenScrollViewer, icNum](Object^ sender, Object^ e)
+	thisTimer->Tick += ref new Windows::Foundation::EventHandler<Object^>([thisTimer, thisItem = HiddenScrollViewer, icNum](Object ^sender, Object ^e)
 	{
 		int NextHeight = (int)thisItem->ActualHeight + icNum;
 		if (NextHeight >= 0 && NextHeight <= 120)
@@ -595,10 +619,60 @@ void Just_Editor::MainPage::ChangeHiddenPanelExpand()
 	thisTimer->Start();
 }
 
-void Just_Editor::MainPage::Page_Tapped(Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e)
+void Just_Editor::MainPage::Page_Tapped(Platform::Object ^sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs ^e)
 {
 	if (HiddenScrollViewer->ActualHeight)
 	{
 		ChangeHiddenPanelExpand();
 	}
+}
+
+
+void Just_Editor::MainPage::BGChoose_Button_Click(Platform::Object ^sender, Windows::UI::Xaml::RoutedEventArgs ^e)
+{
+	auto filePicker = ref new Windows::Storage::Pickers::FileOpenPicker;
+	filePicker->ViewMode = Windows::Storage::Pickers::PickerViewMode::Thumbnail;
+	filePicker->SuggestedStartLocation = Windows::Storage::Pickers::PickerLocationId::PicturesLibrary;
+	filePicker->FileTypeFilter->Append(".jpg");
+	filePicker->FileTypeFilter->Append(".bmp");
+	filePicker->FileTypeFilter->Append(".png");
+	create_task(filePicker->PickSingleFileAsync()).then([this](task<Windows::Storage::StorageFile^> thisTask)
+	{
+		Windows::Storage::StorageFile ^thisFile;
+		try
+		{
+			thisFile = thisTask.get();
+		}
+		catch (Exception^)
+		{
+			return;
+		}
+		if (thisFile == nullptr)
+			return;
+
+		BGChoose_Button->IsEnabled = false;
+
+		Background_Update(thisFile);
+		
+		thisFile->CopyAsync(Windows::Storage::ApplicationData::Current->LocalFolder);
+		Editor_Tools::WriteInAppFile("User_Files", "Background", thisFile->Name);
+		BGChoose_Button->IsEnabled = true;;
+	}, task_continuation_context::use_current());
+}
+
+void MainPage::Background_Update(Windows::Storage::StorageFile ^thisFile)
+{
+	create_task(thisFile->OpenAsync(Windows::Storage::FileAccessMode::Read)).then([this, thisFile](task<Windows::Storage::Streams::IRandomAccessStream^> readTask)
+	{
+		auto bgImage = ref new Media::Imaging::BitmapImage();
+		try
+		{
+			bgImage->SetSource(readTask.get());
+		}
+		catch (Exception^)
+		{
+			bgImage->UriSource = ref new Windows::Foundation::Uri("ms-appx:///Assets/Background.png");
+		}
+		BackgroundIMG->Source = bgImage;
+	}, task_continuation_context::use_current());
 }

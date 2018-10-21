@@ -130,13 +130,12 @@ void Just_Editor::StartPage::Page_SizeChanged(Platform::Object^ sender, Windows:
 {
 	if (e->NewSize.Width < 600)
 	{
-		MainColumn1->Width = GridLength(1, GridUnitType::Star);
-		MainColumn2->Width = GridLength(0);
+		MainGrid->HorizontalAlignment = Windows::UI::Xaml::HorizontalAlignment::Stretch;
 	}
 	else
 	{
-		MainColumn1->Width = GridLength(250);
-		MainColumn2->Width = GridLength(1, GridUnitType::Star);
+		MainGrid->HorizontalAlignment = Windows::UI::Xaml::HorizontalAlignment::Center;
+		MainGrid->Width = e->NewSize.Width - (e->NewSize.Width - 400) / 2;
 	}
 }
 

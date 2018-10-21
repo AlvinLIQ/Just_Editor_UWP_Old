@@ -84,6 +84,7 @@
                             </Grid.ColumnDefinitions>
                             <Border x:Name="BackgroundElement"
                 Grid.Column="1"
+                Opacity="0.01"
                 Background="{TemplateBinding Background}"
                 />
                             <Border x:Name="BorderElement"
@@ -92,7 +93,6 @@
                           Margin="0"
                           Padding="5,0,5,0"
                           Visibility="Visible"
-                          Foreground="#999"
                           Content="{TemplateBinding Header}"
                           ContentTemplate="{TemplateBinding HeaderTemplate}"
                           FontWeight="Normal" 
@@ -106,7 +106,7 @@
                       Style="{StaticResource EditorScrollViewer}"
                       Background="{TemplateBinding Background}"
                       Margin="{TemplateBinding BorderThickness}"
-                      Padding="{TemplateBinding Padding}"
+                      Padding="0,0,30,30"
                       BorderBrush="{TemplateBinding BorderBrush}"
                       HorizontalScrollMode="Enabled"
                       HorizontalScrollBarVisibility="Visible"
@@ -130,7 +130,8 @@
             </Setter>
         </Style>
     </Page.Resources>
-    <Grid Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" KeyDown="MainGrid_KeyDown" SizeChanged="MainGrid_SizeChanged">
+    <Grid Name="MainGrid" KeyDown="MainGrid_KeyDown" SizeChanged="MainGrid_SizeChanged"
+           >
         <Grid.RowDefinitions>
             <RowDefinition x:Name="ToolBar_Row" Height="30"/>
             <RowDefinition/>
@@ -139,11 +140,12 @@
             <ColumnDefinition/>
             <ColumnDefinition x:Name="ExtraColumn" Width="0"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Row="1">
+        <Border Grid.ColumnSpan="2" Grid.RowSpan="2" Background="{x:Bind thisData.ToolBar_BackgroundBrush}" Opacity="0.7"/>
+        <Grid Name="EditorGrid" Grid.Row="1">
             <RichEditBox Name="CodeEditorBox" BorderThickness="0" IsSpellCheckEnabled="False" TabNavigation="Cycle" HorizontalAlignment="Stretch" KeyUp="MainGrid_KeyUp"
-                             AcceptsReturn="True" Paste="CodeEditorBox_Paste" TextChanging="CodeEditorBox_TextChanging" Padding="0,0,0,15"
-                             BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" IsTextScaleFactorEnabled="False"
-                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="NoWrap" Background="{x:Bind thisData.Editor_BackgroundBrush, Mode=OneWay}">
+                             AcceptsReturn="True" Paste="CodeEditorBox_Paste" TextChanging="CodeEditorBox_TextChanging" RightTapped="CodeEditorBox_RightTapped"
+                             BorderBrush="#3666" IsTextScaleFactorEnabled="False" IsRightTapEnabled="True"
+                             SelectionHighlightColor="DarkGray" IsTextPredictionEnabled="False" TextWrapping="NoWrap" Background="#3888">
                 <!--RichEditBox.Header>
                     <Grid Name="LineNums_List"/>
                 </RichEditBox.Header-->
@@ -170,7 +172,8 @@
                 <Button Name="Hide_Button" Grid.Column="1" Background="#0000" Padding="4,4,6,4" Foreground="{Binding ElementName=Redo_Button, Path=Foreground}" Content="x" Click="Hide_Button_Click" Margin="5,0,0,5"/>
             </Grid>
         </Grid>
-        <StackPanel Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Orientation="Horizontal" Grid.ColumnSpan="2">
+        <Grid Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Grid.ColumnSpan="2" Opacity="0.8"/>
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
             <Button Name="Undo_Button" Width="30" VerticalAlignment="Stretch" Padding="0" Background="#0000" BorderThickness="0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" 
                     FontWeight="ExtraBold" Click="Undo_Button_Click">
                 &lt;

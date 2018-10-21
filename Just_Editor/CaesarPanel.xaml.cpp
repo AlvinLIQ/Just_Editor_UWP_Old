@@ -102,7 +102,20 @@ void Just_Editor::CaesarPanel::SetPanelMode(int PanelMode)
 		Calculate_Button = Editor_Tools::GetButton("Execute", 16, thisData->Editor_BackgroundBrush, thisData->Editor_ForegroundBrush, PanelTitle->FontWeight);
 		Calculate_Button->Click += ref new Windows::UI::Xaml::RoutedEventHandler([this, Url_Box, Body_Box] (Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 		{
-			Url_Box->Text = Editor_Tools::GetRegularUrl(Url_Box->Text);
+			std::wstring user_Input = Url_Box->Text->Data();
+			std::wstring thisUrl = L"";
+			size_t CIndex = user_Input.length(), EIndex = 0;
+			while (EIndex++ < CIndex)
+			{
+				if (user_Input[EIndex] != ' ')
+				{
+					thisUrl += user_Input[EIndex];
+				}
+			}
+			if (thisUrl == L"")
+				return;
+
+			Url_Box->Text = Editor_Tools::GetRegularUrl(ref new String(thisUrl.data()));
 
 			auto thisClient = ref new HttpClient;
 			auto thisContent = ref new HttpStringContent(Body_Box->Text);
@@ -110,7 +123,8 @@ void Just_Editor::CaesarPanel::SetPanelMode(int PanelMode)
 			thisClient->DefaultRequestHeaders->Clear();
 			
 			std::wstring RequestHeader = (Cipher_Box->Text + "\r")->Data();
-			size_t CIndex = RequestHeader.find(L":"), EIndex;
+			CIndex = RequestHeader.find(L":");
+
 			String^ thisValue, ^thisName;
 
 			while (CIndex != -1)

@@ -231,6 +231,7 @@
     <None Include="Just_Editor_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Assets\Background.png" />
     <Image Include="Assets\Back_Icon.png" />
     <Image Include="Assets\Caesar_Icon.png" />
     <Image Include="Assets\Delete_Icon.png" />

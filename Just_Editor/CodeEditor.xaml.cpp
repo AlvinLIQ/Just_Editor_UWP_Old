@@ -21,7 +21,7 @@ using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml::Media;
 
-String^ MyIdentifierArray[] = {L"//", L"/*", L"Vector", L"Task" ,L"Array",L"Enum",L"int",L"char",L"if",L"for",L"while",
+String^ MyIdentifierArray[] = {L"//", L"/*", L"Vector", L"Task" ,L"Array",L"Enum",L"int",L"char", L"if", L"else", L"try", L"catch", L"for",L"while",
 L"do",L"#include",L"#define", L"#region", L"#endregion",L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
 L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto" };
@@ -94,12 +94,12 @@ void Just_Editor::CodeEditor::AutoDetect(int StartIndex, int EndIndex, bool isEx
 						{
 							if (isExtend)
 								searchRange->EndPosition += 2;
-							searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+							searchRange->CharacterFormat->ForegroundColor = thisData->CommentHighlightColor;
 						}
 					}
 					else
 					{
-						searchRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+						searchRange->CharacterFormat->ForegroundColor = thisData->CommentHighlightColor;
 					}
 
 
@@ -109,10 +109,15 @@ void Just_Editor::CodeEditor::AutoDetect(int StartIndex, int EndIndex, bool isEx
 			}
 			searchRange = CodeEditorBox->Document->GetRange(StartIndex, EndIndex);
 		}
-		isDetecting = false;
-		if (StartIndex == 0 && EndIndex == Windows::UI::Text::TextConstants::MaxUnitCount)
+		if (thisData->isLineNumEnabled && StartIndex == 0 && EndIndex == Windows::UI::Text::TextConstants::MaxUnitCount)
 		{
-			GetWordFromSelection();
+			auto sText = GetEditBoxText();
+			if (sText != nullptr)
+			{
+				auto wholeWord = std::wstring(GetEditBoxText()->Data());
+
+				LineNum_Update(wholeWord, wholeWord.length());
+			}
 		}
 		if (CodeEditorBox->Document->UndoLimit == 0)
 		{
@@ -120,16 +125,90 @@ void Just_Editor::CodeEditor::AutoDetect(int StartIndex, int EndIndex, bool isEx
 			CodeEditorBox->Document->BeginUndoGroup();
 			thisWindowItem->SetChanged(false);
 		}
+		isDetecting = false;
 	}));
+}
+
+void Just_Editor::CodeEditor::LineNum_Update(std::wstring wholeWord, size_t wordLength)
+{
+	int EndIndex, SelectionIndex;
+	EndIndex = Editor_Tools::GetWStrNum(wholeWord, L"\r", (size_t)wordLength, 1);
+
+	if (EndIndex > LineNum)
+	{
+		do
+		{
+			CodeEditorBox->Header += (++LineNum).ToString() + L'\r';
+		} while (EndIndex > LineNum);
+	}
+	else if (EndIndex < LineNum)
+	{
+		auto LineNums = CodeEditorBox->Header->ToString()->Data();
+
+		SelectionIndex = (int)wcslen(LineNums);
+		create_task([LineNums, SelectionIndex, EndIndex, this]()
+		{
+			int Sl = SelectionIndex;
+			while (EndIndex < LineNum && --Sl > 0)
+			{
+				if (LineNums[Sl - 1] == L'\r')
+					LineNum--;
+			}
+			return Sl;
+		}).then([this, LineNums](task<int> thisIntTask)
+		{
+			CodeEditorBox->Header = ref new String(Editor_Tools::SubStr(LineNums, 0, thisIntTask.get()));
+		}, task_continuation_context::use_current());
+	}
+	/*
+	concurrency::create_task([=]()
+	{
+		Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::High, ref new Windows::UI::Core::DispatchedHandler([=]()
+		{
+			int StrNum = 0;
+
+			int i;
+			Point nPoint;
+			for (i = 0; i < wordLength; i++)
+			{
+				if (wholeWord[i] == L'\r')
+				{
+					StrNum++;
+					CodeEditorBox->Document->GetRange(i, i)->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Left,
+						Windows::UI::Text::VerticalCharacterAlignment::Top,
+						Windows::UI::Text::PointOptions::ClientCoordinates, &nPoint);
+					TextBlock^ thisNumItem;
+					if (StrNum > (int)LineNums_List->Children->Size)
+					{
+						thisNumItem = Editor_Tools::GetTextBlock(StrNum.ToString(), CodeEditorBox->FontSize, thisData->Editor_ForegroundBrush, CodeEditorBox->FontWeight);
+						LineNums_List->Children->Append(thisNumItem);
+					}
+					else
+					{
+						thisNumItem = (TextBlock^)LineNums_List->Children->GetAt(StrNum - 1);
+					}
+					thisNumItem->Margin = Thickness(0, nPoint.Y, 0, 0);
+				}
+			}
+			if (StrNum > 0)
+			{
+				StrNum = (int)LineNums_List->Children->Size - StrNum;
+				while (--StrNum >= 0)
+				{
+					LineNums_List->Children->RemoveAtEnd();
+				}
+			}
+		}));
+	});*/
 }
 
 Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 {
 	int SelectionIndex = CodeEditorBox->Document->Selection->StartPosition;
 	auto thisRange = CodeEditorBox->Document->GetRange(0, Windows::UI::Text::TextConstants::MaxUnitCount);
-	auto wholeWord = thisRange->Text->Data();
-	
-	auto wordLength = (int)thisRange->Text->Length();
+	auto wholeWord = std::wstring(thisRange->Text->Data());
+
+	int wordLength = (int)wholeWord.length();
 
 	bool CanAddBackLength = true, CanAddFrontLength = true;
 	
@@ -155,32 +234,7 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 	int EndIndex;
 	if (thisData->isLineNumEnabled)
 	{
-		EndIndex = Editor_Tools::GetStrNum(wholeWord, L"\r", (size_t)wordLength, 1);
-		if (EndIndex > LineNum)
-		{
-			do
-			{
-				CodeEditorBox->Header += (++LineNum).ToString() + L'\r';
-			} while (EndIndex > LineNum);
-		}
-		else if (EndIndex < LineNum)
-		{
-			auto LineNums = CodeEditorBox->Header->ToString()->Data();
-			SelectionIndex = (int)wcslen(LineNums);
-			create_task([LineNums, SelectionIndex, EndIndex, this]()
-			{
-				int Sl = SelectionIndex;
-				while (EndIndex < LineNum && --Sl > 0)
-				{
-					if (LineNums[Sl - 1] == L'\r')
-						LineNum--;
-				}
-				return Sl;
-			}).then([this, LineNums](task<int> thisIntTask)
-			{
-				CodeEditorBox->Header = ref new String(Editor_Tools::SubStr(LineNums, 0, thisIntTask.get()));
-			}, task_continuation_context::use_current());
-		}
+		LineNum_Update(wholeWord, (size_t)wordLength);
 	}
 
 	//auto FindResult = Editor_Tools::FindAllStr(wholeWord, L"//");
@@ -193,8 +247,8 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 	SelectionIndex = EndIndex;
 	if (SelectionIndex)
 	{
-		while (--SelectionIndex >= 0 && wholeWord[SelectionIndex] != L'\r' && wholeWord[SelectionIndex] != L'/');
-		if (SelectionIndex && wholeWord[SelectionIndex - 1] == L'/')
+		while (--SelectionIndex && wholeWord[SelectionIndex] != L'\r' && wholeWord[SelectionIndex] != L'/');
+		if (SelectionIndex > 0 && wholeWord[SelectionIndex - 1] == L'/')
 			SelectionIndex -= 1;
 	}
 	int FindIndex = wholeWord[SelectionIndex] == L'/' ? SelectionIndex : -1;
@@ -206,7 +260,7 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 			if (wholeWord[SelectionIndex] != L'\0')
 			{
 				auto commentRange = CodeEditorBox->Document->GetRange(FindIndex, SelectionIndex + 2);
-				commentRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+				commentRange->CharacterFormat->ForegroundColor = thisData->CommentHighlightColor;
 				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 			}
 		}
@@ -220,13 +274,13 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 				if (wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/')
 				{
 					auto commentRange = CodeEditorBox->Document->GetRange(SelectionIndex - 1, FindIndex + 1);
-					commentRange->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+					commentRange->CharacterFormat->ForegroundColor = thisData->CommentHighlightColor;
 					CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 				}
 			}
 			else if (wholeWord[FindIndex + 1] == L'/')
 			{
-				CodeEditorBox->Document->GetRange(FindIndex, EndIndex)->CharacterFormat->ForegroundColor = Windows::UI::Colors::DarkSeaGreen;
+				CodeEditorBox->Document->GetRange(FindIndex, EndIndex)->CharacterFormat->ForegroundColor = thisData->CommentHighlightColor;
 				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 			}
 			else if (!(CanAddBackLength && wholeWord[FindIndex - 1] == L'/'))
@@ -243,7 +297,7 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 	}
 	else
 	{
-		FindIndex = (int)Editor_Tools::FindStr(wholeWord, L"*", EndIndex, 1, (size_t)SelectionIndex);
+		FindIndex = (int)Editor_Tools::FindStr(wholeWord.data(), L"*", EndIndex, 1, (size_t)SelectionIndex);
 		if (FindIndex != -1)
 		{
 			while (--SelectionIndex > 0 && !(wholeWord[SelectionIndex] == L'*' && wholeWord[SelectionIndex - 1] == L'/'));
@@ -253,7 +307,7 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 				AutoDetect(SelectionIndex - 1, EndIndex, false);
 		}
 	}
-	if (!thisData->isSmartDetectEnabled || thisRange->CharacterFormat->ForegroundColor.G == Windows::UI::Colors::DarkSeaGreen.G)
+	if (thisRange->CharacterFormat->ForegroundColor.G == thisData->CommentHighlightColor.G)
 		thisRange->EndPosition = thisRange->StartPosition;
 	return thisRange;
 }
@@ -282,9 +336,9 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 		{
 			CodeEditorBox->Document->Selection->Text = "\t" + CodeEditorBox->Document->Selection->Text;
 			CodeEditorBox->Document->Selection->StartPosition = CodeEditorBox->Document->Selection->EndPosition;
-			if (CodeEditorBox->Document->Selection->Length == 0 && !(CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.R == Windows::UI::Colors::DarkSeaGreen.R &&
-				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.G == Windows::UI::Colors::DarkSeaGreen.G &&
-				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.B == Windows::UI::Colors::DarkSeaGreen.B))
+			if (CodeEditorBox->Document->Selection->Length == 0 && !(CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.R == thisData->CommentHighlightColor.R &&
+				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.G == thisData->CommentHighlightColor.G &&
+				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.B == thisData->CommentHighlightColor.B))
 				CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 		}
 	}
@@ -336,9 +390,9 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 	}
 	else if(CodeEditorBox->Document->Selection->Length == 0)
 	{
-		if (!(CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.R == Windows::UI::Colors::DarkSeaGreen.R &&
-			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.G == Windows::UI::Colors::DarkSeaGreen.G &&
-			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.B == Windows::UI::Colors::DarkSeaGreen.B))
+		if (!(CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.R == thisData->CommentHighlightColor.R &&
+			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.G == thisData->CommentHighlightColor.G &&
+			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.B == thisData->CommentHighlightColor.B))
 			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
 	}
 	isCtrlHeld = e->Key == Windows::System::VirtualKey::Control;
@@ -412,10 +466,10 @@ void Just_Editor::CodeEditor::MainGrid_KeyDown(Platform::Object^ sender, Windows
 
 void Just_Editor::CodeEditor::Caesar_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	if (MainGrid->Children->Size > 2)
+	if (MainGrid->Children->Size > 4)
 	{
 		ExtraColumn->Width = 0;
-		auto thisItem = MainGrid->Children->GetAt(2);
+		auto thisItem = MainGrid->Children->GetAt(4);
 		MainGrid->Children->RemoveAtEnd();
 		delete[] thisItem;
 	}
@@ -542,7 +596,11 @@ void Just_Editor::CodeEditor::SearchInRange(Windows::UI::Text::ITextRange^ searc
 		SmartDetect->SelectedItem = nullptr;
 	}
 	else
+	{
 		Replace_Box->Foreground = ref new SolidColorBrush(Windows::UI::Colors::Red);
+		Replace_Box->IsEnabled = false;
+		Replace_Row->Height = 0;
+	}
 }
 
 void Just_Editor::CodeEditor::MainGrid_KeyUp(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
@@ -576,4 +634,22 @@ void Just_Editor::CodeEditor::CodeEditorBox_Paste(Platform::Object^ sender, Wind
 void Just_Editor::CodeEditor::HeaderContentPresenter_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	LineNums_Panel = ((ContentPresenter^)sender);
+	LineNums_Panel->Foreground = thisData->Editor_ForegroundBrush;
+	CheckLineNums();
+}
+
+
+void Just_Editor::CodeEditor::CodeEditorBox_RightTapped(Platform::Object^ sender, Windows::UI::Xaml::Input::RightTappedRoutedEventArgs^ e)
+{
+	if (e->PointerDeviceType != Windows::Devices::Input::PointerDeviceType::Mouse)
+	{
+		if (CodeEditorBox->Document->Selection->Length)
+		{
+			Editor_Tools::CopyText(CodeEditorBox->Document->Selection->Text);
+		}
+		else
+		{
+			SaveFile();
+		}
+	}
 }

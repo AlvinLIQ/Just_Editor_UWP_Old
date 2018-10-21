@@ -10,7 +10,7 @@
     <AppxPackageIsForStore>True</AppxPackageIsForStore>
     <AppxShowAllApps>False</AppxShowAllApps>
     <AppxBuildConfigurationSelection>x86|x64|arm</AppxBuildConfigurationSelection>
-    <PackageOptionalProjectsInIdeBuilds>False</PackageOptionalProjectsInIdeBuilds>
+    <PackageOptionalProjectsInIdeBuilds>True</PackageOptionalProjectsInIdeBuilds>
     <Source>C:\Users\Duron\Pictures\Just_Editor_Icon.png</Source>
     <SmallTileSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</SmallTileSource>
     <MediumTileSource>C:\Users\Duron\Pictures\Just_Editor_Icon.png</MediumTileSource>
@@ -26,6 +26,7 @@
     <LayoutDir>
     </LayoutDir>
     <DebuggerType>NativeOnly</DebuggerType>
+    <WindowsAppEmulatorID>E492D437-B7BB-4156-85F3-84D94C3A5AA0;Mobile Emulator 10.0.15254.0 1080p 6 inch 2GB</WindowsAppEmulatorID>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CommandLineArgs>*.exe C:\Users\Duron\Desktop\cier.cpp</CommandLineArgs>

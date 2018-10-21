@@ -2,7 +2,7 @@
 #include "MainPage.xaml.h"
 
 #define MaxUndoLimit 1
-#define IdentifierNum 45
+#define IdentifierNum 48
 
 const wchar_t UnabledWords[] = L"\\/:*?<>|";
 
@@ -102,6 +102,11 @@ namespace Just_Editor
 				this_File->DeleteAsync();
 			});
 
+		}
+
+		static Windows::Foundation::IAsyncAction ^DeleteFileInLocalAsync(Platform::String^ FileName)
+		{
+			return concurrency::create_task(Windows::Storage::ApplicationData::Current->LocalFolder->GetFileAsync(FileName)).get()->DeleteAsync();
 		}
 
 		static void WriteInAppFile(Platform::String^ FolderName, Platform::String^ FileName, Platform::String^ WriteString)
@@ -245,6 +250,29 @@ namespace Just_Editor
 			return StrNum;
 		}
 
+		static int GetWStrNum(std::wstring sourceStr, std::wstring targetStr, size_t Slength = -1, size_t Tlength = -1)
+		{
+			int StrNum = 0;
+
+			if (Slength == -1)
+				Slength = sourceStr.length();
+
+			if (Tlength == -1)
+				Tlength = targetStr.length();
+
+			size_t findIndex = 0, i;
+
+			for (i = 0; i + Tlength - findIndex - 1 < Slength; findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0, i++)
+			{
+				if (findIndex == Tlength)
+				{
+					findIndex = 0;
+					StrNum++;
+				}
+			}
+			return StrNum;
+		}
+
 		static size_t FindPStr(Platform::String^ sourceStr, Platform::String^ targetStr, size_t Slength = -1, size_t Tlength = -1)
 		{
 			if (Slength == -1)
@@ -305,6 +333,14 @@ namespace Just_Editor
 				PUrl = Editor_Tools::ReplacePStr(PUrl, ":", "://");
 			}
 			return PUrl;
+		}
+
+		static void CopyText(Platform::String^ CText)
+		{
+			if (CText == nullptr)return;
+			auto dataPackage = ref new Windows::ApplicationModel::DataTransfer::DataPackage;
+			dataPackage->SetText(CText);
+			Windows::ApplicationModel::DataTransfer::Clipboard::SetContent(dataPackage);
 		}
 
 		static void WriteSetting(Platform::String^ ContainerName, Platform::String^ SettingTypeName, Platform::Object^ SettingInfo)

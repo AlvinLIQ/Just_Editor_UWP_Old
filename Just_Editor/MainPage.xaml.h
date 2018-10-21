@@ -21,6 +21,7 @@ namespace Just_Editor
 		property Editor_Data^ thisData;
 		void OpenFromStorageFile(Windows::Storage::StorageFile^ thisFile, bool AutoSelect);
 		void ChangeHiddenPanelExpand();
+		void Background_Update(Windows::Storage::StorageFile^ thisFile);
 	private:
 		void InitializePage();
 		void CheckWindowItem();
@@ -44,5 +45,6 @@ namespace Just_Editor
 		void WindowItem_RightTapped(Platform::Object^ sender, Windows::UI::Xaml::Input::RightTappedRoutedEventArgs^ e);
 		void Switch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void Page_Tapped(Platform::Object^ sender, Windows::UI::Xaml::Input::TappedRoutedEventArgs^ e);
+		void BGChoose_Button_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

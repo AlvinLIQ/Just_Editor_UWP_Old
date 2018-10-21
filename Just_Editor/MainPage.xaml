@@ -7,52 +7,23 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" SizeChanged="WindowPanel_SizeChanged" Background="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}" NavigationCacheMode="Disabled">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Tapped="Page_Tapped">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="1">
-                <Frame Name="MainFrame" Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Navigated="MainFrame_Navigated" Margin="0,0,0,30"/>
+    <Grid Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" Tapped="Page_Tapped">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Image Name="BackgroundIMG" Grid.RowSpan="2" MinHeight="1080" MinWidth="1920"/>
+        <Grid Grid.Row="1">
+            <Frame Name="MainFrame" Navigated="MainFrame_Navigated" Margin="0,0,0,30"/>
 
-                <Grid Background="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}" VerticalAlignment="Bottom" Height="30" Padding="10,0,10,0">
-                    <TextBlock Text="Just_Editor Ver.0.0.6" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
-                    <Button Name="SettingsButton" HorizontalAlignment="Right" Padding="0" Background="#0000" BorderThickness="0"
+            <Grid Background="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}" VerticalAlignment="Bottom" Height="30" Padding="10,0,10,0"  Opacity="0.83">
+                <TextBlock Text="Just_Editor Ver.0.0.7" Foreground="#5D5B5B" FontWeight="Bold" FontSize="13" VerticalAlignment="Center"/>
+                <Button Name="SettingsButton" HorizontalAlignment="Right" Padding="0" Background="#0000" BorderThickness="0" BorderBrush="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}"
                             Width="30" VerticalAlignment="Stretch" Click="SettingsButton_Click">
-                        <Image Height="15" Source="Assets/Setting_Icon.png"/>
-                    </Button>
-                </Grid>
+                    <Image Height="15" Source="Assets/Setting_Icon.png"/>
+                </Button>
             </Grid>
-            <Border Name="TitleBar_Block" Background="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}"/>
-            <Grid Name="TopBar_Grid" Height="34">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="34"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid Name="ToolBar1">
-                    <Button Name="HomeButton" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Stretch"
-                            Click="HomeButton_Click" Background="#0000" >
-                        <Image Source="Assets/Home_Icon.png" Width="18"/>
-                    </Button>
-                </Grid>
-                <StackPanel Name="TopStackPanel" Orientation="Horizontal" Margin="0,0,32,0" Grid.Column="1">
-                    <StackPanel Name="WindowPanel" Orientation="Horizontal" BorderThickness="0.4, 0, 0.4, 0" BorderBrush="{x:Bind thisData.Editor_BorderBrush, Mode=OneWay}" HorizontalAlignment="Left"
-                                >
-                    </StackPanel>
-                    <Button Name="AddWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" VerticalContentAlignment="Center"
-                            Click="AddWindow_Button_Click" VerticalAlignment="Stretch" Background="#0000" Content="+" FontWeight="Bold">
-                    </Button>
-                    <Button Name="GetHiddenWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Background="#0000" Content="&#xE011;" FontSize="8" VerticalContentAlignment="Center"
-                            VerticalAlignment="Stretch" FontWeight="Bold" Width="32" Click="GetHiddenWindow_Button_Click"
-                             FontFamily="Segoe MDL2 Assets" Padding="8,4,8,0"/>
-                </StackPanel>
-                <!--StackPanel HorizontalAlignment="Right">
-                    <Button Name="GetHiddenWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Background="#0000" Content="..." VerticalContentAlignment="Center"
-                            VerticalAlignment="Stretch" FontWeight="Bold" Height="32" Width="32" Click="GetHiddenWindow_Button_Click"/>
-                </StackPanel-->
-            </Grid>
-            <ScrollViewer Name="HiddenScrollViewer" Height="0" Grid.Row="1" Width="135" Background="{x:Bind thisData.Editor_BackgroundBrush}" HorizontalAlignment="Left" VerticalAlignment="Top"
+            <ScrollViewer Name="HiddenScrollViewer" Height="0" Width="135" Background="{x:Bind thisData.Editor_BorderBrush}" HorizontalAlignment="Left" VerticalAlignment="Top"
                           Padding="0,0,15,0" BorderBrush="{x:Bind thisData.Editor_BorderBrush, Mode=OneWay}" BorderThickness="0.4">
                 <ScrollViewer.RenderTransform>
                     <TranslateTransform x:Name="HiddenMenuTrans"/>
@@ -62,7 +33,36 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        <SplitView Name="SettingsSplit" DisplayMode="Overlay" PanePlacement="Right" HorizontalAlignment="Right" OpenPaneLength="300" PaneBackground="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}">
+        <Border Name="TitleBar_Block" Background="{x:Bind thisData.TopBar_BackgroundBrush, Mode=OneWay}" VerticalAlignment="Top" Opacity="0.85" Height="{x:Bind TopBar_Grid.Height}"/>
+        <Grid Name="TopBar_Grid" Height="34" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="34"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Name="ToolBar1">
+                <Button Name="HomeButton" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Stretch"
+                            Click="HomeButton_Click" Background="#0000">
+                    <Image Source="Assets/Home_Icon.png" Width="18"/>
+                </Button>
+            </Grid>
+            <StackPanel Name="TopStackPanel" Orientation="Horizontal" Grid.Column="1">
+                <StackPanel Name="WindowPanel" Orientation="Horizontal" BorderThickness="0.4, 0, 0.4, 0" BorderBrush="{x:Bind thisData.Editor_BorderBrush, Mode=OneWay}" HorizontalAlignment="Left"
+                                >
+                </StackPanel>
+                <Button Name="AddWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" VerticalContentAlignment="Center"
+                            Click="AddWindow_Button_Click" VerticalAlignment="Stretch" Background="#0000" Content="+" FontWeight="Bold"
+                         >
+                </Button>
+                <Button Name="GetHiddenWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Background="#0000" Content="&#xE011;" FontSize="8" VerticalContentAlignment="Center"
+                            VerticalAlignment="Stretch" FontWeight="Bold" Width="32" Click="GetHiddenWindow_Button_Click"
+                             FontFamily="Segoe MDL2 Assets" Padding="8,4,8,0"/>
+            </StackPanel>
+            <!--StackPanel HorizontalAlignment="Right">
+                    <Button Name="GetHiddenWindow_Button" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Background="#0000" Content="..." VerticalContentAlignment="Center"
+                            VerticalAlignment="Stretch" FontWeight="Bold" Height="32" Width="32" Click="GetHiddenWindow_Button_Click"/>
+                </StackPanel-->
+        </Grid>
+        <SplitView Name="SettingsSplit" Grid.RowSpan="2" DisplayMode="Overlay" PanePlacement="Right" HorizontalAlignment="Right" OpenPaneLength="300" PaneBackground="{x:Bind thisData.ToolBar_BackgroundBrush, Mode=OneWay}">
             <SplitView.Pane>
                 <Grid Padding="10,0,10,0">
                     <TextBlock FontWeight="Bold" FontSize="20" Padding="0,10,0,0" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}">
@@ -99,9 +99,13 @@
                             <ComboBoxItem Content="Ask me every time"/>
                             <ComboBoxItem Content="Auto save"/>
                         </ComboBox-->
+                        <TextBlock  Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Text="Background Image"/>
+                        <Button Name="BGChoose_Button" Click="BGChoose_Button_Click"
+                            Margin="10,10,0,0" Background="{x:Bind thisData.Editor_BorderBrush, Mode=OneWay}" Foreground="{x:Bind thisData.Editor_ForegroundBrush, Mode=OneWay}" Padding="10" Content="choose a picture"/>
 
                     </StackPanel>
-                    <Button Name="ClosePaneButton" Background="#0000" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="SettingsButton_Click">
+                    <Button Name="ClosePaneButton" Background="#0000" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="SettingsButton_Click"
+                            >
                         <Image Source="Assets/Leave_Icon.png" Width="25"/>
                     </Button>
                 </Grid>

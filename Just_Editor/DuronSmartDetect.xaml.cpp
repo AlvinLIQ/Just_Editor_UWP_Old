@@ -19,9 +19,9 @@ using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Media;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-const std::wstring IdentifierArray[] = {L"Vector", L"Task" ,L"Array",L"Enum",L"int",L"char",L"if",L"for",L"while",
+const std::wstring IdentifierArray[] = {L"Vector", L"Task" ,L"Array",L"Enum",L"int",L"char",L"if", L"else", L"try", L"catch", L"for",L"while",
 L"do",L"#include",L"#define", L"#region", L"#endregion", L"_asm",L"wchar_t",L"size_t",L"unsigned",L"return",L"long",L"short",L"void",L"typedef",
-L"#ifdef",L"#endif",L"#ifndef",L"#if",L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
+L"#ifdef",L"#endif",L"#ifndef",L"#if", L"string",L"using",L"namespace",L"public",L"private",L"protected",L"virtual",
 L"static",L"internal",L"extern",L"new", L"this", L"ref", L"object", L"bool", L"selead", L"var", L"auto" };
 
 DuronSmartDetect::DuronSmartDetect()

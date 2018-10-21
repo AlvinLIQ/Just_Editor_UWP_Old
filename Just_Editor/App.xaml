@@ -556,7 +556,8 @@
               Grid.Column="1"
               Width="18"
               Height="18"
-              Background="{TemplateBinding BorderBrush}" />
+              Background="{TemplateBinding BorderBrush}" 
+                                        />
                             </Grid>
                         </Border>
                     </ControlTemplate>

@@ -134,5 +134,7 @@ namespace Just_Editor
 		void ContentElement_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e);
 		void CodeEditorBox_Paste(Platform::Object^ sender, Windows::UI::Xaml::Controls::TextControlPasteEventArgs^ e);
 		void HeaderContentPresenter_Loaded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-	};
+		void LineNum_Update(std::wstring wholeWord, size_t wordLength);
+		void CodeEditorBox_RightTapped(Platform::Object^ sender, Windows::UI::Xaml::Input::RightTappedRoutedEventArgs^ e);
+};
 }
