@@ -526,11 +526,11 @@ void Just_Editor::CodeEditor::CodeEditorBox_TextChanging(Windows::UI::Xaml::Cont
 				Windows::UI::Text::VerticalCharacterAlignment::Baseline, Windows::UI::Text::PointOptions::ClientCoordinates, &thisPoint);
 			//auto thisTransform = ref new TranslateTransform;
 			thisPoint.X += 40;
-			Pipe_Trans->X = thisPoint.X + SmartDetect->Width > CodeEditorBox->RenderSize.Width ? CodeEditorBox->RenderSize.Width - SmartDetect->Width : thisPoint.X;
+			Pipe_Trans->X = thisPoint.X + SmartDetect->ActualWidth > CodeEditorBox->RenderSize.Width ? CodeEditorBox->RenderSize.Width - SmartDetect->ActualWidth : thisPoint.X;
 			CodeEditorBox->Document->Selection->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Right,
 				Windows::UI::Text::VerticalCharacterAlignment::Baseline, Windows::UI::Text::PointOptions::NoVerticalScroll, &thisPoint);
 			thisPoint.Y -= Window::Current->CoreWindow->Bounds.Top + (float)ToolBar_Row->Height.Value + 30;
-			Pipe_Trans->Y = thisPoint.Y + SmartDetect->Height > CodeEditorBox->RenderSize.Height ? CodeEditorBox->RenderSize.Height - SmartDetect->Height : thisPoint.Y;
+			Pipe_Trans->Y = thisPoint.Y + SmartDetect->ActualHeight > CodeEditorBox->RenderSize.Height ? CodeEditorBox->RenderSize.Height - SmartDetect->ActualHeight : thisPoint.Y;
 		}
 	}
 }

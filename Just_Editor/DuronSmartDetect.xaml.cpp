@@ -102,7 +102,7 @@ void DuronSmartDetect::DetectWordFromStrArray(Windows::UI::Text::ITextRange^ thi
 	}
 	if (ItemPanel->Children->Size)
 	{
-		this->Width = 100;
+		this->Width = 150;
 	}
 	else
 	{
@@ -139,7 +139,6 @@ void DuronSmartDetect::SelectItem(DuronWordItem^ thisItem)
 		}
 	}
 }
-
 
 void Just_Editor::DuronSmartDetect::UserControl_KeyDown(Platform::Object^ sender, Windows::UI::Xaml::Input::KeyRoutedEventArgs^ e)
 {

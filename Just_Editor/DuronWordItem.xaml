@@ -10,6 +10,6 @@
     d:DesignWidth="400">
 
     <Grid Name="MainGrid" PointerEntered="Word_PointerOver" PointerExited="Word_PointerOut" PointerCaptureLost="Word_PointerOut">
-        <TextBlock Name="ItemTitle" Text="{x:Bind Identifier,Mode=OneWay}" Foreground="{x:Bind OverBrush}"/>
+        <TextBlock Name="ItemTitle" Text="{x:Bind Identifier,Mode=OneWay}" Foreground="{x:Bind OverBrush}" FontSize="19"/>
     </Grid>
 </UserControl>

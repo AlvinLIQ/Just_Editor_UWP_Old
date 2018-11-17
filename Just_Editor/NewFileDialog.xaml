@@ -15,26 +15,19 @@
             <TextBlock x:Name="DialogTitle" Foreground="#5D5B5B" FontSize="16" VerticalAlignment="Center"/>
         </StackPanel>
     </ContentDialog.Title>
-    <Grid>
+    <Grid Height="200">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock Padding="5" Text="File Type" Foreground="#5D5B5B" FontWeight="Bold" FontSize="20"/>
-        <StackPanel Padding="10" Grid.Row="1">
-            <ListView Name="FileTypeList" SelectionChanged="FileTypeList_SelectionChanged">
-                <ListViewItem x:Uid="c">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="Assets/New_Icon.png" Width="30"/>
-                        <TextBlock Text=" Text" Foreground="#5D5B5B" FontWeight="Bold" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </ListViewItem>
-            </ListView>
-        </StackPanel>
+        <ListView Name="FileTypeList" Grid.Row="1" SelectionChanged="FileTypeList_SelectionChanged">
+
+        </ListView>
         <TextBlock Padding="5" Text="File Settings" Foreground="#5D5B5B" Grid.Column="1" FontWeight="Bold" FontSize="20"/>
         <Grid Padding="10" Name="FileSettingColumn" Grid.Row="1" Grid.Column="1">
             <StackPanel Margin="0,0,0,45">
