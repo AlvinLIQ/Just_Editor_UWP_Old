@@ -219,13 +219,13 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 		{
 			thisRange->StartPosition = SelectionIndex;
 			CanAddFrontLength = --SelectionIndex >= 0 && ((wholeWord[SelectionIndex] >= L'a' && wholeWord[SelectionIndex] <= L'z') ||
-				(wholeWord[SelectionIndex] >= L'A' && wholeWord[SelectionIndex] <= L'Z') || wholeWord[SelectionIndex] == L'#');
+				(wholeWord[SelectionIndex] >= L'A' && wholeWord[SelectionIndex] <= L'Z' || wholeWord[SelectionIndex] == L'#' || wholeWord[SelectionIndex] == L'_'));
 		}
 		if (CanAddBackLength)
 		{
 			CanAddBackLength = SelectionIndex < thisRange->EndPosition && thisRange->EndPosition < wordLength &&
 				((wholeWord[thisRange->EndPosition] >= L'a' && wholeWord[thisRange->EndPosition] <= L'z') ||
-				(wholeWord[thisRange->EndPosition] >= L'A' && wholeWord[thisRange->EndPosition] <= L'Z' || wholeWord[thisRange->EndPosition] == L'#'));
+				(wholeWord[thisRange->EndPosition] >= L'A' && wholeWord[thisRange->EndPosition] <= L'Z' || wholeWord[thisRange->EndPosition] == L'#' || wholeWord[thisRange->EndPosition] == L'_'));
 			if (CanAddBackLength)
 				thisRange->EndPosition++;
 		}

@@ -223,7 +223,7 @@ namespace Just_Editor
 
 			size_t findIndex = 0, i;
 
-			for (i = startFindIndex; i + Tlength - findIndex - 1 < Slength && findIndex < Tlength; findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0, i++);
+			for (i = startFindIndex; i + Tlength - findIndex <= Slength && findIndex < Tlength; findIndex = sourceStr[i] == targetStr[findIndex] ? findIndex + 1 : 0, i++);
 			return findIndex == Tlength ? i - Tlength : -1;
 		}
 

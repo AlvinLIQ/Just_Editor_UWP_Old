@@ -14,7 +14,7 @@ using namespace Windows::UI::Xaml::Controls;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-String^ File_Type[] = {L".c", L".cpp", L".cs", L".java", L"html", L".py"};
+String^ File_Type[] = {L".c", L".cpp", L".cs", L".java", L".html", L".py"};
 
 Just_Editor::NewFileDialog::NewFileDialog()
 {

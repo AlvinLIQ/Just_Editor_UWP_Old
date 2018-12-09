@@ -104,8 +104,8 @@ void Just_Editor::CaesarPanel::SetPanelMode(int PanelMode)
 		{
 			std::wstring user_Input = Url_Box->Text->Data();
 			std::wstring thisUrl = L"";
-			size_t CIndex = user_Input.length(), EIndex = 0;
-			while (EIndex++ < CIndex)
+			size_t CIndex = user_Input.length(), EIndex;
+			for (EIndex = 0; EIndex < CIndex; EIndex++)
 			{
 				if (user_Input[EIndex] != ' ')
 				{
