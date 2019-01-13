@@ -67,6 +67,9 @@ namespace Just_Editor
 			}
 		}
 
+		void LineNum_Increase(int rtn_Num);
+		void LineNum_Reduce(int rtn_Num);
+
 		void AutoDetect(int StartIndex, int EndIndex, bool isExtend);
 
 		void SaveFile()

@@ -663,16 +663,17 @@ void Just_Editor::MainPage::BGChoose_Button_Click(Platform::Object ^sender, Wind
 void MainPage::Background_Update(Windows::Storage::StorageFile ^thisFile)
 {
 	create_task(thisFile->OpenAsync(Windows::Storage::FileAccessMode::Read)).then([this, thisFile](task<Windows::Storage::Streams::IRandomAccessStream^> readTask)
-	{
-		auto bgImage = ref new Media::Imaging::BitmapImage();
-		try
 		{
-			bgImage->SetSource(readTask.get());
-		}
-		catch (Exception^)
-		{
-			bgImage->UriSource = ref new Windows::Foundation::Uri("ms-appx:///Assets/Background.png");
-		}
-		BackgroundIMG->Source = bgImage;
-	}, task_continuation_context::use_current());
+			auto bgImage = ref new Media::Imaging::BitmapImage();
+			bgImage->AutoPlay = true;
+			try
+			{
+				bgImage->SetSource(readTask.get());
+			}
+			catch (Exception^)
+			{
+				bgImage->UriSource = ref new Windows::Foundation::Uri("ms-appx:///Assets/Background.png");
+			}
+			BackgroundIMG->Source = bgImage;
+		}, task_continuation_context::use_current());
 }

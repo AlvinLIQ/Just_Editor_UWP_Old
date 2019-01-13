@@ -32,7 +32,6 @@ Point thisPoint;
 CodeEditor::CodeEditor()
 {
 	InitializeComponent();
-	LineNum = 0;
 	if (!Windows::Foundation::Metadata::ApiInformation::IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 	{
 		CodeEditorBox->PreviewKeyDown += ref new Windows::UI::Xaml::Input::KeyEventHandler(this, &Just_Editor::CodeEditor::CodeEditorBox_KeyDown);
@@ -129,77 +128,58 @@ void Just_Editor::CodeEditor::AutoDetect(int StartIndex, int EndIndex, bool isEx
 	}));
 }
 
+void Just_Editor::CodeEditor::LineNum_Increase(int rtn_Num)
+{
+	while (--rtn_Num >= 0)
+	{
+		CodeEditorBox->Header += (++LineNum).ToString() + "\r";
+	}
+}
+
+void Just_Editor::CodeEditor::LineNum_Reduce(int rtn_Num)
+{
+	if (LineNum <= rtn_Num)
+	{
+		CodeEditorBox->Header = "1\r";
+		LineNum = 1;
+		return;
+	}
+
+	LineNum -= rtn_Num;
+
+	auto LineNums = CodeEditorBox->Header->ToString()->Data();
+
+	int SelectionIndex = (int)wcslen(LineNums);
+	create_task([LineNums, SelectionIndex, rtn_Num, this]()
+		{
+			int Sl = SelectionIndex - 1, End_Index = rtn_Num;
+			while (End_Index > 0 && --Sl >= 0)
+			{
+				if (LineNums[Sl] == L'\r')
+				{
+					End_Index--;
+				}
+			}
+			return Sl + 1;
+		}).then([this, LineNums](task<int> thisIntTask)
+			{
+				CodeEditorBox->Header = ref new String(Editor_Tools::SubStr(LineNums, 0, thisIntTask.get()));
+			}, task_continuation_context::use_current());
+}
+
 void Just_Editor::CodeEditor::LineNum_Update(std::wstring wholeWord, size_t wordLength)
 {
-	int EndIndex, SelectionIndex;
-	EndIndex = Editor_Tools::GetWStrNum(wholeWord, L"\r", (size_t)wordLength, 1);
+	int EndIndex;
+	EndIndex = Editor_Tools::GetWStrNum(wholeWord, L"\r", (size_t)wordLength, 1) + 1;
 
 	if (EndIndex > LineNum)
 	{
-		do
-		{
-			CodeEditorBox->Header += (++LineNum).ToString() + L'\r';
-		} while (EndIndex > LineNum);
+		LineNum_Increase(EndIndex - LineNum);
 	}
 	else if (EndIndex < LineNum)
 	{
-		auto LineNums = CodeEditorBox->Header->ToString()->Data();
-
-		SelectionIndex = (int)wcslen(LineNums);
-		create_task([LineNums, SelectionIndex, EndIndex, this]()
-		{
-			int Sl = SelectionIndex;
-			while (EndIndex < LineNum && --Sl > 0)
-			{
-				if (LineNums[Sl - 1] == L'\r')
-					LineNum--;
-			}
-			return Sl;
-		}).then([this, LineNums](task<int> thisIntTask)
-		{
-			CodeEditorBox->Header = ref new String(Editor_Tools::SubStr(LineNums, 0, thisIntTask.get()));
-		}, task_continuation_context::use_current());
+		LineNum_Reduce(LineNum - EndIndex);
 	}
-	/*
-	concurrency::create_task([=]()
-	{
-		Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::High, ref new Windows::UI::Core::DispatchedHandler([=]()
-		{
-			int StrNum = 0;
-
-			int i;
-			Point nPoint;
-			for (i = 0; i < wordLength; i++)
-			{
-				if (wholeWord[i] == L'\r')
-				{
-					StrNum++;
-					CodeEditorBox->Document->GetRange(i, i)->GetPoint(Windows::UI::Text::HorizontalCharacterAlignment::Left,
-						Windows::UI::Text::VerticalCharacterAlignment::Top,
-						Windows::UI::Text::PointOptions::ClientCoordinates, &nPoint);
-					TextBlock^ thisNumItem;
-					if (StrNum > (int)LineNums_List->Children->Size)
-					{
-						thisNumItem = Editor_Tools::GetTextBlock(StrNum.ToString(), CodeEditorBox->FontSize, thisData->Editor_ForegroundBrush, CodeEditorBox->FontWeight);
-						LineNums_List->Children->Append(thisNumItem);
-					}
-					else
-					{
-						thisNumItem = (TextBlock^)LineNums_List->Children->GetAt(StrNum - 1);
-					}
-					thisNumItem->Margin = Thickness(0, nPoint.Y, 0, 0);
-				}
-			}
-			if (StrNum > 0)
-			{
-				StrNum = (int)LineNums_List->Children->Size - StrNum;
-				while (--StrNum >= 0)
-				{
-					LineNums_List->Children->RemoveAtEnd();
-				}
-			}
-		}));
-	});*/
 }
 
 Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
@@ -232,10 +212,12 @@ Windows::UI::Text::ITextRange^ Just_Editor::CodeEditor::GetWordFromSelection()
 	}
 
 	int EndIndex;
+	/*
 	if (thisData->isLineNumEnabled)
 	{
 		LineNum_Update(wholeWord, (size_t)wordLength);
 	}
+	*/
 
 	//auto FindResult = Editor_Tools::FindAllStr(wholeWord, L"//");
 	if (!thisData->isHighlightEnabled)
@@ -394,6 +376,33 @@ void Just_Editor::CodeEditor::CodeEditorBox_KeyDown(Platform::Object^ sender, Wi
 			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.G == thisData->CommentHighlightColor.G &&
 			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor.B == thisData->CommentHighlightColor.B))
 			CodeEditorBox->Document->Selection->CharacterFormat->ForegroundColor = thisData->Editor_SymbolColor;
+		if (thisData->isLineNumEnabled)
+		{
+			if (e->Key == Windows::System::VirtualKey::Enter)
+				CodeEditorBox->Header += (++LineNum).ToString() + L'\r';
+			else if (e->Key == Windows::System::VirtualKey::Back &&
+				CodeEditorBox->Document->GetRange(CodeEditorBox->Document->Selection->StartPosition - 1, CodeEditorBox->Document->Selection->StartPosition)->Text == "\r")
+			{
+				LineNum_Reduce(1);
+			}
+		}
+	}
+	else if(thisData->isLineNumEnabled)
+	{
+		int rtn_Num = Editor_Tools::GetStrNum(CodeEditorBox->Document->Selection->Text->Data(), L"\r");
+		if (e->Key == Windows::System::VirtualKey::Enter)
+		{
+			if (rtn_Num == 0)
+				CodeEditorBox->Header += (++LineNum).ToString() + L'\r';
+			else if (rtn_Num > 1)
+			{
+				LineNum_Reduce(rtn_Num - 1);
+			}
+		}
+		else if (rtn_Num > 0 && !e->KeyStatus.IsExtendedKey && e->Key != Windows::System::VirtualKey::Shift && e->Key != Windows::System::VirtualKey::Menu)
+		{
+			LineNum_Reduce(e->Key == Windows::System::VirtualKey::Back || e->Key == Windows::System::VirtualKey::Delete ? rtn_Num : rtn_Num - 1);
+		}
 	}
 	isCtrlHeld = e->Key == Windows::System::VirtualKey::Control;
 }
@@ -583,7 +592,7 @@ void Just_Editor::CodeEditor::SearchInRange(Windows::UI::Text::ITextRange^ searc
 {
 	if (Search_Box->Text == "")
 		return;
-
+	
 	if (searchRange->FindText(Search_Box->Text, searchRange->EndPosition, Windows::UI::Text::FindOptions::None))
 	{
 		Replace_Box->Foreground = Redo_Button->Foreground;
@@ -618,7 +627,8 @@ void Just_Editor::CodeEditor::Hide_Button_Click(Platform::Object^ sender, Window
 
 void Just_Editor::CodeEditor::ContentElement_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e)
 {
-	((ContentPresenter^)((Grid^)((ScrollViewer^)sender)->Parent)->Children->GetAt(2))->Margin = Thickness(0, -((ScrollViewer^)sender)->VerticalOffset, 0, 8);
+	if (thisData->isLineNumEnabled && LineNums_Panel != nullptr)
+		LineNums_Panel->Margin = Thickness(0, -((ScrollViewer^)sender)->VerticalOffset, 0, 8);
 }
 
 
@@ -635,6 +645,8 @@ void Just_Editor::CodeEditor::HeaderContentPresenter_Loaded(Platform::Object^ se
 {
 	LineNums_Panel = ((ContentPresenter^)sender);
 	LineNums_Panel->Foreground = thisData->Editor_ForegroundBrush;
+	CodeEditorBox->Header = "1\r";
+	LineNum = 1;
 	CheckLineNums();
 }
 
